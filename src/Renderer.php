@@ -212,12 +212,20 @@ class Renderer
      *                          the directory path). If the directory path is 
      *                          included & the file exists, it is included and
      *                          the output is returned. If the directory path is 
-     *                          not included, the file will be searched for in the 
-     *                          list of directories registered in $this->possible_paths_to_file.
+     *                          not included, the file will be searched for from 
+     *                          the list of directories registered in 
+     *                          $this->possible_paths_to_file.
+     *                          
+     *                          If $file_name still can't be found or is an empty 
+     *                          string or is not supplied, this method tries to 
+     *                          locate $this->file_name if possible and renders 
+     *                          it instead.
      *                          
      * @param array $data Array of data to be extracted to make local variables.
+     *                    It is combined together with $this->data. It will
+     *                    overwrite item(s) with the same key in $this->data.
      * 
-     * @return string the output that is generated when $file_name is included
+     * @return string the output that is generated when $file_name or $this->file_name is included
      * 
      * @throws \Slim3Mvc\FileNotFoundException
      * 
@@ -308,7 +316,7 @@ class Renderer
             return ob_get_clean();
         };
         
-        return $render_view($located_file, $data);
+        return $render_view($located_file, array_merge($this->data, $data));
     }
     
     /**
@@ -319,10 +327,18 @@ class Renderer
      *                          the directory path). If the directory path is 
      *                          included & the file exists, it is included and
      *                          the output is returned. If the directory path is 
-     *                          not included, the file will be searched for in the 
-     *                          list of directories registered in $this->possible_paths_to_file.
+     *                          not included, the file will be searched for from 
+     *                          the list of directories registered in 
+     *                          $this->possible_paths_to_file.
+     *                          
+     *                          If $file_name still can't be found or is an empty 
+     *                          string or is not supplied, this method tries to 
+     *                          locate $this->file_name if possible and renders 
+     *                          it instead.
      *                          
      * @param array $data Array of data to be extracted to make local variables.
+     *                    It is combined together with $this->data. It will
+     *                    overwrite item(s) with the same key in $this->data.
      * 
      * @return void
      * 
