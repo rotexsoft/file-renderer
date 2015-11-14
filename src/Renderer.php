@@ -198,7 +198,7 @@ class Renderer
             return ob_get_clean();
         };
         
-		return $render_view($located_file, $data);
+        return $render_view($located_file, $data);
     }
     
     /**
