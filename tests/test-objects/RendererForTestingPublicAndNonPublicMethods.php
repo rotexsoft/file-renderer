@@ -8,8 +8,9 @@
  */
 class RendererForTestingPublicAndNonPublicMethods extends \Rotexsoft\Renderer
 {
-    public function __construct(array $file_paths) {
-        
-        parent::__construct($file_paths);
+    public function __construct(
+        $file_name = '', $data = array(), array $file_paths = array()
+    ) {
+        parent::__construct($file_name, $data, $file_paths);
     }
 }
