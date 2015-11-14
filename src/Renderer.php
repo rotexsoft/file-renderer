@@ -20,14 +20,104 @@ class Renderer
     protected $possible_paths_to_file;
 
     /**
+     *
+     * @var string name of php file to be rendered. If path is not prepended to the
+     *             name of the file, the file will be searched for in the list of
+     *             paths registered in $this->possible_paths_to_file
+     *  
+     */
+    protected $file_name;
+    
+    /**
+     *
+     * @var array an array of data to be extracted into variables for use in the 
+     *            php file to be rendered via an instance of this class 
+     */
+    protected $data;
+
+    /**
+     *
+     * A function to get the type of a variable function ($var, $cap_first=false)
+     * 
+     * @var callable
+     * 
+     */
+    protected $gettype;
+
+    /**
      * 
      * @param array $file_paths An array of path(s) to directorie(s) containing 
      *                          (*.php) files to be rendered via this class.
      * 
      */
-    public function __construct( array $file_paths ) {
+    public function __construct($file_name='', array $data = array(), array $file_paths = array() ) {
         
+        $gettype = function ($var, $cap_first=false) {
+            
+            if( is_object($var) ) {
+                
+                return $cap_first ? ucfirst(get_class($var)) : get_class($var);
+                
+            } else {
+                
+                return $cap_first ? ucfirst(gettype($var)) : gettype($var);
+            }
+        };
+        
+        $this->gettype = $gettype; //store for later use
+        
+        if( !is_string($file_name) ) {
+            
+            $msg = "ERROR: ". get_class($this) ."::__construct(...) expects first parameter (the name of the php file to be rendered) to be a `string`." 
+                   . PHP_EOL .'`'. $gettype($file_name, true).'` was supplied with the value below:'
+                   . PHP_EOL . var_export($file_name, true);
+            
+            throw new \InvalidArgumentException($msg);
+        }
+        
+        $this->data = $data;
+        $this->file_name = $file_name;
         $this->possible_paths_to_file = $file_paths;
+    }
+    
+    public function __set($name, $value) {
+        
+        $this->data[$name] = $value;
+    }
+
+    public function __get($name) {
+        
+        if ( isset($this->data[$name]) ) {
+
+            return $this->data[$name];
+            
+        } else {
+
+            $msg = "ERROR: Item with key '$name' does not exist in " 
+                   . get_class($this) .'.'. PHP_EOL . $this->__toString();
+            
+            throw new \Exception($msg);
+        }
+    }
+    
+    public function __isset($name) {
+        
+        return isset($this->data[$name]);
+    }
+    
+    public function __unset($name) {
+        
+        unset($this->data[$name]);
+    }
+    
+    public function setVar($name, $value) {
+        
+        $this->__set($name, $value);
+    }
+    
+    public function getVar($name) {
+        
+        return $this->__get($name);
     }
 
     /**
@@ -132,22 +222,41 @@ class Renderer
      * @throws \Slim3Mvc\FileNotFoundException
      * 
      */
-    public function renderToString( $file_name, array $data = array() ) {
+    public function renderToString( $file_name='', array $data = array() ) {
 
-        $located_file = file_exists($file_name) ? $file_name : false;
+        if( !is_string($file_name) ) {
+            
+            $gettype = $this->gettype;//assign to the helper gettype function
+            
+            $msg = "ERROR: ". get_class($this) ."::".__FUNCTION__."(...) expects first parameter (the name of the php file to be rendered) to be a `string`." 
+                   . PHP_EOL .'`'. $gettype($file_name, true).'` was supplied with the value below:'
+                   . PHP_EOL . var_export($file_name, true);
+            
+            throw new \InvalidArgumentException($msg);
+        }
         
-        if( $located_file === false ) {
+        //check if the file actually exists as is
+        $located_file = 
+            ( !empty($file_name) && file_exists($file_name) && is_file($file_name) ) ? $file_name : false;
+        
+        if(  $located_file === false && !empty($file_name) ) {
             
             //$file_name is not an existent file on its own. Search for it in 
             //the list of paths registered in $this->possible_paths_to_file.
+            $located_file = $this->locateFile($file_name);
+        }
+        
+        if( $located_file === false ) {
             
-            foreach ( $this->possible_paths_to_file as $possible_path ) {
-
-                if( file_exists( rtrim($possible_path, DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR . $file_name ) ) {
-
-                    $located_file = rtrim($possible_path, DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR . $file_name;
-                    break;
-                }
+            //file name supplied to this method was not found
+            //try to see if file name supplied when this class was instantiated
+            //can be found
+            $located_file =
+                ( !empty($this->file_name) && file_exists($this->file_name) && is_file($this->file_name) ) ? $this->file_name : false;
+            
+            if( $located_file === false && !empty($this->file_name) ) {
+                
+                $located_file = $this->locateFile($this->file_name);
             }
         }
         
@@ -173,7 +282,8 @@ class Renderer
         //// assigned to any local variable(s) inside the function.
         ////
         //// This way we need not worry about any variable(s) being overwritten
-        //// when extract(..) is called within the anonymous function.
+        //// inside the anonymous function when extract(..) is called within the 
+        //// anonymous function.
         ////  
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
@@ -219,9 +329,51 @@ class Renderer
      * @throws \Slim3Mvc\FileNotFoundException
      * 
      */
-    public function renderToScreen( $file_name, array $data = array() ) {
+    public function renderToScreen($file_name, array $data = array()) {
         
         echo $this->renderToString($file_name, $data);
+    }
+    
+    /**
+     * 
+     * @param string $file_name name of file to be located in the registered 
+     *                          possible paths ($this->possible_paths_to_file)
+     * 
+     * @return boolean|string
+     * 
+     * @throws \InvalidArgumentException
+     * 
+     */
+    public function locateFile($file_name) {
+        
+        if( !is_string($file_name) ) {
+            
+            $gettype = $this->gettype; //assign to the helper gettype function
+            
+            $msg = "ERROR: ". get_class($this) ."::".__FUNCTION__."(...) expects first parameter (the name of the php file to be located) to be a `string`." 
+                   . PHP_EOL .'`'. $gettype($file_name, true).'` was supplied with the value below:'
+                   . PHP_EOL . var_export($file_name, true);
+            
+            throw new \InvalidArgumentException($msg);
+        }
+        
+        if( !empty($file_name) ) {
+            
+            foreach ( $this->possible_paths_to_file as $possible_path ) {
+
+                $potential_file =  
+                    rtrim($possible_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $file_name ;
+
+                if( file_exists($potential_file) && is_file($potential_file) ) {
+
+                    //found the file
+                    return rtrim($possible_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $file_name;
+                }
+            }
+        }
+        
+        //file not found
+        return false;
     }
 }
 
