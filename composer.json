@@ -1,7 +1,7 @@
 {
     "name": "rotexsoft/file-renderer",
     "type": "library",
-    "description": "A tool for rendering PHP files that are meant to generate output.",
+    "description": "A tool for rendering PHP files that are meant to generate output. Easy to use as a view component in an MVC framework.",
     "keywords": [ "view", "views", "template", "template view", "render", "file", "renderer", "templating" ],
     "homepage": "https://github.com/rotexsoft/file-renderer",
     "license": "BSD-2-Clause",
