@@ -177,26 +177,26 @@ class Renderer
         ////  
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
-		$render_view = function()
-		{
+        $render_view = function()
+        {
             //func_get_arg(0): the name of the file to be included whose output 
             //                 is to be captured and returned
-            
+
             //func_get_arg(1): the data array from which to extract variables
-            
+
             //Extract variables from the data array which may be needed in the
             //view file to be included below.
-			extract(func_get_arg(1));
+            extract(func_get_arg(1));
 
-			// Capture the view output
-			ob_start();
+            // Capture the view output
+            ob_start();
 
             // Load the view within the current scope
             include func_get_arg(0);
 
-			// Get the captured output and close the buffer
-			return ob_get_clean();
-		};
+            // Get the captured output and close the buffer
+            return ob_get_clean();
+        };
         
 		return $render_view($located_file, $data);
     }
