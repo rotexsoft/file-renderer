@@ -70,7 +70,7 @@ class Renderer
             
             $msg = "ERROR: ". get_class($this) ."::__construct(...) expects first parameter (the name of the php file to be rendered) to be a `string`." 
                    . PHP_EOL .'`'. $gettype($file_name, true).'` was supplied with the value below:'
-                   . PHP_EOL . var_export($file_name, true);
+                   . PHP_EOL . var_export($file_name, true). PHP_EOL ;
             
             throw new \InvalidArgumentException($msg);
         }
@@ -238,7 +238,7 @@ class Renderer
             
             $msg = "ERROR: ". get_class($this) ."::".__FUNCTION__."(...) expects first parameter (the name of the php file to be rendered) to be a `string`." 
                    . PHP_EOL .'`'. $gettype($file_name, true).'` was supplied with the value below:'
-                   . PHP_EOL . var_export($file_name, true);
+                   . PHP_EOL . var_export($file_name, true). PHP_EOL ;
             
             throw new \InvalidArgumentException($msg);
         }
@@ -368,7 +368,7 @@ class Renderer
             
             $msg = "ERROR: ". get_class($this) ."::".__FUNCTION__."(...) expects first parameter (the name of the php file to be located) to be a `string`." 
                    . PHP_EOL .'`'. $gettype($file_name, true).'` was supplied with the value below:'
-                   . PHP_EOL . var_export($file_name, true);
+                   . PHP_EOL . var_export($file_name, true). PHP_EOL ;
             
             throw new \InvalidArgumentException($msg);
         }
