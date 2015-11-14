@@ -1,4 +1,4 @@
-#####  A light-weight, highly performant PHP data access library. https://travis-ci.org/rotexsoft/leanorm/builds ![Build Status](https://travis-ci.org/rotexsoft/leanorm.svg?branch=master)
+##### A tool for rendering PHP files that are meant to generate output. https://travis-ci.org/rotexsoft/leanorm/builds ![Build Status](https://travis-ci.org/rotexsoft/leanorm.svg?branch=master)
 
 See http://rotexsoft.github.io/file-renderer/ for documentation.
 

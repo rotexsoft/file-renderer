@@ -203,7 +203,7 @@ class Renderer
     
     /**
      * 
-	 * Captures and prints out the output that is generated when a php file is included. 
+     * Captures and prints out the output that is generated when a php file is included. 
      * 
      * @param string $file_name Name of php file to be included (with/without
      *                          the directory path). If the directory path is 
