@@ -36,15 +36,6 @@ class Renderer
     protected $data;
 
     /**
-     *
-     * A function to get the type of a variable function ($var, $cap_first=false)
-     * 
-     * @var callable
-     * 
-     */
-    protected $gettype;
-
-    /**
      * 
      * @param array $file_paths An array of path(s) to directorie(s) containing 
      *                          (*.php) files to be rendered via this class.
@@ -52,24 +43,10 @@ class Renderer
      */
     public function __construct($file_name='', array $data = array(), array $file_paths = array() ) {
         
-        $gettype = function ($var, $cap_first=false) {
-            
-            if( is_object($var) ) {
-                
-                return $cap_first ? ucfirst(get_class($var)) : get_class($var);
-                
-            } else {
-                
-                return $cap_first ? ucfirst(gettype($var)) : gettype($var);
-            }
-        };
-        
-        $this->gettype = $gettype; //store for later use
-        
         if( !is_string($file_name) ) {
             
             $msg = "ERROR: ". get_class($this) ."::__construct(...) expects first parameter (the name of the php file to be rendered) to be a `string`." 
-                   . PHP_EOL .'`'. $gettype($file_name, true).'` was supplied with the value below:'
+                   . PHP_EOL .'`'. $this->getVarType($file_name, true).'` was supplied with the value below:'
                    . PHP_EOL . var_export($file_name, true). PHP_EOL ;
             
             throw new \InvalidArgumentException($msg);
@@ -234,38 +211,21 @@ class Renderer
 
         if( !is_string($file_name) ) {
             
-            $gettype = $this->gettype;//assign to the helper gettype function
-            
             $msg = "ERROR: ". get_class($this) ."::".__FUNCTION__."(...) expects first parameter (the name of the php file to be rendered) to be a `string`." 
-                   . PHP_EOL .'`'. $gettype($file_name, true).'` was supplied with the value below:'
+                   . PHP_EOL .'`'. $this->getVarType($file_name, true).'` was supplied with the value below:'
                    . PHP_EOL . var_export($file_name, true). PHP_EOL ;
             
             throw new \InvalidArgumentException($msg);
         }
         
-        //check if the file actually exists as is
-        $located_file = 
-            ( !empty($file_name) && file_exists($file_name) && is_file($file_name) ) ? $file_name : false;
-        
-        if(  $located_file === false && !empty($file_name) ) {
-            
-            //$file_name is not an existent file on its own. Search for it in 
-            //the list of paths registered in $this->possible_paths_to_file.
-            $located_file = $this->locateFile($file_name);
-        }
+        $located_file = $this->locateFile($file_name);
         
         if( $located_file === false ) {
             
             //file name supplied to this method was not found
             //try to see if file name supplied when this class was instantiated
             //can be found
-            $located_file =
-                ( !empty($this->file_name) && file_exists($this->file_name) && is_file($this->file_name) ) ? $this->file_name : false;
-            
-            if( $located_file === false && !empty($this->file_name) ) {
-                
-                $located_file = $this->locateFile($this->file_name);
-            }
+            $located_file = $this->locateFile($this->file_name);
         }
         
         if( $located_file === false ) {
@@ -363,18 +323,22 @@ class Renderer
     public function locateFile($file_name) {
         
         if( !is_string($file_name) ) {
-            
-            $gettype = $this->gettype; //assign to the helper gettype function
-            
+                        
             $msg = "ERROR: ". get_class($this) ."::".__FUNCTION__."(...) expects first parameter (the name of the php file to be located) to be a `string`." 
-                   . PHP_EOL .'`'. $gettype($file_name, true).'` was supplied with the value below:'
+                   . PHP_EOL .'`'. $this->getVarType($file_name, true).'` was supplied with the value below:'
                    . PHP_EOL . var_export($file_name, true). PHP_EOL ;
             
             throw new \InvalidArgumentException($msg);
         }
         
-        if( !empty($file_name) ) {
+        //check if the file actually exists as is
+        $located_file = 
+            ( !empty($file_name) && file_exists($file_name) && is_file($file_name) ) ? $file_name : false;
+        
+        if(  $located_file === false && !empty($file_name) ) {
             
+            //$file_name is not an existent file on its own. Search for it in 
+            //the list of paths registered in $this->possible_paths_to_file.
             foreach ( $this->possible_paths_to_file as $possible_path ) {
 
                 $potential_file =  
@@ -383,13 +347,34 @@ class Renderer
                 if( file_exists($potential_file) && is_file($potential_file) ) {
 
                     //found the file
-                    return rtrim($possible_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $file_name;
+                    $located_file = rtrim($possible_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $file_name;
+                    break;
                 }
             }
         }
         
         //file not found
-        return false;
+        return $located_file;
+    }
+    
+    /**
+     * 
+     * An enhancement to PHP's gettype function that displays the class name of a variable if the variable is an object.
+     * 
+     * @param mixed $var a variable whose type is to be determined
+     * @param bool $cap_first flag to indicate if the variable's type should be returned with the first letter in uppercase
+     * 
+     * @return string the variable's type
+     * 
+     */
+    protected function getVarType($var, $cap_first=false) {
+
+        if( is_object($var) ) {
+
+            return $cap_first ? ucfirst(get_class($var)) : get_class($var);
+        }
+
+        return $cap_first ? ucfirst(gettype($var)) : gettype($var);
     }
 }
 
