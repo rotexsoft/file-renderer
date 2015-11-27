@@ -332,8 +332,13 @@ class Renderer
         }
         
         //check if the file actually exists as is
+        $ds = DIRECTORY_SEPARATOR;
+        
+        //prevent re-including currently running script
+        $not_currently_running_script = !file_exists(getcwd(). $ds . ltrim(ltrim($file_name,'\\'),'/'));
+
         $located_file = 
-            ( !empty($file_name) && file_exists($file_name) && is_file($file_name) ) ? $file_name : false;
+            ( !empty($file_name) && file_exists($file_name) && is_file($file_name) && $not_currently_running_script ) ? $file_name : false;
         
         if(  $located_file === false && !empty($file_name) ) {
             
@@ -342,12 +347,12 @@ class Renderer
             foreach ( $this->possible_paths_to_file as $possible_path ) {
 
                 $potential_file =  
-                    rtrim($possible_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $file_name ;
+                    rtrim($possible_path, $ds) . $ds . $file_name ;
 
                 if( file_exists($potential_file) && is_file($potential_file) ) {
 
                     //found the file
-                    $located_file = rtrim($possible_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $file_name;
+                    $located_file = rtrim($possible_path, $ds) . $ds . $file_name;
                     break;
                 }
             }
