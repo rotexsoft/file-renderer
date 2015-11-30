@@ -12,34 +12,58 @@ class Renderer
 {
     /**
      * 
-     * Path(s) to directorie(s) containing (*.php) files to be rendered via this class.
+     * Path(s) to directorie(s) containing (*.php) files to be rendered via this 
+     * class. 
+     * 
+     * These paths will be searched when rendering a file with an instance of 
+     * this class.
      *
      * @var string|array
      *  
      */
-    protected $possible_paths_to_file;
+    protected $file_paths;
 
     /**
      *
-     * @var string name of php file to be rendered. If path is not prepended to the
-     *             name of the file, the file will be searched for in the list of
-     *             paths registered in $this->possible_paths_to_file
-     *  
+     * Name of php a file to be rendered. 
+     * 
+     * If path is not prepended to the name of the file, the file will be 
+     * searched for in the list of paths registered in $this->file_paths.
+     * 
+     * It could be left blank (which means that a file name must supplied when
+     * calling any of the render* methods).
+     * 
+     * @var string 
+     * 
      */
     protected $file_name;
     
     /**
+     * 
+     * An array of data to be extracted into variables for use in the php file 
+     * to be rendered via an instance of this class.
      *
-     * @var array an array of data to be extracted into variables for use in the 
-     *            php file to be rendered via an instance of this class 
+     * @var array  
+     *             
      */
     protected $data;
 
     /**
      * 
+     * @param string $file_name name of a php file to be rendered. If path is not 
+     *                          prepended to the name of the file, the file will 
+     *                          be searched for in the list of paths registered 
+     *                          in $this->file_paths. It can be 
+     *                          left blank.
+     * 
+     * @param array $data An array of data to be extracted into variables for 
+     *                    use in the php fileto be rendered via an instance of 
+     *                    this class.
+     * 
      * @param array $file_paths An array of path(s) to directorie(s) containing 
      *                          (*.php) files to be rendered via this class.
      * 
+     * @throws \InvalidArgumentException
      */
     public function __construct($file_name='', array $data = array(), array $file_paths = array() ) {
         
@@ -54,7 +78,7 @@ class Renderer
         
         $this->data = $data;
         $this->file_name = $file_name;
-        $this->possible_paths_to_file = $file_paths;
+        $this->file_paths = $file_paths;
     }
     
     public function __set($name, $value) {
@@ -99,34 +123,34 @@ class Renderer
 
     /**
      * 
-     * Returns the value of the `possible_paths_to_file` property of an instance
+     * Returns the value of the `file_paths` property of an instance
      * of this class.
      * 
      * @return array the array of path(s) to directorie(s) containing (*.php) 
      *               files to be rendered via this class.
      * 
      */
-    public function getPossiblePathsToFile() {
+    public function getFilePaths() {
         
-        return $this->possible_paths_to_file;
+        return $this->file_paths;
     }
     
     /**
      * 
-     * Add a path as the last element of the array of path(s) to directorie(s) 
-     * containing (*.php) files to be rendered via this class.
+     * Add a path to the end of the array of path(s) to directorie(s) containing 
+     * (*.php) files to be rendered via this class.
      * 
      * @param string $path
      * 
      */
     public function appendPath( $path ) {
         
-        $this->possible_paths_to_file[] = $path;
+        $this->file_paths[] = $path;
     }
 
     /**
      * 
-     * Add a path as the first element of the array of path(s) to directorie(s) 
+     * Add a path to the beginning of the array of path(s) to directorie(s) 
      * containing (*.php) files to be rendered via this class.
      * 
      * @param string $path
@@ -134,7 +158,7 @@ class Renderer
      */
     public function prependPath( $path ) {
         
-        array_unshift($this->possible_paths_to_file, $path);
+        array_unshift($this->file_paths, $path);
     }
     
     /**
@@ -151,9 +175,9 @@ class Renderer
             
             while ( 
                 $number_of_paths_2_remove > 0  
-                && count($this->possible_paths_to_file) > 0 
+                && count($this->file_paths) > 0 
             ) {
-                array_shift($this->possible_paths_to_file);
+                array_shift($this->file_paths);
                 $number_of_paths_2_remove--;
             }
         }
@@ -173,9 +197,9 @@ class Renderer
             
             while ( 
                 $number_of_paths_2_remove > 0  
-                && count($this->possible_paths_to_file) > 0 
+                && count($this->file_paths) > 0 
             ) {
-                array_pop($this->possible_paths_to_file);
+                array_pop($this->file_paths);
                 $number_of_paths_2_remove--;
             }
         }
@@ -191,7 +215,7 @@ class Renderer
      *                          the output is returned. If the directory path is 
      *                          not included, the file will be searched for from 
      *                          the list of directories registered in 
-     *                          $this->possible_paths_to_file.
+     *                          $this->file_paths.
      *                          
      *                          If $file_name still can't be found or is an empty 
      *                          string or is not supplied, this method tries to 
@@ -211,9 +235,10 @@ class Renderer
 
         if( !is_string($file_name) ) {
             
-            $msg = "ERROR: ". get_class($this) ."::".__FUNCTION__."(...) expects first parameter (the name of the php file to be rendered) to be a `string`." 
-                   . PHP_EOL .'`'. $this->getVarType($file_name, true).'` was supplied with the value below:'
-                   . PHP_EOL . var_export($file_name, true). PHP_EOL ;
+            $msg = "ERROR: ". get_class($this) ."::".__FUNCTION__."(..) expects"
+                 . " first parameter (the name of the php file to be rendered) to be a `string`." 
+                 . PHP_EOL .'`'. $this->getVarType($file_name, true).'` was supplied with the value below:'
+                 . PHP_EOL . var_export($file_name, true). PHP_EOL ;
             
             throw new \InvalidArgumentException($msg);
         }
@@ -222,18 +247,18 @@ class Renderer
         
         if( $located_file === false ) {
             
-            //file name supplied to this method was not found
-            //try to see if file name supplied when this class was instantiated
-            //can be found
+            //File name supplied to this method was not found. 
+            //Try to see if the file name supplied when this 
+            //class was instantiated can be found.
             $located_file = $this->locateFile($this->file_name);
         }
         
         if( $located_file === false ) {
             
-            //the file does not exist in any of the registered possible paths
+            //The file does not exist in any of the registered possible paths
             $msg = "ERROR: Could not load the file named `$file_name` "
                 . "from any of the paths below:"
-                . PHP_EOL . implode(PHP_EOL, $this->possible_paths_to_file) . PHP_EOL
+                . PHP_EOL . implode(PHP_EOL, $this->file_paths) . PHP_EOL
                 . PHP_EOL . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                 . PHP_EOL;
             
@@ -289,7 +314,7 @@ class Renderer
      *                          the output is returned. If the directory path is 
      *                          not included, the file will be searched for from 
      *                          the list of directories registered in 
-     *                          $this->possible_paths_to_file.
+     *                          $this->file_paths.
      *                          
      *                          If $file_name still can't be found or is an empty 
      *                          string or is not supplied, this method tries to 
@@ -312,10 +337,20 @@ class Renderer
     
     /**
      * 
-     * @param string $file_name name of file to be located in the registered 
-     *                          possible paths ($this->possible_paths_to_file)
+     * @param string $file_name Name of file (with / without the directory path) 
+     *                          to be located in the registered possible paths 
+     *                          ($this->file_paths).
      * 
-     * @return boolean|string
+     * @return boolean|string If the directory path is included in $file_name 
+     *                        & the file exists, this method returns $file_name.
+     * 
+     *                        Else it searches for $file_name within the 
+     *                        directories registered in $this->file_paths and 
+     *                        returns $file_name prepended with the first directory 
+     *                        name in $this->file_paths in which $file_name exists.
+     * 
+     *                        Finally, if $file_name cannot be found in any of 
+     *                        the registered paths, false is returned.
      * 
      * @throws \InvalidArgumentException
      * 
@@ -331,20 +366,24 @@ class Renderer
             throw new \InvalidArgumentException($msg);
         }
         
-        //check if the file actually exists as is
         $ds = DIRECTORY_SEPARATOR;
         
-        //prevent re-including currently running script
-        $not_currently_running_script = !file_exists(getcwd(). $ds . ltrim(ltrim($file_name,'\\'),'/'));
+        //Check to see if a path was prepended to the file name
+        $file_name_contains_path = 
+                            strlen( basename($file_name) ) < strlen($file_name);
 
+        //Check if file actually exists as is (if a path was prepended to it).
         $located_file = 
-            ( !empty($file_name) && file_exists($file_name) && is_file($file_name) && $not_currently_running_script ) ? $file_name : false;
+            ( 
+                !empty($file_name) && file_exists($file_name) 
+                && is_file($file_name) && $file_name_contains_path 
+            ) ? $file_name : false;
         
         if(  $located_file === false && !empty($file_name) ) {
             
-            //$file_name is not an existent file on its own. Search for it in 
-            //the list of paths registered in $this->possible_paths_to_file.
-            foreach ( $this->possible_paths_to_file as $possible_path ) {
+            //$file_name is not an existent file on its own. 
+            //Search for it in the list of paths registered in $this->file_paths.
+            foreach ( $this->file_paths as $possible_path ) {
 
                 $potential_file =  
                     rtrim($possible_path, $ds) . $ds . $file_name ;
