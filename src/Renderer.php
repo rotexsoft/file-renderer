@@ -386,7 +386,7 @@ class Renderer
             foreach ( $this->file_paths as $possible_path ) {
 
                 $potential_file =  
-                    rtrim($possible_path, $ds) . $ds . $file_name ;
+                    rtrim($possible_path, $ds) . $ds . $file_name;
 
                 if( file_exists($potential_file) && is_file($potential_file) ) {
 
