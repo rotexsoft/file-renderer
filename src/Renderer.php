@@ -427,7 +427,7 @@ class Renderer
             $trimed_path = rtrim($trimed_path, '\\');
         }
 
-        return $trimed_path . DIRECTORY_SEPARATOR;
+        return $trimed_path;
     }
     
     /**
