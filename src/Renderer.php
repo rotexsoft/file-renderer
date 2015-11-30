@@ -386,12 +386,12 @@ class Renderer
             foreach ( $this->file_paths as $possible_path ) {
 
                 $potential_file =  
-                    rtrim($possible_path, $ds) . $ds . $file_name;
+                    $this->normalizeFolderPath($possible_path) . $ds . $file_name;
 
                 if( file_exists($potential_file) && is_file($potential_file) ) {
 
                     //found the file
-                    $located_file = rtrim($possible_path, $ds) . $ds . $file_name;
+                    $located_file = $potential_file;
                     break;
                 }
             }
@@ -399,6 +399,35 @@ class Renderer
         
         //file not found
         return $located_file;
+    }
+    
+    /**
+     * 
+     * Trims off the right-most character at the end of the string `$file_path` 
+     * if it is a directory separator charater (ie. '\' or '/').
+     * 
+     * @param string $file_path
+     * 
+     * @return string `$file_path` as is if right-most character at the end of the 
+     *                string is not a directory separator charater (ie. '\' or '/').
+     *                If the right-most character at the end of the string `$file_path`
+     *                is a directory separator charater (ie. '\' or '/'), return
+     *                `$file_path` without the right-most directory separator charater
+     *                at the end.
+     */
+    protected function normalizeFolderPath($file_path) {
+
+        //trim right-most linux style path separator if any
+        $trimed_path = rtrim($file_path, '/');
+
+        if( strlen($trimed_path) === strlen($file_path) ) {
+
+            //there was no right-most linux path separator
+            //try to trim right-most windows style path separator if any
+            $trimed_path = rtrim($trimed_path, '\\');
+        }
+
+        return $trimed_path . DIRECTORY_SEPARATOR;
     }
     
     /**
