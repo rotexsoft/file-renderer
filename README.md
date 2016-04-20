@@ -1,4 +1,4 @@
-##### A tool for rendering PHP files that are meant to generate output. Easy to use as a view component in an MVC framework. https://travis-ci.org/rotexsoft/leanorm/builds ![Build Status](https://travis-ci.org/rotexsoft/leanorm.svg?branch=master)
+##### A tool for rendering PHP files that are meant to generate output. Easy to use as a view component in an MVC framework. https://travis-ci.org/rotexsoft/file-renderer ![Build Status](https://travis-ci.org/rotexsoft/file-renderer.svg?branch=master)
 
 WILL RESUME ACTIVE DEVELOPMENT IN JULY 2016.
 
