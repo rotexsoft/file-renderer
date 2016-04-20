@@ -1,8 +1,6 @@
 ##### A tool for rendering PHP files that are meant to generate output. Easy to use as a view component in an MVC framework. 
 
-![Build Status](https://travis-ci.org/rotexsoft/file-renderer.svg?branch=master&style=flat-square)
-
-https://travis-ci.org/rotexsoft/file-renderer 
+![Build Status](https://travis-ci.org/rotexsoft/file-renderer.svg?branch=master&style=flat-square) &nbsp; https://travis-ci.org/rotexsoft/file-renderer 
 
 This is a simple, elegant and flexible tool that can be used to render php files.
 
