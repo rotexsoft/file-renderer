@@ -684,7 +684,7 @@ class Renderer
     
     /**
      * 
-     * Escapes values in an array. 
+     * Escapes values in an array and all its sub-arrays. 
      *                          
      * @param array $data Array of data to be escaped.
      * 
@@ -794,13 +794,13 @@ class Renderer
                 $method = 'escapeJs';
             }
             
-            if( !empty($method) ) {
+            if( !empty($method) || is_array($data[$key]) ) {
                 
-                if( is_array($value) ) {
+                if( is_array($data[$key]) ) {
                     
                     // recursively escape sub-array
                     $this->escapeData(
-                                $value, 
+                                $data[$key], 
                                 $final_encoding, 
                                 $html_escaper_keys, 
                                 $html_attr_escaper_keys, 
