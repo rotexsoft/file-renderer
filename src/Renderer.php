@@ -1,5 +1,5 @@
 <?php
-namespace Rotexsoft;
+namespace Rotexsoft\FileRenderer;
 
 /**
  * 
@@ -47,6 +47,114 @@ class Renderer
      *             
      */
     protected $data;
+    
+    /**
+     * 
+     * An array of keys in $this->data whose values (only strings) will be individually escaped using 
+     * Zend\Escaper\Escaper::escapeHtml($string).
+     * 
+     * Set this for keys in $this->data with values (only strings) like html tags and the likes (anything
+     * you would normally escape via htmlspecialchars).
+     * 
+     * @var array
+     * 
+     */
+    protected $html_escaper_keys = array();
+    
+    /**
+     * 
+     * An array of keys in $this->data whose values (only strings) will be individually escaped using 
+     * Zend\Escaper\Escaper::escapeHtmlAttr($string).
+     * 
+     * Set this for keys in $this->data with values (only strings) that will be rendered as attributes
+     * within html tags.
+     * 
+     * @var array
+     * 
+     */
+    protected $html_attr_escaper_keys = array();
+    
+    /**
+     * 
+     * An array of keys in $this->data whose values (only strings) will be individually escaped using 
+     * Zend\Escaper\Escaper::escapeCss($string).
+     * 
+     * Set this for keys in $this->data with values (only strings) that will be rendered inside css style 
+     * tags or inside the style attribute of any html element. 
+     * 
+     * CSS escaping via Zend\Escaper\Escaper::escapeCss($string) excludes only basic 
+     * alphanumeric characters and escapes all other characters into valid CSS 
+     * hexadecimal escapes.
+     * 
+     * @var array
+     * 
+     */
+    protected $css_escaper_keys = array();
+    
+    /**
+     * 
+     * An array of keys in $this->data whose values (only strings) will be individually escaped using 
+     * Zend\Escaper\Escaper::escapeJs($string).
+     * 
+     * Set this for keys in $this->data with values (only strings) that will be rendered as javascript 
+     * data values (eg. javascript string literals).
+     * 
+     * Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies to all 
+     * literal strings & digits. It is not possible to safely escape other Javascript 
+     * markup.
+     * 
+     * @var array
+     * 
+     */
+    protected $js_escaper_keys = array();
+    
+    /**
+     * 
+     * Encoding to be used for escaping data values in $this->data, based on the contents
+     * of $this->html_escaper_keys, $this->html_attr_escaper_keys, $this->css_escaper_keys 
+     * and $this->js_escaper_keys. The default value is 'utf-8'.
+     *      
+     * Below is a list of supported encodings:
+     *      
+     *      'iso-8859-1',
+     *      'iso8859-1',
+     *      'iso-8859-5',
+     *      'iso8859-5',
+     *      'iso-8859-15',
+     *      'iso8859-15',
+     *      'utf-8',
+     *      'cp866',
+     *      'ibm866',
+     *      '866',
+     *      'cp1251',
+     *      'windows-1251',
+     *      'win-1251',
+     *      '1251',
+     *      'cp1252',
+     *      'windows-1252',
+     *      '1252',
+     *      'koi8-r',
+     *      'koi8-ru',
+     *      'koi8r',
+     *      'big5',
+     *      '950',
+     *      'gb2312',
+     *      '936',
+     *      'big5-hkscs',
+     *      'shift_jis',
+     *      'sjis',
+     *      'sjis-win',
+     *      'cp932',
+     *      '932',
+     *      'euc-jp',
+     *      'eucjp',
+     *      'eucjp-win',
+     *      'macroman'
+     * 
+     * @var string
+     * 
+     */
+    protected $escape_encoding = 'utf-8';
 
     /**
      * 
@@ -63,10 +171,80 @@ class Renderer
      * @param array $file_paths An array of path(s) to directorie(s) containing 
      *                          (*.php) files to be rendered via this class.
      * 
+     * @param string $escape_encoding Encoding to be used for escaping data values in $this->data.
+     *                                Below is a list of supported encodings:  
+     *                                  'iso-8859-1',
+     *                                  'iso8859-1',
+     *                                  'iso-8859-5',
+     *                                  'iso8859-5',
+     *                                  'iso-8859-15',
+     *                                  'iso8859-15',
+     *                                  'utf-8',
+     *                                  'cp866',
+     *                                  'ibm866',
+     *                                  '866',
+     *                                  'cp1251',
+     *                                  'windows-1251',
+     *                                  'win-1251',
+     *                                  '1251',
+     *                                  'cp1252',
+     *                                  'windows-1252',
+     *                                  '1252',
+     *                                  'koi8-r',
+     *                                  'koi8-ru',
+     *                                  'koi8r',
+     *                                  'big5',
+     *                                  '950',
+     *                                  'gb2312',
+     *                                  '936',
+     *                                  'big5-hkscs',
+     *                                  'shift_jis',
+     *                                  'sjis',
+     *                                  'sjis-win',
+     *                                  'cp932',
+     *                                  '932',
+     *                                  'euc-jp',
+     *                                  'eucjp',
+     *                                  'eucjp-win',
+     *                                  'macroman'
+     *                                  
+     * @param array $html_escaper_keys An array of keys in $this->data whose values (only strings) will be individually 
+     *                                 escaped using Zend\Escaper\Escaper::escapeHtml($string). Set this 
+     *                                 for keys in $this->data with values (only strings) like html tags and the likes 
+     *                                 (anything you would normally escape via htmlspecialchars).
+     * 
+     * @param array $html_attr_escaper_keys An array of keys in $this->data whose values (only strings) will be 
+     *                                      individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string). 
+     *                                      Set this for keys in $this->data with values (only strings) that will be rendered as 
+     *                                      attributes within html tags.
+     * 
+     * @param array $css_escaper_keys An array of keys in $this->data whose values (only strings) will be individually 
+     *                                escaped using Zend\Escaper\Escaper::escapeCss($string). Set this 
+     *                                for keys in $this->data with values (only strings) that will be rendered inside 
+     *                                css style tags or inside the style attribute of any html element.
+     *                                CSS escaping via Zend\Escaper\Escaper::escapeCss($string) excludes 
+     *                                only basic alphanumeric characters and escapes all other characters 
+     *                                into valid CSS hexadecimal escapes.
+     * 
+     * @param array $js_escaper_keys An array of keys in $this->data whose values (only strings) will be individually 
+     *                               escaped using Zend\Escaper\Escaper::escapeJs($string). Set this for 
+     *                               keys in $this->data with values (only strings) that will be rendered as javascript 
+     *                               data values (eg. javascript string literals). Javascript escaping via 
+     *                               Zend\Escaper\Escaper::escapeJs($string) applies to all literal strings 
+     *                               and digits. It is not possible to safely escape other Javascript markup.
+     * 
      * @throws \InvalidArgumentException
      */
-    public function __construct($file_name='', array $data = array(), array $file_paths = array() ) {
-        
+    public function __construct(
+            $file_name='', 
+            array $data = array(), 
+            array $file_paths = array(), 
+            $escape_encoding = 'utf-8',
+            $html_escaper_keys = array(),
+            $html_attr_escaper_keys = array(),
+            $css_escaper_keys = array(),
+            $js_escaper_keys = array()
+    ) {
         if( !is_string($file_name) ) {
             
             $msg = "ERROR: ". get_class($this) ."::__construct(...) expects first parameter (the name of the php file to be rendered) to be a `string`." 
@@ -79,6 +257,11 @@ class Renderer
         $this->data = $data;
         $this->file_name = $file_name;
         $this->file_paths = $file_paths;
+        $this->escape_encoding = $escape_encoding;
+        $this->js_escaper_keys = $js_escaper_keys;
+        $this->css_escaper_keys = $css_escaper_keys;
+        $this->html_escaper_keys = $html_escaper_keys;
+        $this->html_attr_escaper_keys = $html_attr_escaper_keys;
     }
     
     public function __set($name, $value) {
@@ -226,13 +409,83 @@ class Renderer
      *                    It is combined together with $this->data. It will
      *                    overwrite item(s) with the same key in $this->data.
      * 
+     * @param string $escape_encoding Encoding to be used for escaping data values in $data and $this->data.
+     *                                Below is a list of supported encodings:  
+     *                                  'iso-8859-1',
+     *                                  'iso8859-1',
+     *                                  'iso-8859-5',
+     *                                  'iso8859-5',
+     *                                  'iso-8859-15',
+     *                                  'iso8859-15',
+     *                                  'utf-8',
+     *                                  'cp866',
+     *                                  'ibm866',
+     *                                  '866',
+     *                                  'cp1251',
+     *                                  'windows-1251',
+     *                                  'win-1251',
+     *                                  '1251',
+     *                                  'cp1252',
+     *                                  'windows-1252',
+     *                                  '1252',
+     *                                  'koi8-r',
+     *                                  'koi8-ru',
+     *                                  'koi8r',
+     *                                  'big5',
+     *                                  '950',
+     *                                  'gb2312',
+     *                                  '936',
+     *                                  'big5-hkscs',
+     *                                  'shift_jis',
+     *                                  'sjis',
+     *                                  'sjis-win',
+     *                                  'cp932',
+     *                                  '932',
+     *                                  'euc-jp',
+     *                                  'eucjp',
+     *                                  'eucjp-win',
+     *                                  'macroman'
+     *                                  
+     * @param array $html_escaper_keys An array of keys in $data and $this->data whose values (only strings) will be 
+     *                                 individually escaped using Zend\Escaper\Escaper::escapeHtml($string). 
+     *                                 Set this for keys in $data and $this->data with values (only strings) like html tags 
+     *                                 and the likes (anything you would normally escape via htmlspecialchars).
+     * 
+     * @param array $html_attr_escaper_keys An array of keys in $data and $this->data whose values (only strings) will be 
+     *                                      individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string). 
+     *                                      Set this for keys in $data and $this->data with values (only strings) that will be rendered 
+     *                                      as attributes within html tags.
+     * 
+     * @param array $css_escaper_keys An array of keys in $data and $this->data whose values (only strings) will be 
+     *                                individually escaped using Zend\Escaper\Escaper::escapeCss($string). 
+     *                                Set this for keys in $data and $this->data with values (only strings) that will be 
+     *                                rendered inside css style tags or inside the style attribute of any 
+     *                                html element. CSS escaping via Zend\Escaper\Escaper::escapeCss($string) 
+     *                                excludes only basic alphanumeric characters and escapes all other 
+     *                                characters into valid CSS hexadecimal escapes.
+     * 
+     * @param array $js_escaper_keys An array of keys in $data and $this->data whose values (only strings) will be 
+     *                               individually escaped using Zend\Escaper\Escaper::escapeJs($string).
+     *                               Set this for keys in $data and $this->data with values (only strings) that will be 
+     *                               rendered as javascript data values (eg. javascript string literals). 
+     *                               Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies 
+     *                               to all literal strings and digits. It is not possible to safely escape 
+     *                               other Javascript markup.
+     * 
      * @return string the output that is generated when $file_name or $this->file_name is included
      * 
      * @throws \Slim3Mvc\FileNotFoundException
      * 
      */
-    public function renderToString( $file_name='', array $data = array() ) {
-
+    public function renderToString(
+        $file_name='',
+        array $data = array(),
+        $escape_encoding = 'utf-8',
+        $html_escaper_keys = array(),
+        $html_attr_escaper_keys = array(),
+        $css_escaper_keys = array(),
+        $js_escaper_keys = array() 
+    ) {
         if( !is_string($file_name) ) {
             
             $msg = "ERROR: ". get_class($this) ."::".__FUNCTION__."(..) expects"
@@ -301,7 +554,19 @@ class Renderer
             return ob_get_clean();
         };
         
-        return $render_view($located_file, array_merge($this->data, $data));
+        $merged_data = array_merge($this->data, $data);
+
+        //escape data
+        $this->escapeData(
+                    $merged_data, 
+                    $escape_encoding, 
+                    array_merge($this->html_escaper_keys, $html_escaper_keys), 
+                    array_merge($this->html_attr_escaper_keys, $html_attr_escaper_keys), 
+                    array_merge($this->css_escaper_keys, $css_escaper_keys), 
+                    array_merge($this->js_escaper_keys, $js_escaper_keys)
+                );
+        
+        return $render_view($located_file, $merged_data);
     }
     
     /**
@@ -325,14 +590,229 @@ class Renderer
      *                    It is combined together with $this->data. It will
      *                    overwrite item(s) with the same key in $this->data.
      * 
+     * @param string $escape_encoding Encoding to be used for escaping data values in $data and $this->data.
+     *                                Below is a list of supported encodings:  
+     *                                  'iso-8859-1',
+     *                                  'iso8859-1',
+     *                                  'iso-8859-5',
+     *                                  'iso8859-5',
+     *                                  'iso-8859-15',
+     *                                  'iso8859-15',
+     *                                  'utf-8',
+     *                                  'cp866',
+     *                                  'ibm866',
+     *                                  '866',
+     *                                  'cp1251',
+     *                                  'windows-1251',
+     *                                  'win-1251',
+     *                                  '1251',
+     *                                  'cp1252',
+     *                                  'windows-1252',
+     *                                  '1252',
+     *                                  'koi8-r',
+     *                                  'koi8-ru',
+     *                                  'koi8r',
+     *                                  'big5',
+     *                                  '950',
+     *                                  'gb2312',
+     *                                  '936',
+     *                                  'big5-hkscs',
+     *                                  'shift_jis',
+     *                                  'sjis',
+     *                                  'sjis-win',
+     *                                  'cp932',
+     *                                  '932',
+     *                                  'euc-jp',
+     *                                  'eucjp',
+     *                                  'eucjp-win',
+     *                                  'macroman'
+     *                                  
+     * @param array $html_escaper_keys An array of keys in $data and $this->data whose values (only strings) will be 
+     *                                 individually escaped using Zend\Escaper\Escaper::escapeHtml($string). 
+     *                                 Set this for keys in $data and $this->data with values (only strings) like html tags 
+     *                                 and the likes (anything you would normally escape via htmlspecialchars).
+     * 
+     * @param array $html_attr_escaper_keys An array of keys in $data and $this->data whose values (only strings) will be 
+     *                                      individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string). 
+     *                                      Set this for keys in $data and $this->data with values (only strings) that will be rendered 
+     *                                      as attributes within html tags.
+     * 
+     * @param array $css_escaper_keys An array of keys in $data and $this->data whose values (only strings) will be 
+     *                                individually escaped using Zend\Escaper\Escaper::escapeCss($string). 
+     *                                Set this for keys in $data and $this->data with values (only strings) that will be 
+     *                                rendered inside css style tags or inside the style attribute of any 
+     *                                html element. CSS escaping via Zend\Escaper\Escaper::escapeCss($string) 
+     *                                excludes only basic alphanumeric characters and escapes all other 
+     *                                characters into valid CSS hexadecimal escapes.
+     * 
+     * @param array $js_escaper_keys An array of keys in $data and $this->data whose values (only strings) will be 
+     *                               individually escaped using Zend\Escaper\Escaper::escapeJs($string).
+     *                               Set this for keys in $data and $this->data with values (only strings) that will be 
+     *                               rendered as javascript data values (eg. javascript string literals). 
+     *                               Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies 
+     *                               to all literal strings and digits. It is not possible to safely escape 
+     *                               other Javascript markup.
+     * 
      * @return void
      * 
      * @throws \Slim3Mvc\FileNotFoundException
      * 
      */
-    public function renderToScreen($file_name, array $data = array()) {
+    public function renderToScreen(
+        $file_name, 
+        array $data = array(),
+        $escape_encoding = 'utf-8',
+        $html_escaper_keys = array(),
+        $html_attr_escaper_keys = array(),
+        $css_escaper_keys = array(),
+        $js_escaper_keys = array()
+    ) {
+        echo $this->renderToString(
+                        $file_name, 
+                        $data, 
+                        $escape_encoding, 
+                        $html_escaper_keys, 
+                        $html_attr_escaper_keys, 
+                        $css_escaper_keys, 
+                        $js_escaper_keys
+                    );
+    }
+    
+    /**
+     * 
+     * Escapes values in an array. 
+     *                          
+     * @param array $data Array of data to be escaped.
+     * 
+     * @param string $escape_encoding Encoding to be used for escaping data values in $data and $this->data.
+     *                                Below is a list of supported encodings:  
+     *                                  'iso-8859-1',
+     *                                  'iso8859-1',
+     *                                  'iso-8859-5',
+     *                                  'iso8859-5',
+     *                                  'iso-8859-15',
+     *                                  'iso8859-15',
+     *                                  'utf-8',
+     *                                  'cp866',
+     *                                  'ibm866',
+     *                                  '866',
+     *                                  'cp1251',
+     *                                  'windows-1251',
+     *                                  'win-1251',
+     *                                  '1251',
+     *                                  'cp1252',
+     *                                  'windows-1252',
+     *                                  '1252',
+     *                                  'koi8-r',
+     *                                  'koi8-ru',
+     *                                  'koi8r',
+     *                                  'big5',
+     *                                  '950',
+     *                                  'gb2312',
+     *                                  '936',
+     *                                  'big5-hkscs',
+     *                                  'shift_jis',
+     *                                  'sjis',
+     *                                  'sjis-win',
+     *                                  'cp932',
+     *                                  '932',
+     *                                  'euc-jp',
+     *                                  'eucjp',
+     *                                  'eucjp-win',
+     *                                  'macroman'
+     *                                  
+     * @param array $html_escaper_keys An array of keys in $data and $this->data whose values (only strings) will be 
+     *                                 individually escaped using Zend\Escaper\Escaper::escapeHtml($string). 
+     *                                 Set this for keys in $data and $this->data with values (only strings) like html tags 
+     *                                 and the likes (anything you would normally escape via htmlspecialchars).
+     * 
+     * @param array $html_attr_escaper_keys An array of keys in $data and $this->data whose values (only strings) will be 
+     *                                      individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string). 
+     *                                      Set this for keys in $data and $this->data with values (only strings) that will be rendered 
+     *                                      as attributes within html tags.
+     * 
+     * @param array $css_escaper_keys An array of keys in $data and $this->data whose values (only strings) will be 
+     *                                individually escaped using Zend\Escaper\Escaper::escapeCss($string). 
+     *                                Set this for keys in $data and $this->data with values (only strings) that will be 
+     *                                rendered inside css style tags or inside the style attribute of any 
+     *                                html element. CSS escaping via Zend\Escaper\Escaper::escapeCss($string) 
+     *                                excludes only basic alphanumeric characters and escapes all other 
+     *                                characters into valid CSS hexadecimal escapes.
+     * 
+     * @param array $js_escaper_keys An array of keys in $data and $this->data whose values (only strings) will be 
+     *                               individually escaped using Zend\Escaper\Escaper::escapeJs($string).
+     *                               Set this for keys in $data and $this->data with values (only strings) that will be 
+     *                               rendered as javascript data values (eg. javascript string literals). 
+     *                               Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies 
+     *                               to all literal strings and digits. It is not possible to safely escape 
+     *                               other Javascript markup.
+     * 
+     * @param \Zend\Escaper\Escaper $escaper An optional escaper object that will be used for escaping. 
+     * 
+     * @return void
+     * 
+     * @throws \Slim3Mvc\FileNotFoundException
+     * 
+     */
+    protected function escapeData(
+        array &$data,
+        $escape_encoding = 'utf-8',
+        $html_escaper_keys = array(),
+        $html_attr_escaper_keys = array(),
+        $css_escaper_keys = array(),
+        $js_escaper_keys = array(),
+        \Zend\Escaper\Escaper $escaper = null
+    ) {
+        $final_encoding = (empty($escape_encoding)) 
+                            ? ((empty($this->escape_encoding))? 'utf-8' : $this->escape_encoding) 
+                            : $escape_encoding;
         
-        echo $this->renderToString($file_name, $data);
+        if( is_null($escaper) ) { $escaper = new \Zend\Escaper\Escaper($final_encoding); }
+        
+        foreach( $data as $key => $value ) {
+         
+            $method = '';
+            
+            if( in_array($key, $html_escaper_keys) ) {
+                
+                $method = 'escapeHtml';
+                
+            } else if( in_array($key, $html_attr_escaper_keys) ) {
+                
+                $method = 'escapeHtmlAttr';
+                
+            } else if( in_array($key, $css_escaper_keys) ) {
+                
+                $method = 'escapeCss';
+                
+            } else if( in_array($key, $js_escaper_keys) ) {
+                
+                $method = 'escapeJs';
+            }
+            
+            if( !empty($method) ) {
+                
+                if( is_array($value) ) {
+                    
+                    // recursively escape sub-array
+                    $this->escapeData(
+                                $value, 
+                                $final_encoding, 
+                                $html_escaper_keys, 
+                                $html_attr_escaper_keys, 
+                                $css_escaper_keys, 
+                                $js_escaper_keys,
+                                $escaper // pass already instantiated escaper
+                            );
+                    
+                } else if( is_string($value) ) {
+                 
+                    // escape the value
+                    $data[$key] = $escaper->$method($value);
+                    
+                } //if( is_array($value) ) ... else if( is_string($value) )
+            } // if( !empty($method) )
+        } // foreach( $data as $key => $value )
     }
     
     /**
@@ -369,8 +849,7 @@ class Renderer
         $ds = DIRECTORY_SEPARATOR;
         
         //Check to see if a path was prepended to the file name
-        $file_name_contains_path = 
-                            strlen( basename($file_name) ) < strlen($file_name);
+        $file_name_contains_path = strlen( basename($file_name) ) < strlen($file_name);
 
         //Check if file actually exists as is (if a path was prepended to it).
         $located_file = 
