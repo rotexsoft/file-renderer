@@ -11,4 +11,5 @@ You do not need to learn any new syntax (or markup / templating language) in ord
 
 Users of this package are still responsible for making sure that they validate or sanitize data coming into their application(s) via user input 
 (eg. via html forms) with tools like  [Respect\Validation](https://github.com/Respect/Validation), [Valitron](https://github.com/vlucas/valitron),
-[Upload](https://github.com/brandonsavage/Upload), [Volan](https://github.com/serkin/Volan), [Filterus](https://github.com/ircmaxell/filterus), etc.
+[Upload](https://github.com/brandonsavage/Upload), [Volan](https://github.com/serkin/Volan), [Sirius Validation](https://github.com/siriusphp/validation), 
+[Filterus](https://github.com/ircmaxell/filterus), etc.
