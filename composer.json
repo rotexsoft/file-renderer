@@ -19,17 +19,20 @@
     },
     "require-dev": {
         "php": ">=5.3.0",
-        "phpunit/phpunit": "^4.7",
-        "devster/ubench": "^1.1",
-        "digitalnature/php-ref": "^1.0"
+        "phpunit/phpunit": "^4.7"
     },
     "autoload": {
         "classmap": ["src/"],
         "psr-4": {
-            "Rotexsoft\\FileRenderer\\": "src/"
+            "Rotexsoft\\FileRenderer\\": "src/",
+            "Rotexsoft\\FileRenderer\\Tests\\": "tests/"
         }
     },
     "autoload-dev": {
-        "classmap": ["src/", "tests/"]
+        "classmap": ["src/", "tests/"],
+        "psr-4": {
+            "Rotexsoft\\FileRenderer\\": "src/",
+            "Rotexsoft\\FileRenderer\\Tests\\": "tests/"
+        }
     }
 }

@@ -240,10 +240,10 @@ class Renderer
             array $data = array(), 
             array $file_paths = array(), 
             $escape_encoding = 'utf-8',
-            $html_escaper_keys = array(),
-            $html_attr_escaper_keys = array(),
-            $css_escaper_keys = array(),
-            $js_escaper_keys = array()
+            array $html_escaper_keys = array(),
+            array $html_attr_escaper_keys = array(),
+            array $css_escaper_keys = array(),
+            array $js_escaper_keys = array()
     ) {
         if( !is_string($file_name) ) {
             
@@ -278,7 +278,7 @@ class Renderer
         } else {
 
             $msg = "ERROR: Item with key '$name' does not exist in " 
-                   . get_class($this) .'.'. PHP_EOL . $this->__toString();
+                   . get_class($this) .'.'. PHP_EOL . var_export($this, true);
             
             throw new \Exception($msg);
         }
@@ -356,6 +356,8 @@ class Renderer
         
         if( is_numeric($number_of_paths_2_remove) ) {
             
+            $number_of_paths_2_remove = (int) $number_of_paths_2_remove;
+            
             while ( 
                 $number_of_paths_2_remove > 0  
                 && count($this->file_paths) > 0 
@@ -377,6 +379,8 @@ class Renderer
     public function removeLastNPaths($number_of_paths_2_remove) {
         
         if( is_numeric($number_of_paths_2_remove) ) {
+            
+             $number_of_paths_2_remove = (int) $number_of_paths_2_remove;
             
             while ( 
                 $number_of_paths_2_remove > 0  
@@ -474,17 +478,17 @@ class Renderer
      * 
      * @return string the output that is generated when $file_name or $this->file_name is included
      * 
-     * @throws \Slim3Mvc\FileNotFoundException
+     * @throws \Rotexsoft\FileRenderer\FileNotFoundException
      * 
      */
     public function renderToString(
         $file_name='',
         array $data = array(),
         $escape_encoding = 'utf-8',
-        $html_escaper_keys = array(),
-        $html_attr_escaper_keys = array(),
-        $css_escaper_keys = array(),
-        $js_escaper_keys = array() 
+        array $html_escaper_keys = array(),
+        array $html_attr_escaper_keys = array(),
+        array $css_escaper_keys = array(),
+        array $js_escaper_keys = array() 
     ) {
         if( !is_string($file_name) ) {
             
@@ -655,17 +659,17 @@ class Renderer
      * 
      * @return void
      * 
-     * @throws \Slim3Mvc\FileNotFoundException
+     * @throws \Rotexsoft\FileRenderer\FileNotFoundException
      * 
      */
     public function renderToScreen(
-        $file_name, 
+        $file_name='', 
         array $data = array(),
         $escape_encoding = 'utf-8',
-        $html_escaper_keys = array(),
-        $html_attr_escaper_keys = array(),
-        $css_escaper_keys = array(),
-        $js_escaper_keys = array()
+        array $html_escaper_keys = array(),
+        array $html_attr_escaper_keys = array(),
+        array $css_escaper_keys = array(),
+        array $js_escaper_keys = array()
     ) {
         echo $this->renderToString(
                         $file_name, 
@@ -751,16 +755,16 @@ class Renderer
      * 
      * @return void
      * 
-     * @throws \Slim3Mvc\FileNotFoundException
+     * @throws \Rotexsoft\FileRenderer\FileNotFoundException
      * 
      */
     protected function escapeData(
         array &$data,
         $escape_encoding = 'utf-8',
-        $html_escaper_keys = array(),
-        $html_attr_escaper_keys = array(),
-        $css_escaper_keys = array(),
-        $js_escaper_keys = array(),
+        array $html_escaper_keys = array(),
+        array $html_attr_escaper_keys = array(),
+        array $css_escaper_keys = array(),
+        array $js_escaper_keys = array(),
         \Zend\Escaper\Escaper $escaper = null
     ) {
         $final_encoding = (empty($escape_encoding)) 

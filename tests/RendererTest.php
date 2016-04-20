@@ -1,5 +1,5 @@
 <?php
-use Rotexsoft\FileRenderer\Renderer;
+use Rotexsoft\FileRenderer\Tests\FileRendererWrapper;
 
 /**
  * Description of ModelTest
@@ -8,859 +8,592 @@ use Rotexsoft\FileRenderer\Renderer;
  */
 class RendererTest extends \PHPUnit_Framework_TestCase
 {
-    protected $_mock_model_objs = array();
+    protected function setUp() { parent::setUp(); }
 
-    protected function setUp() {
+    public function testThatConstructorWorksAsExpected() {
         
-        parent::setUp();
+        $expected_file_name = 'fizaile';
+        $expected_data = array( 'a'=>'b' );
+        $expected_file_paths = array('/a');
+        $expected_escape_encoding = 'utf-8';
+        $expected_js_escaper_keys = array('a');
+        $expected_css_escaper_keys = array('b');
+        $expected_html_escaper_keys = array('c');
+        $expected_html_attr_escaper_keys = array('d');
         
-        $sqlite_file = __DIR__.DIRECTORY_SEPARATOR
-                       .'DbFiles'.DIRECTORY_SEPARATOR
-                       .'buying_and_selling.sqlite';
-
-        $this->_mock_model_objsarray('customers_with_specialized_collection_and_record') = 
-                new \ModelForTestingPublicAndProtectedMethods(
-                    "sqlite:$sqlite_file", "", "", array(),
-                    array(
-                        'primary_col'=>'CustomerID', 
-                        'table_name'=>'Customers',
-                        'collection_class_name'=>'CollectionForTestingPublicAndProtectedMethods', 
-                        'record_class_name'=>'RecordForTestingPublicAndProtectedMethods',
-                    )
-                );
-
-        $this->_mock_model_objsarray('customers') = 
-                new \ModelForTestingPublicAndProtectedMethods(
-                    "sqlite:$sqlite_file", "", "", array(),
-                    array('primary_col'=>'CustomerID', 'table_name'=>'Customers')
-                );
-
-        $this->_mock_model_objsarray('employees') = 
-                new \ModelForTestingPublicAndProtectedMethods(
-                    "sqlite:$sqlite_file", "", "", array(),
-                    array('primary_col'=>'EmployeeID', 'table_name'=>'Employees')
-                );
-
-        $this->_mock_model_objsarray('order_details') = 
-                new \ModelForTestingPublicAndProtectedMethods(
-                    "sqlite:$sqlite_file", "", "", array(),
-                    array('primary_col'=>'OrderDetailID', 'table_name'=>'OrderDetails')
-                );
-
-        $this->_mock_model_objsarray('orders') = 
-                new \ModelForTestingPublicAndProtectedMethods(
-                    "sqlite:$sqlite_file", "", "", array(),
-                    array('primary_col'=>'OrderID', 'table_name'=>'Orders')
-                );
-
-        $this->_mock_model_objsarray('shippers') = 
-                new \ModelForTestingPublicAndProtectedMethods(
-                    "sqlite:$sqlite_file", "", "", array(),
-                    array('primary_col'=>'ShipperID', 'table_name'=>'Shippers')
-                );
+        $renderer = new FileRendererWrapper(
+                            $expected_file_name, 
+                            $expected_data, 
+                            $expected_file_paths, 
+                            $expected_escape_encoding, 
+                            $expected_html_escaper_keys, 
+                            $expected_html_attr_escaper_keys, 
+                            $expected_css_escaper_keys, 
+                            $expected_js_escaper_keys
+                        );
+        $reflection_class = new ReflectionClass($renderer);
+        
+        //make protected properties accessible via reflection
+        $file_name_in_obj = $reflection_class->getProperty('file_name');
+        $file_name_in_obj->setAccessible(true);
+        
+        $data_in_obj = $reflection_class->getProperty('data');
+        $data_in_obj->setAccessible(true);
+        
+        $file_paths_in_obj = $reflection_class->getProperty('file_paths'); 
+        $file_paths_in_obj->setAccessible(true); 
+        
+        $escape_encoding_in_obj = $reflection_class->getProperty('escape_encoding'); 
+        $escape_encoding_in_obj->setAccessible(true); 
+        
+        $html_escaper_keys_in_obj = $reflection_class->getProperty('html_escaper_keys');
+        $html_escaper_keys_in_obj->setAccessible(true);
+        
+        $html_attr_escaper_keys_in_obj = $reflection_class->getProperty('html_attr_escaper_keys');
+        $html_attr_escaper_keys_in_obj->setAccessible(true);
+        
+        $css_escaper_keys_in_obj = $reflection_class->getProperty('css_escaper_keys');
+        $css_escaper_keys_in_obj->setAccessible(true);
+        
+        $js_escaper_keys_in_obj = $reflection_class->getProperty('js_escaper_keys');
+        $js_escaper_keys_in_obj->setAccessible(true);
+        
+        // test with all params supplied; no default vals
+        $this->assertEquals($expected_file_name, $file_name_in_obj->getValue($renderer));
+        $this->assertEquals($expected_data, $data_in_obj->getValue($renderer));
+        $this->assertEquals($expected_file_paths, $file_paths_in_obj->getValue($renderer));
+        $this->assertEquals($expected_escape_encoding, $escape_encoding_in_obj->getValue($renderer));
+        $this->assertEquals($expected_html_escaper_keys, $html_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals($expected_html_attr_escaper_keys, $html_attr_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals($expected_css_escaper_keys, $css_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals($expected_js_escaper_keys, $js_escaper_keys_in_obj->getValue($renderer));
+        
+        //test default vals
+        $renderer = new FileRendererWrapper($expected_file_name);
+        $this->assertEquals($expected_file_name, $file_name_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $data_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $file_paths_in_obj->getValue($renderer));
+        $this->assertEquals('utf-8', $escape_encoding_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $html_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $html_attr_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $css_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
+        
+        $renderer = new FileRendererWrapper($expected_file_name, $expected_data);
+        $this->assertEquals($expected_file_name, $file_name_in_obj->getValue($renderer));
+        $this->assertEquals($expected_data, $data_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $file_paths_in_obj->getValue($renderer));
+        $this->assertEquals('utf-8', $escape_encoding_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $html_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $html_attr_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $css_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
+        
+        $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $expected_file_paths);
+        $this->assertEquals($expected_file_name, $file_name_in_obj->getValue($renderer));
+        $this->assertEquals($expected_data, $data_in_obj->getValue($renderer));
+        $this->assertEquals($expected_file_paths, $file_paths_in_obj->getValue($renderer));
+        $this->assertEquals('utf-8', $escape_encoding_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $html_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $html_attr_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $css_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
+        
+        $renderer = new FileRendererWrapper(
+                            $expected_file_name, 
+                            $expected_data, 
+                            $expected_file_paths, 
+                            $expected_escape_encoding
+                        );
+        $this->assertEquals($expected_file_name, $file_name_in_obj->getValue($renderer));
+        $this->assertEquals($expected_data, $data_in_obj->getValue($renderer));
+        $this->assertEquals($expected_file_paths, $file_paths_in_obj->getValue($renderer));
+        $this->assertEquals($expected_escape_encoding, $escape_encoding_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $html_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $html_attr_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $css_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
+        
+        $renderer = new FileRendererWrapper(
+                            $expected_file_name, 
+                            $expected_data, 
+                            $expected_file_paths, 
+                            $expected_escape_encoding, 
+                            $expected_html_escaper_keys
+                        );
+        $this->assertEquals($expected_file_name, $file_name_in_obj->getValue($renderer));
+        $this->assertEquals($expected_data, $data_in_obj->getValue($renderer));
+        $this->assertEquals($expected_file_paths, $file_paths_in_obj->getValue($renderer));
+        $this->assertEquals($expected_escape_encoding, $escape_encoding_in_obj->getValue($renderer));
+        $this->assertEquals($expected_html_escaper_keys, $html_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $html_attr_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $css_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
+        
+        $renderer = new FileRendererWrapper(
+                            $expected_file_name, 
+                            $expected_data, 
+                            $expected_file_paths, 
+                            $expected_escape_encoding, 
+                            $expected_html_escaper_keys, 
+                            $expected_html_attr_escaper_keys
+                        );
+        $this->assertEquals($expected_file_name, $file_name_in_obj->getValue($renderer));
+        $this->assertEquals($expected_data, $data_in_obj->getValue($renderer));
+        $this->assertEquals($expected_file_paths, $file_paths_in_obj->getValue($renderer));
+        $this->assertEquals($expected_escape_encoding, $escape_encoding_in_obj->getValue($renderer));
+        $this->assertEquals($expected_html_escaper_keys, $html_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals($expected_html_attr_escaper_keys, $html_attr_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $css_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
+        
+        $renderer = new FileRendererWrapper(
+                            $expected_file_name, 
+                            $expected_data, 
+                            $expected_file_paths, 
+                            $expected_escape_encoding, 
+                            $expected_html_escaper_keys, 
+                            $expected_html_attr_escaper_keys, 
+                            $expected_css_escaper_keys
+                        );
+        $this->assertEquals($expected_file_name, $file_name_in_obj->getValue($renderer));
+        $this->assertEquals($expected_data, $data_in_obj->getValue($renderer));
+        $this->assertEquals($expected_file_paths, $file_paths_in_obj->getValue($renderer));
+        $this->assertEquals($expected_escape_encoding, $escape_encoding_in_obj->getValue($renderer));
+        $this->assertEquals($expected_html_escaper_keys, $html_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals($expected_html_attr_escaper_keys, $html_attr_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals($expected_css_escaper_keys, $css_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
     }
 
-    public function testToEnsureThatAddHavingConditions2QueryWorksAsExpected() {
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testThatExceptionIsThrownWhenNonStringFileNameIsPassedToConstructor() {
         
-        $data = array(
-            'having' => 
-                array(
-                    0 => array( 'col' => 'col_1', 'op' => '<', 'val' => 58),
-                    1 => array( 'col' => 'col_2', 'op' => '<', 'val' => 68),
-                    array(
-                        0 => array( 'col' => 'col_11', 'op' => '>', 'val' => 581),
-                        1 => array( 'col' => 'col_21', 'op' => '>', 'val' => 681),
-                        'OR#3' => array(
-                            0 => array( 'col' => 'col_12', 'op' => '<', 'val' => 582),
-                            1 => array( 'col' => 'col_22', 'op' => '<', 'val' => 682)
-                        ),
-                        2 => array( 'col' => 'col_31', 'op' => '>=', 'val' => 583),
-                        'OR#4' => array(
-                            0 => array( 'col' => 'col_4', 'op' => '=', 'val' => 584),
-                            1 => array( 'col' => 'col_5', 'op' => '=', 'val' => 684),
-                        )
-                    ),
-                    3 => array( 'col' => 'column_name_44', 'op' => '<', 'val' => 777),
-                    4 => array( 'col' => 'column_name_55', 'op' => 'is-null'),
-                )
-        );
-        
-        $mock_model_cust = $this->_mock_model_objsarray('customers');
-        
-        //pdo_driver_name
-        $select_qry_obj->from($mock_model_cust->_table_name)->cols(array('*'));
-        
-        $mock_model_cust->addHavingConditions2Query($dataarray('having'), $select_qry_obj);
-        
-        $expected_sql = <<<EOT
-SELECT
-    *
-FROM
-    "Customers"
-HAVING
-    (
-	col_1 > :_1_ 
-	AND
-	col_2 > :_2_ 
-	AND
-	(
-		col_11 > :_3_ 
-		AND
-		col_21 > :_4_ 
-		OR
-		(
-			col_12 > :_5_ 
-			AND
-			col_22 > :_6_ 
-		)
-		AND
-		col_31 >= :_7_ 
-		OR
-		(
-			col_4 = :_8_ 
-			AND
-			col_5 = :_9_ 
-		)
-	)
-	AND
-	column_name_44 > :_10_ 
-	AND
-	column_name_55 IS NULL
-)
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-//print_r( $select_qry_obj->getBindValues());exit;
-        
-        $expected_params = array(
-            '_1_' => 58, '_2_' => 68, '_3_' => 581, '_4_' => 681, '_5_' => 582,
-            '_6_' => 682, '_7_' => 583, '_8_' => 584, '_9_' => 684, '_10_' => 777
-        );
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
+        $invalid_file_name = array();        
+        $renderer = new FileRendererWrapper($invalid_file_name);
     }
 
-    public function testToEnsureThatAddWhereConditions2QueryWorksAsExpected() {
+    public function testExceptionMessageWhenNonStringFileNameIsPassedToConstructor() {
         
-        $data = array(
-            'where' => 
-                array(
-                    0 => array( 'col' => 'col_1', 'op' => '<', 'val' => 58),
-                    1 => array( 'col' => 'col_2', 'op' => '<', 'val' => 68),
-                    array(
-                        0 => array( 'col' => 'col_11', 'op' => '>', 'val' => 581),
-                        1 => array( 'col' => 'col_21', 'op' => '>', 'val' => 681),
-                        'OR#3' => array(
-                            0 => array( 'col' => 'col_12', 'op' => '<', 'val' => 582),
-                            1 => array( 'col' => 'col_22', 'op' => '<', 'val' => 682)
-                        ),
-                        2 => array( 'col' => 'col_31', 'op' => '>=', 'val' => 583),
-                        'OR#4' => array(
-                            0 => array( 'col' => 'col_4', 'op' => '=', 'val' => 584),
-                            1 => array( 'col' => 'col_5', 'op' => '=', 'val' => 684),
-                        )
-                    ),
-                    3 => array( 'col' => 'column_name_44', 'op' => '<', 'val' => 777),
-                    4 => array( 'col' => 'column_name_55', 'op' => 'is-null'),
-                )
-        );
-        
-        $mock_model_cust = $this->_mock_model_objsarray('customers');
-        
-        //pdo_driver_name
-        $select_qry_obj->from($mock_model_cust->_table_name)->cols(array('*'));
-        
-        $mock_model_cust->addWhereConditions2Query($dataarray('where'), $select_qry_obj);
-        
-        $expected_sql = <<<EOT
-SELECT
-    *
-FROM
-    "Customers"
-WHERE
-    (
-	col_1 > :_11_ 
-	AND
-	col_2 > :_12_ 
-	AND
-	(
-		col_11 > :_13_ 
-		AND
-		col_21 > :_14_ 
-		OR
-		(
-			col_12 > :_15_ 
-			AND
-			col_22 > :_16_ 
-		)
-		AND
-		col_31 >= :_17_ 
-		OR
-		(
-			col_4 = :_18_ 
-			AND
-			col_5 = :_19_ 
-		)
-	)
-	AND
-	column_name_44 > :_20_ 
-	AND
-	column_name_55 IS NULL
-)
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-        
-        $expected_params = array(
-            '_11_' => 58, '_12_' => 68, '_13_' => 581, '_14_' => 681, '_15_' => 582,
-            '_16_' => 682, '_17_' => 583, '_18_' => 584, '_19_' => 684, '_20_' => 777
-        );
-
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-    }
-    
-    public function testToEnsureThatBuildFetchQueryFromParamsWorksAsExpected() {
-
-        $params = array(
-            'distinct' => true,
-            'cols' => array('CustomerID'),
-        );
-        
-        $mock_model_cust = $this->_mock_model_objsarray('customers');
-
-        //$mock_model_cust->buildFetchQueryFromParams($params, $allowed_keys);
-        
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-        
-        $expected_sql = <<<EOT
-SELECT DISTINCT
-    CustomerID
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-        
-////////////////////////////////////////////////////////////////////////////////        
-        $params = array(
-            'distinct' => true,
-            'cols' => array('CustomerID', 'CompanyName'),
-        );
-           
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-        
-        $expected_sql = <<<EOT
-SELECT DISTINCT
-    CustomerID,
-    CompanyName
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-                
-        $expected_params = array();
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-        $params = array(
-            'distinct' => true,
-            'cols' => array('CustomerID', 'CompanyName', 'ContactName'),
-        );
-           
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-
-        $expected_sql = <<<EOT
-SELECT DISTINCT
-    CustomerID,
-    CompanyName,
-    ContactName
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-                
-        $expected_params = array();
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-        $params = array(
-            'distinct' => true,
-            'cols' => array('CustomerID', 'CompanyName', 'ContactName', 'ContactTitle'),
-        );
-           
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-
-        $expected_sql = <<<EOT
-SELECT DISTINCT
-    CustomerID,
-    CompanyName,
-    ContactName,
-    ContactTitle
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-                
-        $expected_params = array();
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-        $params = array(
-            'distinct' => true,
-            'cols' => array('CustomerID', 'CompanyName', 'ContactName', 'ContactTitle', 'Address'),
-        );
-           
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-
-        $expected_sql = <<<EOT
-SELECT DISTINCT
-    CustomerID,
-    CompanyName,
-    ContactName,
-    ContactTitle,
-    Address
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-        
-        $expected_params = array();
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-        $params = array(
-            'distinct' => true,
-            'cols' => array('CustomerID', 'CompanyName', 'ContactName', 'ContactTitle', 'Address', 'City'),
-        );
-           
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-
-        $expected_sql = <<<EOT
-SELECT DISTINCT
-    CustomerID,
-    CompanyName,
-    ContactName,
-    ContactTitle,
-    Address,
-    City
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-                
-        $expected_params = array();
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-        $params = array(
-            'distinct' => true,
-            'cols' => array('CompanyName', 'ContactName', 'ContactTitle', 'Address', 'City', 'State'),
-        );
-           
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-
-        $expected_sql = <<<EOT
-SELECT DISTINCT
-    CompanyName,
-    ContactName,
-    ContactTitle,
-    Address,
-    City,
-    State
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-       
-        $expected_params = array();
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-        $params = array(
-            'distinct' => true,
-            'cols' => array('CustomerID', 'CompanyName', 'ContactName', 'ContactTitle', 'Address', 'City', 'State'),
-        );
-           
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-
-        $expected_sql = <<<EOT
-SELECT DISTINCT
-    CustomerID,
-    CompanyName,
-    ContactName,
-    ContactTitle,
-    Address,
-    City,
-    State
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-        
-        $expected_params = array();
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-        
-        $params = array(
-            'distinct' => false,
-            'cols' => array('CustomerID'),
-        );
-        
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-        
-        $expected_sql = <<<EOT
-SELECT
-    CustomerID
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-        
-        $expected_params = array();
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////        
-        $params = array(
-            'distinct' => false,
-            'cols' => array('CustomerID', 'CompanyName'),
-        );
-           
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-        
-        $expected_sql = <<<EOT
-SELECT
-    CustomerID,
-    CompanyName
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-                
-        $expected_params = array();
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-        $params = array(
-            'distinct' => false,
-            'cols' => array('CustomerID', 'CompanyName', 'ContactName'),
-        );
-           
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-
-        $expected_sql = <<<EOT
-SELECT
-    CustomerID,
-    CompanyName,
-    ContactName
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-        
-        $expected_params = array();
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-        $params = array(
-            'distinct' => false,
-            'cols' => array('CustomerID', 'CompanyName', 'ContactName', 'ContactTitle'),
-        );
-           
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-
-        $expected_sql = <<<EOT
-SELECT
-    CustomerID,
-    CompanyName,
-    ContactName,
-    ContactTitle
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-        
-        $expected_params = array();
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-        $params = array(
-            'distinct' => false,
-            'cols' => array('CustomerID', 'CompanyName', 'ContactName', 'ContactTitle', 'Address'),
-        );
-           
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-
-        $expected_sql = <<<EOT
-SELECT
-    CustomerID,
-    CompanyName,
-    ContactName,
-    ContactTitle,
-    Address
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-        
-        $expected_params = array();
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-        $params = array(
-            'distinct' => false,
-            'cols' => array('CustomerID', 'CompanyName', 'ContactName', 'ContactTitle', 'Address', 'City'),
-        );
-           
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-
-        $expected_sql = <<<EOT
-SELECT
-    CustomerID,
-    CompanyName,
-    ContactName,
-    ContactTitle,
-    Address,
-    City
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-        
-        $expected_params = array();
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-        $params = array(
-            'distinct' => false,
-            'cols' => array('CompanyName', 'ContactName', 'ContactTitle', 'Address', 'City', 'State'),
-        );
-           
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-
-        $expected_sql = <<<EOT
-SELECT
-    CompanyName,
-    ContactName,
-    ContactTitle,
-    Address,
-    City,
-    State
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-        
-        $expected_params = array();
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-        $params = array(
-            'distinct' => false,
-            'cols' => array('CustomerID', 'CompanyName', 'ContactName', 'ContactTitle', 'Address', 'City', 'State'),
-        );
-           
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-
-        $expected_sql = <<<EOT
-SELECT
-    CustomerID,
-    CompanyName,
-    ContactName,
-    ContactTitle,
-    Address,
-    City,
-    State
-FROM
-    "Customers"
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-        
-        $expected_params = array();
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-        $params = array(
-            'distinct' => false,
-            'cols' => array('CustomerID', 'CompanyName', 'ContactName', 'ContactTitle', 'Address', 'City', 'State'),
-
-            'where' => array(
-                array( 'col' => 'hidden_fiscal_year', 'op' => 'in', 'val' => 16 ),
-                array( 'col' => 'deactivated', 'op' => '=', 'val' => 0),
-                array( 'col' => 'parent_id', 'op' => 'is-null'),
-            ),
-            'group' => array('hidden_fiscal_year'),
-            'having' => array(
-                array( 'col' => 'hidden_fiscal_year', 'op' => '>', 'val' => 9 ),
-                array( 'col' => 'deactivated', 'op' => '=', 'val' => 0),
-                array( 'col' => 'parent_id', 'op' => 'is-null'),
-            ),
-            'order' => array('title desc'),
-            'limit_size' => 400,
-            'limit_offset' => 50,
-        );
-           
-        $select_qry_obj = $mock_model_cust->buildFetchQueryFromParams($params);
-        
-        $expected_sql = <<<EOT
-SELECT
-    CustomerID,
-    CompanyName,
-    ContactName,
-    ContactTitle,
-    Address,
-    City,
-    State
-FROM
-    "Customers"
-WHERE
-    (
-	hidden_fiscal_year IN (16) 
-	AND
-	deactivated = :_21_ 
-	AND
-	parent_id IS NULL
+        $expected_msg = <<<EOT
+ERROR: Rotexsoft\FileRenderer\Tests\FileRendererWrapper::__construct(...) expects first parameter (the name of the php file to be rendered) to be a `string`.
+`Array` was supplied with the value below:
+array (
 )
 
-GROUP BY
-    hidden_fiscal_year
-HAVING
-    (
-	hidden_fiscal_year > :_22_ 
-	AND
-	deactivated = :_23_ 
-	AND
-	parent_id IS NULL
-)
-
-ORDER BY
-    title desc
-LIMIT 400 OFFSET 50
 EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-
-        $expected_params = array( '_21_' => 0, '_22_' => 9, '_23_' => 0);
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-        $params = array(
-            'distinct' => false,
-            'cols' => array('CustomerID', 'CompanyName', 'ContactName', 'ContactTitle', 'Address', 'City', 'State'),
-
-            'where' => array(
-                array( 'col' => 'hidden_fiscal_year', 'op' => 'in', 'val' => 16 ),
-                array( 'col' => 'deactivated', 'op' => '=', 'val' => 0),
-                array( 'col' => 'parent_id', 'op' => 'is-null'),
-            ),
-            'group' => array('hidden_fiscal_year'),
-            'having' => array(
-                array( 'col' => 'hidden_fiscal_year', 'op' => '>', 'val' => 9 ),
-                array( 'col' => 'deactivated', 'op' => '=', 'val' => 0),
-                array( 'col' => 'parent_id', 'op' => 'is-null'),
-            ),
-            'order' => array('title desc'),
-            'limit_size' => 400,
-            'limit_offset' => 0,
-        );
-           
-        $select_qry_obj = 
-            $mock_model_cust
-                ->buildFetchQueryFromParams($params, array('having', 'limit_size'));
-
-        $expected_sql = <<<EOT
-SELECT
-    CustomerID,
-    CompanyName,
-    ContactName,
-    ContactTitle,
-    Address,
-    City,
-    State
-FROM
-    "Customers"
-WHERE
-    (
-	hidden_fiscal_year IN (16) 
-	AND
-	deactivated = :_24_ 
-	AND
-	parent_id IS NULL
-)
-
-GROUP BY
-    hidden_fiscal_year
-ORDER BY
-    title desc
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-                
-        $expected_params = array('_24_' => 0);
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
-        
-////////////////////////////////////////////////////////////////////////////////
-//Test with overriden table name        
-        $params = array(
-            'distinct' => false,
-            'cols' => array('CustomerID', 'CompanyName', 'ContactName', 'ContactTitle', 'Address', 'City', 'State'),
-
-            'where' => array(
-                array( 'col' => 'hidden_fiscal_year', 'op' => 'in', 'val' => 16 ),
-                array( 'col' => 'deactivated', 'op' => '=', 'val' => 0),
-                array( 'col' => 'parent_id', 'op' => 'is-null'),
-            ),
-            'group' => array('hidden_fiscal_year'),
-            'having' => array(
-                array( 'col' => 'hidden_fiscal_year', 'op' => '>', 'val' => 9 ),
-                array( 'col' => 'deactivated', 'op' => '=', 'val' => 0),
-                array( 'col' => 'parent_id', 'op' => 'is-null'),
-            ),
-            'order' => array('title desc'),
-            'limit_size' => 400,
-            'limit_offset' => 0,
-        );
-           
-        $select_qry_obj = 
-            $mock_model_cust
-                ->buildFetchQueryFromParams($params, array('having', 'limit_size'), "Customers2");
-
-        $expected_sql = <<<EOT
-SELECT
-    CustomerID,
-    CompanyName,
-    ContactName,
-    ContactTitle,
-    Address,
-    City,
-    State
-FROM
-    "Customers2"
-WHERE
-    (
-	hidden_fiscal_year IN (16) 
-	AND
-	deactivated = :_25_ 
-	AND
-	parent_id IS NULL
-)
-
-GROUP BY
-    hidden_fiscal_year
-ORDER BY
-    title desc
-EOT;
-        $this->assertContains($expected_sql, $select_qry_obj->__toString());
-                
-        $expected_params = array('_25_' => 0);
-        $this->assertEquals($expected_params, $select_qry_obj->getBindValues());
+        try {
+            $invalid_file_name = array();        
+            $renderer = new FileRendererWrapper($invalid_file_name);
+            
+            //if the constructor call above did not throw an exception, then this test should fail
+            $message = __FUNCTION__.'() : Expected exception not thrown when creating'
+                                   . ' File Renderer with an invalid (non-string) file name';
+            throw new Exception($message);
+            
+        } catch (\Exception $e) {
+            
+            //echo PHP_EOL.$e->getMessage().PHP_EOL.'yoooo'.PHP_EOL;
+            $this->assertEquals($expected_msg, $e->getMessage());
+        }
     }
 
-    public function testCreateNewCollection() {
+    public function testThat__setWorksAsExpected() {
         
-        $model_with_mock_coll_and_rec =
-            $this->_mock_model_objsarray('customers_with_specialized_collection_and_record');
-
-        $coll_mock = $model_with_mock_coll_and_rec
-                            ->createNewCollection(new \GDAO\Model\RecordsList(array()));
-        //exact class
-        $this->assertEquals(
-            'CollectionForTestingPublicAndProtectedMethods', 
-            get_class($coll_mock)
-        );
+        $renderer = new FileRendererWrapper('file.txt');
+        $renderer->__set('key1', 'val1'); //set via explicit call
+        $renderer->key2 = 'val2';         //set via assignment to non-existent object property which 
+                                          //will internally trigger $renderer->__set('key2', 'val2');
         
-        //has the right parent class
-        $this->assertInstanceOf('LeanOrm\Model\Collection', $coll_mock);
-        $this->assertInstanceOf('GDAO\Model\CollectionInterface', $coll_mock);
+        //make protected `data` property accessible via reflection
+        $reflection_class = new ReflectionClass($renderer);        
+        $data_in_obj = $reflection_class->getProperty('data');
+        $data_in_obj->setAccessible(true);
+        $data_array_in_obj = $data_in_obj->getValue($renderer);
         
-        ////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////
-        $model_with_leanorm_coll_and_rec = $this->_mock_model_objsarray('customers');
-        
-        $coll_generic = $model_with_leanorm_coll_and_rec
-                            ->createNewCollection(new \GDAO\Model\RecordsList(array()));
-        //exact class
-        $this->assertEquals('LeanOrm\Model\Collection', get_class($coll_generic));
+        $this->assertEquals('val1', $data_array_in_obj['key1']);
+        $this->assertEquals('val2', $data_array_in_obj['key2']);
     }
 
-    public function testCreateNewRecord() {
+    public function testThatSetVarWorksAsExpected() {
         
-        $model_with_mock_coll_and_rec =
-            $this->_mock_model_objsarray('customers_with_specialized_collection_and_record');
-
-        $record_mock = $model_with_mock_coll_and_rec
-                                        ->createNewRecord(array(), array('is_new'=>false));
-        //exact class
-        $this->assertEquals(
-            'RecordForTestingPublicAndProtectedMethods', 
-            get_class($record_mock)
-        );
+        $renderer = new FileRendererWrapper('file.txt');
+        $renderer->setVar('key1', 'val1'); //set via explicit call
+        $renderer->setVar('key2', 'val2'); //set via explicit call
         
-        //has the right parent class
-        $this->assertInstanceOf('\\LeanOrm\\Model\\Record', $record_mock);
-        $this->assertInstanceOf('\\GDAO\\Model\\RecordInterface', $record_mock);
+        //make protected `data` property accessible via reflection
+        $reflection_class = new ReflectionClass($renderer);        
+        $data_in_obj = $reflection_class->getProperty('data');
+        $data_in_obj->setAccessible(true);
+        $data_array_in_obj = $data_in_obj->getValue($renderer);
         
-        ////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////
-        $model_with_leanorm_coll_and_rec = $this->_mock_model_objsarray('customers');
-        
-        $record_generic = $model_with_leanorm_coll_and_rec
-                                        ->createNewRecord(array(), array('is_new'=>false));
-        //exact class
-        $this->assertEquals('LeanOrm\Model\Record', get_class($record_generic));
+        $this->assertEquals('val1', $data_array_in_obj['key1']);
+        $this->assertEquals('val2', $data_array_in_obj['key2']);
     }
     
-    public function test__Get() {
+    public function testExceptionMessageWhenNonExistentPropertyThatsNeverBeenSetIsAccessed() {
         
-        $mock_model_cust = $this->_mock_model_objsarray('customers');
-        
-        //access protected property
-        $this->assertEquals('CustomerID', $mock_model_cust->primary_col);
-        $this->assertEquals('CustomerID', $mock_model_cust->_primary_col);
+        $expected_msg = "ERROR: Item with key 'key1' does not exist in ";
         
         try {
-            //access non-existent property
-            $mock_model_cust->non_existent_property;
+            $renderer = new FileRendererWrapper('file.txt');
+            $renderer->__get('key1'); //explicit call to a property that isn't defined & hasn't been set
             
-        } catch (Exception $ex) {
+            //if the call to __get above did not throw an exception, then this test should fail
+            $message = __FUNCTION__. '() : Expected exception not thrown when accessing non'
+                                   . ' existent property.';
+            throw new Exception($message);
+            
+        } catch (\Exception $e) {
+            
+            //echo PHP_EOL.$e->getMessage().PHP_EOL.'yoooo'.PHP_EOL;
+            $this->assertContains($expected_msg, $e->getMessage());
+            
+            try {
+                $renderer->key1; //Object access to a property that isn't defined & hasn't been set
+                                 //will internally trigger $renderer->__get('key1')
 
-            $this->assertEquals(
-                'LeanOrm\ModelPropertyNotDefinedException', get_class($ex)
-            );
+                //if the statement above ($renderer->key1) did not throw an exception, 
+                //then this test should fail
+                $message = __FUNCTION__. '() : Expected exception not thrown when accessing non'
+                                       . ' existent property.';
+                throw new Exception($message);
+
+            } catch (\Exception $e) {
+
+                //echo PHP_EOL.$e->getMessage().PHP_EOL.'yoooo'.PHP_EOL;
+                $this->assertContains($expected_msg, $e->getMessage());
+            }
         }
     }
     
-    public function testDeleteMatchingDbTableRows() {
+    public function testThat__getWorksAsExpected() {
         
-        $ins_sql = <<<SQL
-INSERT INTO "Shippers" VALUES(55,'USPS','1 (800) 275-8777');
-INSERT INTO "Shippers" VALUES(56,'Federal Express','1-800-463-3339');
-INSERT INTO "Shippers" VALUES(57,'UPS','1 (800) 742-5877');
-INSERT INTO "Shippers" VALUES(58,'DHL','1-800-CALL-DHL');
-SQL;
-        $mock_model_shippers = $this->_mock_model_objsarray('shippers');
+        $renderer = new FileRendererWrapper('file.txt', array('key1'=>'val1', 'key2'=>'val2'));
         
-        //add the data to delete
-        $mock_model_shippers->getPDO()->exec($ins_sql);
+        $this->assertEquals('val1', $renderer->__get('key1'));
+        $this->assertEquals('val2', $renderer->__get('key2'));
+        $this->assertEquals('val1', $renderer->key1);
+        $this->assertEquals('val2', $renderer->key2);
+    }
+    
+    public function testThatGetVarWorksAsExpected() {
         
-        //should return 1, 1 record deleted
-        $res1 = $mock_model_shippers->deleteMatchingDbTableRows(
-                    array($mock_model_shippers->getPrimaryColName() => 55 )
-                );
-        $this->assertEquals(1, $res1);
+        $renderer = new FileRendererWrapper('file.txt', array('key1'=>'val1', 'key2'=>'val2'));
         
-        //should return 3, 3 records deleted
-        $res2 = $mock_model_shippers->deleteMatchingDbTableRows(
-                    array($mock_model_shippers->getPrimaryColName() => array(56, 57, 58))
-                );
-        $this->assertEquals(3, $res2);
+        $this->assertEquals('val1', $renderer->getVar('key1'));
+        $this->assertEquals('val2', $renderer->getVar('key2'));
+    }
+    
+    public function testThat__issetWorksAsExpected() {
         
-        //should return 0 no records deleted
-        $res3 = $mock_model_shippers->deleteMatchingDbTableRows(
-                    array($mock_model_shippers->getPrimaryColName() => 55 )
-                );
-        $this->assertEquals( true, ($res3 === 0) );
+        $renderer = new FileRendererWrapper('file.txt', array('key1'=>'val1', 'key2'=>'val2'));
         
-        //should return null no db operation happened
-        $res4 = $mock_model_shippers->deleteMatchingDbTableRows(array());
-        $this->assertEquals( true, ($res4 === null) );
+        $this->assertEquals(true, $renderer->__isset('key1'));
+        $this->assertEquals(true, $renderer->__isset('key2'));
+        $this->assertEquals(false, $renderer->__isset('non_existent_property'));
+    }
+    
+    public function testThat__unsetWorksAsExpected() {
+        
+        $renderer = new FileRendererWrapper('file.txt', array('key1'=>'val1', 'key2'=>'val2'));
+        
+        $this->assertEquals(true, $renderer->__isset('key1'));
+        $renderer->__unset('key1');
+        $this->assertEquals(false, $renderer->__isset('key1'));
+        
+        $this->assertEquals(true, $renderer->__isset('key2'));
+        $renderer->__unset('key2');
+        $this->assertEquals(false, $renderer->__isset('key2'));
+        
+    }
+    
+    public function testThatGetFilePathsWorksAsExpected() {
+        
+        $expected_file_name = 'fizaile';
+        $expected_data = array( 'a'=>'b' );
+        $expected_file_paths = array('/a');
+        
+        $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $expected_file_paths);
+        $this->assertEquals($expected_file_paths, $renderer->getFilePaths());        
+    }
+    
+    public function testThatAppendPathWorksAsExpected() {
+        
+        $expected_file_name = 'fizaile';
+        $expected_data = array( 'a'=>'b' );
+        $original_file_paths = array('/a');
+        $expected_file_paths = array('/a', '/b');
+        
+        $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $original_file_paths);
+        $renderer->appendPath('/b');
+        $this->assertEquals($expected_file_paths, $renderer->getFilePaths());        
+    }
+    
+    public function testThatPrependPathWorksAsExpected() {
+        
+        $expected_file_name = 'fizaile';
+        $expected_data = array( 'a'=>'b' );
+        $original_file_paths = array('/b');
+        $expected_file_paths = array('/a', '/b');
+        
+        $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $original_file_paths);
+        $renderer->prependPath('/a');
+        $this->assertEquals($expected_file_paths, $renderer->getFilePaths());        
+    }
+    
+    public function testThatRemoveFirstNPathsWorksAsExpected() {
+        
+        $expected_file_name = 'fizaile';
+        $expected_data = array( 'a'=>'b' );
+        $original_file_paths = array('/a', '/b', '/c', '/d', '/e', '/f', '/g');
+        $expected_file_paths1 = array('/b', '/c', '/d', '/e', '/f', '/g');
+        $expected_file_paths2 = array('/g');
+        
+        $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $original_file_paths);
+        
+        $this->assertEquals($original_file_paths, $renderer->getFilePaths());
+        
+        $renderer->removeFirstNPaths(1);
+        $this->assertEquals($expected_file_paths1, $renderer->getFilePaths());
+        
+        $renderer->removeFirstNPaths(5);
+        $this->assertEquals($expected_file_paths2, $renderer->getFilePaths());        
+    }
+    
+    public function testThatRemoveLastNPathsWorksAsExpected() {
+        
+        $expected_file_name = 'fizaile';
+        $expected_data = array( 'a'=>'b' );
+        $original_file_paths = array('/a', '/b', '/c', '/d', '/e', '/f', '/g');
+        $expected_file_paths1 = array('/a', '/b', '/c', '/d', '/e', '/f');
+        $expected_file_paths2 = array('/a');
+        
+        $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $original_file_paths);
+        
+        $this->assertEquals($original_file_paths, $renderer->getFilePaths());
+        
+        $renderer->removeLastNPaths(1);
+        $this->assertEquals($expected_file_paths1, $renderer->getFilePaths());
+        
+        $renderer->removeLastNPaths(5);
+        $this->assertEquals($expected_file_paths2, $renderer->getFilePaths());        
+    }
+    
+    public function testThatNormalizeFolderPathWorksAsExpected() {
+        
+        $renderer = new FileRendererWrapper('file.txt');
+
+        $this->assertEquals("C:\\Windows", $renderer->normalizeFolderPathPublic('C:\\Windows\\'));        
+        $this->assertEquals("/var/www/html", $renderer->normalizeFolderPathPublic('/var/www/html/'));        
+    }
+    
+    public function testThatGetVarTypeWorksAsExpected() {
+        
+        $renderer = new FileRendererWrapper('file.txt');
+        
+        //object
+        $this->assertEquals("Rotexsoft\\FileRenderer\\Tests\\FileRendererWrapper", $renderer->getVarTypePublic($renderer));        
+        $this->assertEquals("Rotexsoft\\FileRenderer\\Tests\\FileRendererWrapper", $renderer->getVarTypePublic($renderer, true));        
+
+        //string
+        $this->assertEquals("string", $renderer->getVarTypePublic('sfff')); 
+        $this->assertEquals("String", $renderer->getVarTypePublic('sfff', true)); 
+
+        //array
+        $this->assertEquals("array", $renderer->getVarTypePublic(array())); 
+        $this->assertEquals("Array", $renderer->getVarTypePublic(array(), true)); 
+
+        //boolean
+        $this->assertEquals("boolean", $renderer->getVarTypePublic(false)); 
+        $this->assertEquals("Boolean", $renderer->getVarTypePublic(false, true)); 
+
+        //int
+        $this->assertEquals("integer", $renderer->getVarTypePublic(123)); 
+        $this->assertEquals("Integer", $renderer->getVarTypePublic(123, true)); 
+
+        //float a.k.a double
+        $this->assertEquals("double", $renderer->getVarTypePublic(123.456)); 
+        $this->assertEquals("Double", $renderer->getVarTypePublic(123.456, true));
+
+        //resource
+        $temp = tmpfile();
+        $this->assertEquals("resource", $renderer->getVarTypePublic($temp)); 
+        $this->assertEquals("Resource", $renderer->getVarTypePublic($temp, true));
+        fclose($temp); // this removes the file
+    }
+    
+    public function testThatLocateFileWorksAsExpected() {
+    
+        $file_name = 'fizaile';
+        $data = array( 'a'=>'b' );
+        $file_paths = array(__DIR__.'/sample-views', __DIR__.'/sample-views/sub1', __DIR__.'/sample-views/sub1/sub2');
+        $renderer = new FileRendererWrapper($file_name, $data, $file_paths);
+        
+        $this->assertEquals(__DIR__.'/sample-views/sub1/sub2/view2.php', $renderer->locateFile(__DIR__.'/sample-views/sub1/sub2/view2.php'));
+        $this->assertEquals(__DIR__.'/sample-views/sub1/sub2/view2.php', $renderer->locateFile('view2.php'));
+        $this->assertEquals(__DIR__.'/sample-views/sub1/view1.php', $renderer->locateFile('view1.php'));
+        $this->assertEquals(__DIR__.'/sample-views/view0.php', $renderer->locateFile('view0.php'));
+        $this->assertEquals(__DIR__.'/sample-views/view.php', $renderer->locateFile('view.php'));
+        $this->assertEquals(false, $renderer->locateFile('non_existent.php'));    
+    }
+    
+    public function testThatRenderToStringWorksAsExpected() {
+    
+        $file_name = 'view.php';
+        $data = array( 'var1'=>'var1 at construct' );
+        $file_paths = array(__DIR__.'/sample-views', __DIR__.'/sample-views/sub1', __DIR__.'/sample-views/sub1/sub2');
+        $renderer = new FileRendererWrapper($file_name, $data, $file_paths);
+        
+        //make sure $renderer->file_name is used when renderToString()
+        //is called with no args.
+        $this->assertEquals($data['var1'], $renderer->renderToString());
+        
+        //renderer with empty $renderer->file_name
+        $renderer = new FileRendererWrapper('', $data, $file_paths);
+        
+        //make sure file name passed to renderToString() is used when 
+        //$renderer->file_name is empty.
+        $this->assertEquals($data['var1'], $renderer->renderToString('view.php'));
+    }
+    
+    public function testThatRenderToScreenWorksAsExpected() {
+    
+        $file_name = 'view.php';
+        $data = array( 'var1'=>'var1 at construct' );
+        $file_paths = array(__DIR__.'/sample-views', __DIR__.'/sample-views/sub1', __DIR__.'/sample-views/sub1/sub2');
+        $renderer = new FileRendererWrapper($file_name, $data, $file_paths);
+        
+        //capture result via output buffering since renderToScreen() echos output instead of 
+        //returning it
+        ob_start();
+        $renderer->renderToScreen();
+        $result = ob_get_clean();
+        
+        //make sure $renderer->file_name is used when renderToScreen()
+        //is called with no args.
+        $this->assertEquals($data['var1'], $result);
+        
+        //renderer with empty $renderer->file_name
+        $renderer = new FileRendererWrapper('', $data, $file_paths);
+        
+        //capture result via output buffering since renderToScreen() echos output instead of 
+        //returning it
+        ob_start();
+        $renderer->renderToScreen('view.php');
+        $result = ob_get_clean();
+        
+        //make sure file name passed to renderToScreen() is used when 
+        //$renderer->file_name is empty.
+        $this->assertEquals($data['var1'], $result);
+    }
+    
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testThatExceptionIsThrownWhenNonStringFileNameIsPassedToLocateFile() {
+        
+        $renderer = new FileRendererWrapper('file.txt');
+        $invalid_file_name = array();
+        $renderer->locateFile($invalid_file_name);
+    }
+    
+
+    public function testExceptionMessageWhenNonStringFileNameIsPassedToLocateFile() {
+        
+        $expected_msg = <<<EOT
+ERROR: Rotexsoft\FileRenderer\Tests\FileRendererWrapper::locateFile(...) expects first parameter (the name of the php file to be located) to be a `string`.
+`Array` was supplied with the value below:
+array (
+)
+
+EOT;
+        try {
+            $invalid_file_name = array();        
+            $renderer = new FileRendererWrapper('test.txt');
+            $renderer->locateFile($invalid_file_name);
+            
+            //if the call to locateFile above did not throw an exception, then this test should fail
+            $message = __FUNCTION__. '(): Expected exception not thrown when locating file with an'
+                                   . ' invalid (non-string) file name';
+            throw new Exception($message);
+            
+        } catch (\Exception $e) {
+            
+            $this->assertEquals($expected_msg, $e->getMessage());
+        }
+    }
+    
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testThatExceptionIsThrownWhenNonStringFileNameIsPassedToRenderToString() {
+        
+        $renderer = new FileRendererWrapper('file.txt');
+        $invalid_file_name = array();
+        $renderer->renderToString($invalid_file_name);
+    }
+    
+    /**
+     * @expectedException Rotexsoft\FileRenderer\FileNotFoundException
+     */
+    public function testThatExceptionIsThrownWhenNonExistentFileNameIsPassedToRenderToString() {
+        
+        $renderer = new FileRendererWrapper('file.txt');
+        $renderer->renderToString('non-existent-file.php');
+    }
+
+    public function testExceptionMessageWhenNonExistentFileNameIsPassedToRenderToString(){
+        
+        $expected_msg = <<<EOT
+ERROR: Could not load the file named `non-existent-file.php` from any of the paths below:
+/a
+/b
+/c
+
+Rotexsoft\FileRenderer\Tests\FileRendererWrapper::renderToString(...).
+
+EOT;
+        try {
+            $file_paths = array('/a', '/b', '/c');
+            $renderer = new FileRendererWrapper('test.txt', array(), $file_paths);
+            $renderer->renderToString('non-existent-file.php');
+            
+            //if the call to locateFile above did not throw an exception, then this test should fail
+            $message = __FUNCTION__. '(): Expected exception not thrown when rendering file with an'
+                                   . ' invalid (non-string) file name';
+            throw new Exception($message);
+            
+        } catch (\Exception $e) {
+
+            $this->assertEquals($expected_msg, $e->getMessage());
+        }
+    }
+    
+    public function testExceptionMessageWhenNonStringFileNameIsPassedToRenderToString() {
+        
+        $expected_msg = <<<EOT
+ERROR: Rotexsoft\FileRenderer\Tests\FileRendererWrapper::renderToString(..) expects first parameter (the name of the php file to be rendered) to be a `string`.
+`Array` was supplied with the value below:
+array (
+)
+
+EOT;
+        try {
+            $invalid_file_name = array();        
+            $renderer = new FileRendererWrapper('test.txt');
+            $renderer->renderToString($invalid_file_name);
+            
+            //if the call to locateFile above did not throw an exception, then this test should fail
+            $message = __FUNCTION__. '(): Expected exception not thrown when rendering file with an'
+                                   . ' invalid (non-string) file name';
+            throw new Exception($message);
+            
+        } catch (\Exception $e) {
+            
+            $this->assertEquals($expected_msg, $e->getMessage());
+        }
     }
 }
