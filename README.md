@@ -9,5 +9,6 @@ It provides escaping functionality.
 It is designed to be un-obtrusive, your view files can easily be used with a different rendering or templating library.
 You do not need to learn any new syntax (or markup / templating language) in order to compose your view. Just write your views in plain old php.
 
-This is not a full-blown template library (like twig, plates-php, etc).
-It is up to the users of this class to make sure the data passed to the renderer has been validated / sanitized.
+Users of this package are still responsible for making sure that they validate or sanitize data coming into their application(s) via user input 
+(eg. via html forms) with tools like  [Respect\Validation](https://github.com/Respect/Validation), [Valitron](https://github.com/vlucas/valitron),
+[Upload](https://github.com/brandonsavage/Upload), [Volan](https://github.com/serkin/Volan), [Filterus](https://github.com/ircmaxell/filterus), etc.
