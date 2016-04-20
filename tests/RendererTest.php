@@ -1,5 +1,5 @@
 <?php
-use \Rotexsoft\Renderer;
+use Rotexsoft\FileRenderer\Renderer;
 
 /**
  * Description of ModelTest
