@@ -310,6 +310,16 @@ EOT;
         
     }
     
+    public function testThatGetDataWorksAsExpected() {
+        
+        $expected_file_name = 'fizaile';
+        $expected_data = array( 'a'=>'b' );
+        $expected_file_paths = array('/a');
+        
+        $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $expected_file_paths);
+        $this->assertEquals($expected_data, $renderer->getData());        
+    }
+    
     public function testThatGetFilePathsWorksAsExpected() {
         
         $expected_file_name = 'fizaile';

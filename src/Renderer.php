@@ -822,13 +822,13 @@ class Renderer
                                 $escaper // pass already instantiated escaper
                             );
                     
-                } else if( is_string($value) ) {
+                } else if( is_string($data[$key]) ) {
                  
                     // escape the value
-                    $data[$key] = $escaper->$method($value);
+                    $data[$key] = $escaper->$method($data[$key]);
                     
-                } //if( is_array($value) ) ... else if( is_string($value) )
-            } // if( !empty($method) )
+                } //if( is_array($data[$key]) ) ... else if( is_string($data[$key]) )
+            } // if( !empty($method) || is_array($data[$key]) )
         } // foreach( $data as $key => $value )
     }
     

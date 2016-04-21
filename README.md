@@ -4,16 +4,33 @@
 
 ## Introduction
 
-This is a simple, elegant and flexible tool that can be used to render php files. It is designed to be un-obtrusive; your view files can easily be used 
-with a different rendering or templating library. You do not need to learn any new syntax (or markup / templating language) in order to compose your view; 
-simply write your views in plain old php. This package also provides escaping functionality for data passed to the view file(s).
+This is a simple, elegant and flexible tool that can be used to render php files (also referred to as `Views` within this documentation)
+that emit valid html output to a web-browser. It is designed to be unobtrusive; your view files can easily be used with a different 
+rendering or templating library. You do not need to learn any new syntax (or markup / templating language) in order to compose your 
+view; simply write your views in plain old php. This package also provides escaping functionality for data passed to the view file(s).
 
-This package can easily be used by framework developers to implement the View layer of an MVC (Model-View-Controller) framework.
+This package can easily be used by framework developers to implement the View layer of an MVC (Model-View-Controller) framework. 
+It can also be easily incorporated into existing frameworks.
 
 Users of this package are still responsible for making sure that they validate or sanitize data coming into their application(s) via user input 
 (eg. via html forms) with tools like  [Respect\Validation](https://github.com/Respect/Validation), [Valitron](https://github.com/vlucas/valitron),
 [Upload](https://github.com/brandonsavage/Upload), [Volan](https://github.com/serkin/Volan), [Sirius Validation](https://github.com/siriusphp/validation), 
 [Filterus](https://github.com/ircmaxell/filterus), etc.
+
+## Acknowledgement
+
+The escaping functionality in this package is implemented using the [zend-escaper](https://github.com/zendframework/zend-escaper) package.
+
+## Contribution
+
+Since the goal of this package is to be lean and flexible, pull requests for significant 
+new features will not be accepted. Users are encouraged to extend the package with new
+feature(s) in their own projects. However, bug fix and documentation enhancement 
+related pull requests are greatly welcomed.
+
+## Requirements
+
+* PHP 5.3.23+
 
 ## Installation
 `composer require rotexsoft/file-renderer`
@@ -22,7 +39,7 @@ Users of this package are still responsible for making sure that they validate o
 
 ### Basic Usage
 
-Your main php script may look like below (let's call it `test.php` ans assume it's located at the root directory of your project's folder):
+Your main php script may look like below (let's call it `test.php` and assume it's located at the root directory of your project's folder):
 
 `/some/path/my-project/test.php`
 
@@ -79,6 +96,11 @@ Your main php script may look like below (let's call it `test.php` ans assume it
     </body>
 </html>
 ```
+
+**NOTE:**&nbsp;` the file name, if any, supplied to the **render*()** methods will be 
+considered first for rendering if the file exists. The file name supplied to the 
+constructor during object creation will be considered last for rendering if the 
+file name supplied to the **render*()** method can't be found.`
 
 ### Getting, Setting and Unsetting View Data
 
@@ -141,6 +163,97 @@ View data values can be accessed after the Renderer object is created / instanti
 ?>
 ```
 
+#### Unsetting View Data
 
+View data values can be deleted after the Renderer object is created / instantiated
+```php
+<?php
+    $view_data = [ 'paragraph_data_from_file_renderer' => 'This is a Paragraph!!' ];
+    $renderer = new \Rotexsoft\FileRenderer\Renderer('./views/view.php', $view_data);
+    
+    //You can completely remove the `paragraph_data_from_file_renderer` entry
+    //inside the internal view data array after the Renderer object creation
+    //like this:
+    unset($renderer->paragraph_data_from_file_renderer);
+?>
+```
 
+### File paths
 
+These are paths that will be searched for the file to be rendered via the __**render*()**__ methods.
+
+If a path is prepended to the name of the file to be rendered (which can be supplied either during 
+the creation of the renderer object or during a call to any of the __**render*()**__ methods) and
+the file with the prepnded path exists, that file will be rendered and the renderer will not
+bother searching the file paths supplied during construction or via call(s) to __**appendPath($path)**__
+and / or __**prependPath($path)**__.
+
+For example, assuming `view.php` exists in `./views`, `./views/controller1` and 
+`./views/base-controller` the code below will lead to `./views/view.php` being 
+rendered without even trying to search `./views/controller1` or 
+`./views/base-controller` for `view.php`:
+
+```php
+<?php
+    $file_paths = [ './views/controller1', './views/base-controller'  ];
+    $view_data = [ 'paragraph_data_from_file_renderer' => 'This is a Paragraph!!' ];
+
+    $renderer = new \Rotexsoft\FileRenderer\Renderer('./views/view.php', $view_data, $file_paths);
+    
+    //$renderer->renderToScreen() OR $renderer->renderToScreen('./views/view.php');
+    //will both lead to the rendering of './views/view.php'
+?>
+```
+
+If a path is not prepended to the name of the file to be rendered, then the search for a file to 
+be rendered starts from the first element (i.e file path value) inside the registered array of 
+file paths to the last element inside the array. It is up to the user of this package to register
+file paths in a way that seems sensible to their use-case.
+
+Given the following file paths:
+```php
+<?php
+    $file_paths = [ './views/controller1', './views/base-controller'  ];
+    $view_data = [ 'paragraph_data_from_file_renderer' => 'This is a Paragraph!!' ];
+
+    $renderer = new \Rotexsoft\FileRenderer\Renderer('view.php', $view_data, $file_paths);
+?>
+```
+
+If `view.php` exists in both `./views/controller1` and `./views/base-controller`, then the
+search will lead to `./views/controller1/view.php` being selected and rendered when any of 
+the **render*()** methods is called. This is because `./views/controller1` comes before
+`./views/base-controller` in the file paths array.
+
+If you want to give `./views/base-controller` a higher precedence in the file paths
+array, you can do the following:
+
+```php
+<?php
+    $renderer->removeFirstNPaths(1); //will remove './views/controller1' from the file paths array
+    //$renderer->getFilePaths() at this point will return [ './views/base-controller' ]
+    
+    $renderer->appendPath('./views/controller1'); // will add './views/controller1' to the end of the file paths array
+    //$renderer->getFilePaths() at this point will return [ './views/base-controller', './views/controller1' ]
+?>
+```
+
+You can also accomplish the same thing with the following:
+
+```php
+<?php
+    $renderer->removeLastNPaths(1); //will remove './views/base-controller' from the file paths array
+    //$renderer->getFilePaths() at this point will return [ './views/controller1' ]
+    
+    $renderer->prependPath('./views/base-controller'); // will add './views/base-controller' to the front of the file paths array
+    //$renderer->getFilePaths() at this point will return [ './views/base-controller', './views/controller1' ]
+?>
+```
+
+### Escaping Data to be Passed to Views
+
+Only string values in the data array and its sub-arrays (if any) will be escaped. 
+
+### Advanced Usage
+
+#### Implementing a Two-Step View Templating Architecture
