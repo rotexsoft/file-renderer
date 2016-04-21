@@ -613,11 +613,15 @@ EOT;
         
         $html_2_escape = '<script>alert("zf2")</script>';
         $expected_escaped_html = '&lt;script&gt;alert(&quot;zf2&quot;)&lt;/script&gt;';
+        //html, html attr, css and js escapes applied
+        $expected_escaped_html_4_escapes = '\x5C26\x20amp\x5C3B\x20lt\x5C26\x20\x5C23\x20x3B\x5C3B\x20script\x5C26\x20amp\x5C3B\x20gt\x5C26\x20\x5C23\x20x3B\x5C3B\x20alert\x5C26\x20\x5C23\x20x28\x5C3B\x20\x5C26\x20amp\x5C3B\x20quot\x5C26\x20\x5C23\x20x3B\x5C3B\x20zf2\x5C26\x20amp\x5C3B\x20quot\x5C26\x20\x5C23\x20x3B\x5C3B\x20\x5C26\x20\x5C23\x20x29\x5C3B\x20\x5C26\x20amp\x5C3B\x20lt\x5C26\x20\x5C23\x20x3B\x5C3B\x20\x5C26\x20\x5C23\x20x2F\x5C3B\x20script\x5C26\x20amp\x5C3B\x20gt\x5C26\x20\x5C23\x20x3B\x5C3B\x20';
         
         $html_attr_2_escape = <<<INPUT
 faketitle onmouseover=alert(/ZF2!/);
 INPUT;
         $expected_escaped_html_attr = 'faketitle&#x20;onmouseover&#x3D;alert&#x28;&#x2F;ZF2&#x21;&#x2F;&#x29;&#x3B;';
+        //html attr, css and js escapes applied
+        $expected_escaped_html_attr_3_escapes = 'faketitle\x5C26\x20\x5C23\x20x20\x5C3B\x20onmouseover\x5C26\x20\x5C23\x20x3D\x5C3B\x20alert\x5C26\x20\x5C23\x20x28\x5C3B\x20\x5C26\x20\x5C23\x20x2F\x5C3B\x20ZF2\x5C26\x20\x5C23\x20x21\x5C3B\x20\x5C26\x20\x5C23\x20x2F\x5C3B\x20\x5C26\x20\x5C23\x20x29\x5C3B\x20\x5C26\x20\x5C23\x20x3B\x5C3B\x20';
         
         $css_2_escape = <<<INPUT
 body {
@@ -625,6 +629,8 @@ body {
 }
 INPUT;
         $expected_escaped_css = 'body\20 \7B \A \20 \20 \20 \20 background\2D image\3A \20 url\28 \27 http\3A \2F \2F example\2E com\2F foo\2E jpg\3F \3C \2F style\3E \3C script\3E alert\28 1\29 \3C \2F script\3E \27 \29 \3B \A \7D';
+        //css and js escapes applied
+        $expected_escaped_css_2_escapes = 'body\x5C20\x20\x5C7B\x20\x5CA\x20\x5C20\x20\x5C20\x20\x5C20\x20\x5C20\x20background\x5C2D\x20image\x5C3A\x20\x5C20\x20url\x5C28\x20\x5C27\x20http\x5C3A\x20\x5C2F\x20\x5C2F\x20example\x5C2E\x20com\x5C2F\x20foo\x5C2E\x20jpg\x5C3F\x20\x5C3C\x20\x5C2F\x20style\x5C3E\x20\x5C3C\x20script\x5C3E\x20alert\x5C28\x201\x5C29\x20\x5C3C\x20\x5C2F\x20script\x5C3E\x20\x5C27\x20\x5C29\x20\x5C3B\x20\x5CA\x20\x5C7D\x20';
         
         $js_2_escape = <<<INPUT
 bar&quot;; alert(&quot;Meow!&quot;); var xss=&quot;true
@@ -688,7 +694,7 @@ INPUT;
         /////////////////////// only html escape should be applied
         $data = $original_data;
         $renderer->escapeDataPublic($data, 'utf-8', array('html'), array('html'), array('html'), array('html'));
-        $this->assertContains($expected_escaped_html, $data['html']);
+        $this->assertContains($expected_escaped_html_4_escapes, $data['html']);
         $this->assertContains($original_data['html_attr'], $data['html_attr']);
         $this->assertContains($original_data['css'], $data['css']);
         $this->assertContains($original_data['js'], $data['js']);
@@ -698,7 +704,7 @@ INPUT;
         $data = $original_data;
         $renderer->escapeDataPublic($data, 'utf-8', array(), array('html_attr'), array('html_attr'), array('html_attr'));
         $this->assertContains($original_data['html'], $data['html']);
-        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertContains($expected_escaped_html_attr_3_escapes, $data['html_attr']);
         $this->assertContains($original_data['css'], $data['css']);
         $this->assertContains($original_data['js'], $data['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
@@ -708,7 +714,7 @@ INPUT;
         $renderer->escapeDataPublic($data, 'utf-8', array(), array(), array('css'), array('css'));
         $this->assertContains($original_data['html'], $data['html']);
         $this->assertContains($original_data['html_attr'], $data['html_attr']);
-        $this->assertContains($expected_escaped_css, $data['css']);
+        $this->assertContains($expected_escaped_css_2_escapes, $data['css']);
         $this->assertContains($original_data['js'], $data['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
         

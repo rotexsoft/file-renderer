@@ -788,26 +788,17 @@ class Renderer
         
         foreach( $data as $key => $value ) {
          
-            $method = '';
+            $methods = array();
             
-            if( in_array($key, $html_escaper_keys) ) {
-                
-                $method = 'escapeHtml';
-                
-            } else if( in_array($key, $html_attr_escaper_keys) ) {
-                
-                $method = 'escapeHtmlAttr';
-                
-            } else if( in_array($key, $css_escaper_keys) ) {
-                
-                $method = 'escapeCss';
-                
-            } else if( in_array($key, $js_escaper_keys) ) {
-                
-                $method = 'escapeJs';
-            }
+            if( in_array($key, $html_escaper_keys) ) { $methods[] = 'escapeHtml'; }
             
-            if( !empty($method) || is_array($data[$key]) ) {
+            if( in_array($key, $html_attr_escaper_keys) ) { $methods[] = 'escapeHtmlAttr'; }
+            
+            if( in_array($key, $css_escaper_keys) ) { $methods[] = 'escapeCss'; }
+            
+            if( in_array($key, $js_escaper_keys) ) { $methods[] = 'escapeJs'; }
+            
+            if( count($methods) > 0 || is_array($data[$key]) ) {
                 
                 if( is_array($data[$key]) ) {
                     
@@ -823,12 +814,15 @@ class Renderer
                             );
                     
                 } else if( is_string($data[$key]) ) {
-                 
-                    // escape the value
-                    $data[$key] = $escaper->$method($data[$key]);
+                    
+                    foreach($methods as $method) {
+                        
+                        // escape the value
+                        $data[$key] = $escaper->$method($data[$key]);
+                    }
                     
                 } //if( is_array($data[$key]) ) ... else if( is_string($data[$key]) )
-            } // if( !empty($method) || is_array($data[$key]) )
+            } // if( count($methods) > 0 || is_array($data[$key]) )
         } // foreach( $data as $key => $value )
     }
     
