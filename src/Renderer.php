@@ -317,6 +317,19 @@ class Renderer
         
         return $this->file_paths;
     }
+
+    /**
+     * 
+     * Returns the value of the `data` property of an instance of this class.
+     * 
+     * @return array An array of data to be extracted into variables for use in the php file
+     *               to be rendered via an instance of this class.
+     * 
+     */
+    public function getData() {
+        
+        return $this->data;
+    }
     
     /**
      * 
