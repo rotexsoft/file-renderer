@@ -231,6 +231,7 @@ array, you can do the following:
 ```php
 <?php
     $renderer->removeFirstNPaths(1); //will remove './views/controller1' from the file paths array
+    
     //$renderer->getFilePaths() at this point will return [ './views/base-controller' ]
     
     $renderer->appendPath('./views/controller1'); // will add './views/controller1' to the end of the 
@@ -245,6 +246,7 @@ You can also accomplish the same thing with the following:
 ```php
 <?php
     $renderer->removeLastNPaths(1); //will remove './views/base-controller' from the file paths array
+    
     //$renderer->getFilePaths() at this point will return [ './views/controller1' ]
     
     $renderer->prependPath('./views/base-controller'); // will add './views/base-controller' to the 
