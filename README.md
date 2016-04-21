@@ -252,8 +252,10 @@ You can also accomplish the same thing with the following:
 
 ### Escaping Data to be Passed to Views
 
-Only string values in the data array and its sub-arrays (if any) will be escaped. 
+Only string values in the data array and its sub-arrays (if any) will be escaped. Documentation on escaping coming soon!
 
 ### Advanced Usage
 
 #### Implementing a Two-Step View Templating Architecture
+
+Documentation coming soon!
