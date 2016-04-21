@@ -28,6 +28,10 @@ new features will not be accepted. Users are encouraged to extend the package wi
 feature(s) in their own projects. However, bug fix and documentation enhancement 
 related pull requests are greatly welcomed.
 
+### Running Tests
+
+  ` ./vendor/bin/phpunit --coverage-text`
+
 ## Requirements
 
 * PHP 5.3.23+
@@ -97,10 +101,10 @@ Your main php script may look like below (let's call it `test.php` and assume it
 </html>
 ```
 
-**NOTE:**&nbsp;` the file name, if any, supplied to the **render*()** methods will be 
+**NOTE: the file name, if any, supplied to the **render*()** methods will be 
 considered first for rendering if the file exists. The file name supplied to the 
 constructor during object creation will be considered last for rendering if the 
-file name supplied to the **render*()** method can't be found.`
+file name supplied to the **render*()** method can't be found.
 
 ### Getting, Setting and Unsetting View Data
 
