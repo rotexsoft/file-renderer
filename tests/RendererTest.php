@@ -46,16 +46,16 @@ class RendererTest extends \PHPUnit_Framework_TestCase
         $escape_encoding_in_obj = $reflection_class->getProperty('escape_encoding'); 
         $escape_encoding_in_obj->setAccessible(true); 
         
-        $html_escaper_keys_in_obj = $reflection_class->getProperty('html_escaper_keys');
+        $html_escaper_keys_in_obj = $reflection_class->getProperty('data_vars_2_html_escape');
         $html_escaper_keys_in_obj->setAccessible(true);
         
-        $html_attr_escaper_keys_in_obj = $reflection_class->getProperty('html_attr_escaper_keys');
+        $html_attr_escaper_keys_in_obj = $reflection_class->getProperty('data_vars_2_html_attr_escape');
         $html_attr_escaper_keys_in_obj->setAccessible(true);
         
-        $css_escaper_keys_in_obj = $reflection_class->getProperty('css_escaper_keys');
+        $css_escaper_keys_in_obj = $reflection_class->getProperty('data_vars_2_css_escape');
         $css_escaper_keys_in_obj->setAccessible(true);
         
-        $js_escaper_keys_in_obj = $reflection_class->getProperty('js_escaper_keys');
+        $js_escaper_keys_in_obj = $reflection_class->getProperty('data_vars_2_js_escape');
         $js_escaper_keys_in_obj->setAccessible(true);
         
         // test with all params supplied; no default vals
@@ -721,6 +721,22 @@ INPUT;
         /////////////////////// add sub-array
         $data = $original_data;
         $data['sub_array'] = $data;
+        $renderer->escapeDataPublic($data, 'utf-8', array('html'), array('html_attr'), array('css'), array('js'));
+        
+        $this->assertContains($expected_escaped_html, $data['html']);
+        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertContains($expected_escaped_css, $data['css']);
+        $this->assertContains($expected_escaped_js, $data['js']);
+        $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
+        
+        $this->assertContains($expected_escaped_html, $data['sub_array']['html']);
+        $this->assertContains($expected_escaped_html_attr, $data['sub_array']['html_attr']);
+        $this->assertContains($expected_escaped_css, $data['sub_array']['css']);
+        $this->assertContains($expected_escaped_js, $data['sub_array']['js']);
+        $this->assertEquals($original_data['no_escape_variable'], $data['sub_array']['no_escape_variable']);
+        
+        //test that calling escapeData the second time with the same data array and escape parameters 
+        //does not lead to double escaping
         $renderer->escapeDataPublic($data, 'utf-8', array('html'), array('html_attr'), array('css'), array('js'));
         
         $this->assertContains($expected_escaped_html, $data['html']);
