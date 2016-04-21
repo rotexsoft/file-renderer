@@ -55,6 +55,11 @@ Your main php script may look like below (let's call it `test.php` and assume it
     //within the directory containing this php script, use the code below:
     
     $file_paths = [ './views' ]; //you can also use absolute paths
+
+    // The keys in this data array will be converted to variables when rendering
+    // a view file. For example, a variable named `$paragraph_data_from_file_renderer`
+    // with the value `'This is a Paragraph!!'` will be available to the view during
+    // rendering.
     $view_data = [ 'paragraph_data_from_file_renderer' => 'This is a Paragraph!!' ];
 
     //you must include the file extension in the file name (in this case `.php`)
@@ -126,7 +131,6 @@ View data can be supplied when the Renderer object is created / instantiated
     //NOTE: if no view data array is supplied during object creation, the view 
     //      data for the created object will have a default value of an empty
     //      array.
-
 ?>
 ```
 
@@ -262,7 +266,153 @@ You can also accomplish the same thing with the following:
 
 ### Escaping Data to be Passed to Views
 
-Only string values in the data array and its sub-arrays (if any) will be escaped. Documentation on escaping coming soon!
+Escaping functionality is provided via the zend-escaper package. It is recommended that you read this 
+[article](https://github.com/rotexdegba/zend-escaper/blob/master/doc/book/zend.escaper.theory-of-operation.md) 
+to understand the principles behind properly escaping data.
+
+Escaping is possible in four contexts: 
+* **Html Body:** this type of escaping should be used for view data variables which may contain html markup. 
+For example:
+
+`./views/view-with-escapable-html.php`
+```php
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Encodings set correctly!</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <div>
+            What framework are you using?
+            <?php echo $var_that_should_be_html_escaped; ?>
+        </div>
+    </body>
+</html>
+```
+* **Html Attribute:** this type of escaping should be used for view data variables which are meant to be 
+rendered as attribute values within html elements in the view. For example:
+
+`./views/view-with-escapable-html-attrs.php`
+```php
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Encodings set correctly!</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <div>
+            <span title=<?php echo $var_that_should_be_html_attr_escaped; ?>>
+                What framework are you using?
+            </span>
+        </div>
+    </body>
+</html>
+```
+* **Css:** this type of escaping should be used for view data variables which are meant to be rendered
+within `<style>` tags or inside the `style` attribute of any html tag. For example:
+
+`./views/view-with-escapable-css.php`
+```php
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Escaped CSS</title>
+        <meta charset="UTF-8"/>
+        <style>
+            <?php echo $var_that_should_be_css_escaped; ?>
+        </style>
+    </head>
+    <body>
+        <p style="<?php echo $another_var_that_should_be_css_escaped; ?>">
+            User controlled CSS needs to be properly escaped!
+        </p>
+    </body>
+</html>
+```
+* **Javascript:** this type of escaping can be safely used for view data variables which are meant to be 
+rendered as string literals or digits within Javascript code inside the view to be rendered. Other 
+Javascript code that would be injected from view data variables can also be Javascript escaped, 
+but it is possible that escaping them may lead to Javascript syntax error(s) when the view is 
+rendered in a browser. For example:
+
+`./views/view-with-escapable-js.php`
+```php
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Escaped Entities</title>
+        <meta charset="UTF-8"/>
+        <script type="text/javascript">
+            var some_string = '<?php echo $var_that_can_be_safely_js_escaped; ?>';
+        </script>
+    </head>
+    <body>
+        <p onclick="var a_number = <?php echo $another_var_that_can_be_safely_js_escaped; ?>; ">
+            Javascript escaping the variable in this paragraph's onclick attribute should
+            be safe if the variable contains basic alphanumeric characters. It will definitely
+            prevent XSS attacks.
+        </p>
+
+        <p onclick="<?php echo $another_var_that_cannot_be_guaranteed_to_be_safely_js_escaped; ?>">
+            Javascript escaping the variable in this paragraph's onclick attribute may lead
+            to Javascript syntax error(s) but will prevent XSS attacks.
+        </p>
+    </body>
+</html>
+```
+
+You can enable escaping either during the creation of the Renderer object and / or during a 
+call to any of the **render*()** methods.
+
+* Enabling escaping during Renderer object creation:
+
+```php
+<?php
+
+?>
+```
+
+* Enabling escaping during a call to any of the **render*()** methods:
+
+```php
+<?php
+
+?>
+```
+
+
+Only string values in the data array and its sub-arrays (if any) will be escaped if escaping is enabled. 
+
+
+
+More on escaping from the zend-escaper website:
+
+>HTML escaping is accomplished via Zend\Escaper\Escaper's escapeHtml method. Internally it uses PHP's htmlspecialchars, 
+and additionally correctly sets the flags and encoding. One thing a developer needs to pay special attention too, is the 
+encoding in which the document is served to the client; **it must be the same** as the encoding used for escaping!
+Go [here](https://github.com/rotexdegba/zend-escaper/blob/master/doc/book/zend.escaper.escaping-html.md) for more details.
+
+>HTML Attribute escaping is accomplished via Zend\Escaper\Escaper's escapeHtmlAttr method. Internally it will convert the data to UTF-8, 
+check for it's validity, and use an extended set of characters to escape that are not covered by htmlspecialchars to cover the cases 
+where an attribute might be unquoted or quoted illegally.
+Go [here](https://github.com/rotexdegba/zend-escaper/blob/master/doc/book/zend.escaper.escaping-html-attributes.md) for more details.
+
+>CSS escaping is accomplished via Zend\Escaper\Escaper's escapeCss method. CSS escaping excludes only basic alphanumeric characters 
+and escapes all other characters into valid CSS hexadecimal escapes.
+Go [here](https://github.com/rotexdegba/zend-escaper/blob/master/doc/book/zend.escaper.escaping-css.md) for more details.
+
+>Javascript escaping is accomplished via Zend\Escaper\Escaper's escapeJs method.
+Javascript string literals in HTML are subject to significant restrictions particularly due to the potential for unquoted attributes 
+and any uncertainty as to whether Javascript will be viewed as being CDATA or PCDATA by the browser. To eliminate any possible XSS 
+vulnerabilities, Javascript escaping for HTML extends the escaping rules of both ECMAScript and JSON to include any potentially 
+dangerous character. Very similar to HTML attribute value escaping, this means escaping everything except basic alphanumeric 
+characters and the comma, period and underscore characters as hexadecimal or unicode escapes.
+Javascript escaping applies to all literal strings and digits. It is not possible to safely escape other Javascript markup.
+An extended set of characters are escaped beyond ECMAScript's rules for Javascript literal string escaping in order to prevent 
+misinterpretation of Javascript as HTML leading to the injection of special characters and entities.
+Go [here](https://github.com/rotexdegba/zend-escaper/blob/master/doc/book/zend.escaper.escaping-javascript.md) for more details.
 
 ### Advanced Usage
 
