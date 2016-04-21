@@ -14,3 +14,8 @@ Users of this package are still responsible for making sure that they validate o
 (eg. via html forms) with tools like  [Respect\Validation](https://github.com/Respect/Validation), [Valitron](https://github.com/vlucas/valitron),
 [Upload](https://github.com/brandonsavage/Upload), [Volan](https://github.com/serkin/Volan), [Sirius Validation](https://github.com/siriusphp/validation), 
 [Filterus](https://github.com/ircmaxell/filterus), etc.
+
+## Installation
+`composer require rotexsoft/file-renderer`
+
+
