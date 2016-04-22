@@ -804,14 +804,16 @@ class Renderer
         ) {
             //the data array has already been escaped
             return;
-        } 
-        else if(
+        } else if(
             count($data_vars_2_html_escape) <= 0
             && count($data_vars_2_html_attr_escape) <= 0
             && count($data_vars_2_css_escape) <= 0
             && count($data_vars_2_js_escape) <= 0
         ) {
             //no field has been specified for escaping; nothing to do
+            return;
+        } else if ( count($data) <= 0 ) {
+            //no data supplied; nothing to do
             return;
         }
         
