@@ -159,7 +159,7 @@ View data can also be set or updated after the Renderer object has been created 
     // $renderer->setVar('paragraph_data_from_file_renderer', 'This is a Paragraph!!');
 
     //This will update the value of `paragraph_data_from_file_renderer` in the
-    //view data array.
+    //internal view data array (ie. the protected `data` property in \Rotexsoft\FileRenderer\Renderer).
     $renderer->paragraph_data_from_file_renderer = 'This is a new Paragraph!!';
 ?>
 ```
