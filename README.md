@@ -17,6 +17,14 @@ Users of this package are still responsible for making sure that they validate o
 [Upload](https://github.com/brandonsavage/Upload), [Volan](https://github.com/serkin/Volan), [Sirius Validation](https://github.com/siriusphp/validation), 
 [Filterus](https://github.com/ircmaxell/filterus), etc.
 
+### Main Features
+* No new templating language or syntax to learn, just good old PHP is required to compose view files to be rendered.
+    * View file(s) in existing projects can easily be adapted for rendering via this package with very little effort.
+* This package can be easily used to implement a Two-Step-View system where all your site's pages share a common layout file and the content for each page gets injected into the layout file.
+* Data (variables) can be injected into the files to be rendered via an associative array whose keys will be converted to variables when rendering occurs.
+    * Escaping is performed on the values in the data array based on specified escape rules.
+* Auto-Escaping is possible on a per instance basis of the **Renderer** class (escaping rules must be specified when instantiating a **Renderer** object for this feature to work).
+
 ## Acknowledgement
 
 The escaping functionality in this package is implemented using the [zend-escaper](https://github.com/zendframework/zend-escaper) package.
@@ -290,6 +298,11 @@ For example:
     </body>
 </html>
 ```
+
+If `$var_that_should_be_html_escaped` has an initial value of `'<script>alert("zf2");</script>'`
+it will be transformed to `'&lt;script&gt;alert(&quot;zf2&quot;);&lt;/script&gt;'` after **html**
+escaping is applied to it.
+
 * **Html Attribute:** this type of escaping should be used for view data variables which are meant to be 
 rendered as attribute values within html elements in the view. For example:
 
@@ -310,6 +323,11 @@ rendered as attribute values within html elements in the view. For example:
     </body>
 </html>
 ```
+
+If `$var_that_should_be_html_attr_escaped` has an initial value of `'faketitle" onmouseover="alert(/ZF2!/);'`
+it will be transformed to `'faketitle&quot;&#x20;onmouseover&#x3D;&quot;alert&#x28;&#x2F;ZF2&#x21;&#x2F;&#x29;&#x3B;'` 
+after **html attribute** escaping is applied to it.
+
 * **Css:** this type of escaping should be used for view data variables which are meant to be rendered
 within `<style>` tags or inside the `style` attribute of any html tag. For example:
 
@@ -331,6 +349,17 @@ within `<style>` tags or inside the `style` attribute of any html tag. For examp
     </body>
 </html>
 ```
+
+If `$var_that_should_be_css_escaped` has an initial value of 
+`"body { background-image: url('http://example.com/foo.jpg?'); }</style><script>alert('You\\'ve been XSSed!')</script><style>"`
+it will be transformed to `"body\20 \7B \20 background\2D image\3A \20 url\28 \27 http\3A \2F \2F example\2E com\2F foo\2E jpg\3F \27 \29 \3B \20 \7D \3C \2F style\3E \3C script\3E alert\28 \27 You\5C \27 ve\20 been\20 XSSed\21 \27 \29 \3C \2F script\3E \3C style\3E"` 
+after **css** escaping is applied to it.
+
+If `$another_var_that_should_be_css_escaped` has an initial value of 
+`' display: block; " onclick="alert(\'You\\\'ve been XSSed!\'); '`
+it will be transformed to `'\20 display\3A \20 block\3B \20 \22 \20 onclick\3D \22 alert\28 \27 You\5C \27 ve\20 been\20 XSSed\21 \27 \29 \3B \20 '` 
+after **css** escaping is applied to it.
+
 * **Javascript:** this type of escaping can be safely used for view data variables which are meant to be 
 rendered as string literals or digits within Javascript code inside the view to be rendered. Other 
 Javascript code that would be injected from view data variables can also be Javascript escaped, 
@@ -364,10 +393,23 @@ rendered in a browser. For example:
 </html>
 ```
 
+If `$var_that_can_be_safely_js_escaped` has an initial value of `"javascript's cool"`
+it will be transformed to `'javascript\x27s\x20cool'` after **Javascript** escaping 
+is applied to it.
+
+If `$another_var_that_can_be_safely_js_escaped` has an initial value of 
+`'563'` it will be left unchanged with the same value of `'563'` 
+after **Javascript** escaping is applied to it.
+
+If `$another_var_that_cannot_be_guaranteed_to_be_safely_js_escaped` has an initial value of 
+`' var x = \'Yo!\'; alert(x); '` it will be transformed to 
+`'\x20var\x20x\x20\x3D\x20\x27Yo\x21\x27\x3B\x20alert\x28x\x29\x3B\x20'` 
+after **Javascript** escaping is applied to it.
+
 You can enable escaping either during the creation of the Renderer object and / or during a 
 call to any of the **render*()** methods.
 
-* Enabling escaping during Renderer object creation:
+* To enable escaping during the creation of a Renderer object:
 
 ```php
 <?php
@@ -413,7 +455,8 @@ call to any of the **render*()** methods.
     //Escaping functionality is being enabled in the call to the constructor
     //below because we are passing the $data_vars_2_be_*_escaped arrays to the
     //constructor. By default, if these escape parameters are not supplied to
-    //the constructor, they will each internally be assigned an empty array value.
+    //the constructor, they will each internally be assigned an empty array 
+    //value (meaning that escaping is disabled).
     $renderer = new \Rotexsoft\FileRenderer\Renderer(
                     '', //file name can be blank, but should be supplied when any render*() method is called
                     $view_data, 
@@ -431,32 +474,122 @@ call to any of the **render*()** methods.
                                                                        //in order to prevent escaping 
                                                                        //the same data more than once.
                                                                             
-    $renderer->renderToScreen('./views/view-with-escapable-html-attrs.php'); //already escaped data
+    $renderer->renderToScreen('./views/view-with-escapable-html-attrs.php'); //Already escaped data
                                                                              //will be bound to this
                                                                              //view.
     
-    $rendered_view = $renderer->renderToString('./views/view-with-escapable-css.php'); //already 
+    $rendered_view = $renderer->renderToString('./views/view-with-escapable-css.php'); //Already 
                                                                                        //escaped data 
                                                                                        //will be bound 
                                                                                        //to this view.
     
-    $renderer->renderToScreen('./views/view-with-escapable-js.php');  //already escaped data will be
+    $renderer->renderToScreen('./views/view-with-escapable-js.php');  //Already escaped data will be
                                                                       //bound to this view.  
 ?>
 ```
 
-* Enabling escaping during a call to any of the **render*()** methods:
+* To enable escaping during a call to any of the **render*()** methods:
 
 ```php
 <?php
+    $bad_css_with_xss = 
+        "body { background-image: url('http://example.com/foo.jpg?'); }</style><script>alert('You\\'ve been XSSed!')</script><style>";
+    
+    $bad_css_with_xss2 = ' display: block; " onclick="alert(\'You\\\'ve been XSSed!\'); ';
+    
+    $view_data = [
+        'var_that_should_be_html_escaped'                               => '<script>alert("zf2");</script>',
+        'var_that_should_be_html_attr_escaped'                          => 'faketitle" onmouseover="alert(/ZF2!/);',
+        'var_that_should_be_css_escaped'                                => $bad_css_with_xss,
+        'another_var_that_should_be_css_escaped'                        => $bad_css_with_xss2,
+        'var_that_can_be_safely_js_escaped'                             => "javascript's cool",
+        'another_var_that_can_be_safely_js_escaped'                     => '563',
+        'another_var_that_cannot_be_guaranteed_to_be_safely_js_escaped' => ' var x = \'Yo!\'; alert(x); ',
+    ];
 
+    //an array of key(s) in the data array whose value(s) should each be html escaped
+    $data_vars_2_be_html_escaped = ['var_that_should_be_html_escaped'];
+    
+    //an array of key(s) in the data array whose value(s) should each be html attr escaped
+    $data_vars_2_be_html_attr_escaped = ['var_that_should_be_html_attr_escaped'];
+    
+    //an array of key(s) in the data array whose value(s) should each be css escaped
+    $data_vars_2_be_css_escaped = [
+        'var_that_should_be_css_escaped', 
+        'another_var_that_should_be_css_escaped'
+    ];
+    
+    //an array of key(s) in the data array whose value(s) should each be js escaped
+    $data_vars_2_be_js_escaped = [
+        'var_that_can_be_safely_js_escaped', 
+        'another_var_that_can_be_safely_js_escaped',
+        'another_var_that_cannot_be_guaranteed_to_be_safely_js_escaped'
+    ];
+    
+    $escape_encoding = 'utf-8'; // should be the same encoding in which the document is served 
+                                // to the browser (ie. the encoding defined in your html document).
+    
+    //create a renderer
+    $renderer = new \Rotexsoft\FileRenderer\Renderer();
+
+    //Escaping functionality is being enabled in the call to renderToScreen
+    //below because we are passing the $data_vars_2_be_*_escaped arrays to it.
+    //By default, if these escape parameters are not supplied, they will each 
+    //internally be assigned an empty array value and merged with their 
+    //corresponding internal \Rotexsoft\FileRenderer\Renderer property 
+    //values for $renderer->data_vars_2_html_escape, $renderer->data_vars_2_css_escape
+    //$renderer->data_vars_2_html_attr_escape and $renderer->data_vars_2_js_escape.
+    //Note that these properties are protected and not externally accessible.
+    $renderer->renderToScreen(
+                    './views/view-with-escapable-html.php',
+                    $view_data,                             //The escaping of the view data
+                    $escape_encoding,                       //occurs only once during this
+                    $data_vars_2_be_html_escaped,           //first call to renderToScreen
+                    $data_vars_2_be_html_attr_escaped,      //in order to prevent escaping
+                    $data_vars_2_be_css_escaped,            //the same data more than once.
+                    $data_vars_2_be_js_escaped
+                );                                                      
+                                                
+    $renderer->renderToScreen(
+                    './views/view-with-escapable-html-attrs.php',   
+                    $view_data,                                     //Already escaped data in the
+                    $escape_encoding,                               //first call to renderToScreen
+                    $data_vars_2_be_html_escaped,                   //will be bound to this view
+                    $data_vars_2_be_html_attr_escaped,              //because the $view_data and 
+                    $data_vars_2_be_css_escaped,                    //other parameters are the same
+                    $data_vars_2_be_js_escaped                      //and we are rendering using the
+                );                                                  //same instance of the Renderer class.
+                          
+    $rendered_view = $renderer->renderToString(
+                    './views/view-with-escapable-css.php',
+                    $view_data,                             //Already escaped data in the
+                    $escape_encoding,                       //first call to renderToScreen 
+                    $data_vars_2_be_html_escaped,           //will be bound to this view
+                    $data_vars_2_be_html_attr_escaped,      //because the $view_data and 
+                    $data_vars_2_be_css_escaped,            //other parameters are the same
+                    $data_vars_2_be_js_escaped              //and we are rendering using the
+                );                                          //same instance of the Renderer class.
+    
+    $renderer->renderToScreen(
+                    './views/view-with-escapable-js.php',
+                    $view_data,                             //Already escaped data in the
+                    $escape_encoding,                       //first call to renderToScreen 
+                    $data_vars_2_be_html_escaped,           //will be bound to this view
+                    $data_vars_2_be_html_attr_escaped,      //because the $view_data and 
+                    $data_vars_2_be_css_escaped,            //other parameters are the same
+                    $data_vars_2_be_js_escaped              //and we are rendering using the
+                );                                          //same instance of the Renderer class.
 ?>
 ```
 
+>Enabling escaping via the constructor, is a neat way to enforce escaping of specified
+view data variables in subsequent calls to the **render*()** methods without having to
+pass the escape paremeters each subsequent time any of the **render*()** methods is called.
+This is kind of a way to enable **auto-escaping** on an instance of the Renderer class. You
+just have to make sure that the escaping parameters are set in a way that makes the most 
+sense for the view(s) you are trying to render.
 
-Only string values in the data array and its sub-arrays (if any) will be escaped if escaping is enabled. 
-
-
+Only string values in the data array and its sub-arrays (if any) will be escaped if escaping is enabled.
 
 More on escaping from the zend-escaper website:
 

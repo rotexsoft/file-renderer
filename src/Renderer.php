@@ -979,10 +979,7 @@ class Renderer
      */
     protected function getVarType($var, $cap_first=false) {
 
-        if( is_object($var) ) {
-
-            return $cap_first ? ucfirst(get_class($var)) : get_class($var);
-        }
+        if( is_object($var) ) { return $cap_first ? ucfirst(get_class($var)) : get_class($var); }
 
         return $cap_first ? ucfirst(gettype($var)) : gettype($var);
     }
