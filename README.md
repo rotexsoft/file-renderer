@@ -393,13 +393,13 @@ rendered in a browser. For example:
         </script>
     </head>
     <body>
-        <p onclick="var a_number = <?php echo $another_var_that_can_be_safely_js_escaped; ?>; alert(a_number);">
+        <p onclick="var a_number = <?php echo $a_var_that_can_be_safely_js_escaped; ?>; alert(a_number);">
             Javascript escaping the variable in this paragraph's onclick attribute should
             be safe if the variable contains basic alphanumeric characters. It will definitely
             prevent XSS attacks.
         </p>
 
-        <p onclick="<?php echo $another_var_that_cannot_be_guaranteed_to_be_safely_js_escaped; ?>">
+        <p onclick="<?php echo $a_var_that_cant_be_guaranteed_to_be_safely_js_escaped; ?>">
             Javascript escaping the variable in this paragraph's onclick attribute may lead
             to Javascript syntax error(s) but will prevent XSS attacks.
         </p>
@@ -415,7 +415,7 @@ it will be transformed to
 
 after **Javascript** escaping is applied to it.
 
-Given `$another_var_that_can_be_safely_js_escaped` has an initial value of: 
+Given `$a_var_that_can_be_safely_js_escaped` has an initial value of: 
 >`'563'` 
 
 it will be left unchanged with the same value of 
@@ -423,7 +423,7 @@ it will be left unchanged with the same value of
 
 after **Javascript** escaping is applied to it.
 
-Given `$another_var_that_cannot_be_guaranteed_to_be_safely_js_escaped` has an initial value of: 
+Given `$a_var_that_cant_be_guaranteed_to_be_safely_js_escaped` has an initial value of: 
 >`' var x = \'Yo!\'; alert(x); '` 
 
 it will be transformed to 
@@ -446,13 +446,13 @@ call to any of the **render*()** methods.
     $bad_css_with_xss2 = ' display: block; " onclick="alert(\'You\\\'ve been XSSed!\'); ';
     
     $view_data = [
-        'var_that_should_be_html_escaped'                               => '<script>alert("zf2");</script>',
-        'var_that_should_be_html_attr_escaped'                          => 'faketitle" onmouseover="alert(/ZF2!/);',
-        'var_that_should_be_css_escaped'                                => $bad_css_with_xss,
-        'another_var_that_should_be_css_escaped'                        => $bad_css_with_xss2,
-        'var_that_can_be_safely_js_escaped'                             => "javascript's cool",
-        'another_var_that_can_be_safely_js_escaped'                     => '563',
-        'another_var_that_cannot_be_guaranteed_to_be_safely_js_escaped' => ' var x = \'Yo!\'; alert(x); ',
+        'var_that_should_be_html_escaped'                       => '<script>alert("zf2");</script>',
+        'var_that_should_be_html_attr_escaped'                  => 'faketitle" onmouseover="alert(/ZF2!/);',
+        'var_that_should_be_css_escaped'                        => $bad_css_with_xss,
+        'another_var_that_should_be_css_escaped'                => $bad_css_with_xss2,
+        'var_that_can_be_safely_js_escaped'                     => "javascript's cool",
+        'a_var_that_can_be_safely_js_escaped'                   => '563',
+        'a_var_that_cant_be_guaranteed_to_be_safely_js_escaped' => ' var x = \'Yo!\'; alert(x); ',
     ];
 
     //an array of key(s) in the data array whose value(s) should each be html escaped
@@ -470,8 +470,8 @@ call to any of the **render*()** methods.
     //an array of key(s) in the data array whose value(s) should each be js escaped
     $data_vars_2_be_js_escaped = [
         'var_that_can_be_safely_js_escaped', 
-        'another_var_that_can_be_safely_js_escaped',
-        'another_var_that_cannot_be_guaranteed_to_be_safely_js_escaped'
+        'a_var_that_can_be_safely_js_escaped',
+        'a_var_that_cant_be_guaranteed_to_be_safely_js_escaped'
     ];
     
     $escape_encoding = 'utf-8'; // should be the same encoding in which the document is served 
@@ -523,13 +523,13 @@ call to any of the **render*()** methods.
     $bad_css_with_xss2 = ' display: block; " onclick="alert(\'You\\\'ve been XSSed!\'); ';
     
     $view_data = [
-        'var_that_should_be_html_escaped'                               => '<script>alert("zf2");</script>',
-        'var_that_should_be_html_attr_escaped'                          => 'faketitle" onmouseover="alert(/ZF2!/);',
-        'var_that_should_be_css_escaped'                                => $bad_css_with_xss,
-        'another_var_that_should_be_css_escaped'                        => $bad_css_with_xss2,
-        'var_that_can_be_safely_js_escaped'                             => "javascript's cool",
-        'another_var_that_can_be_safely_js_escaped'                     => '563',
-        'another_var_that_cannot_be_guaranteed_to_be_safely_js_escaped' => ' var x = \'Yo!\'; alert(x); ',
+        'var_that_should_be_html_escaped'                       => '<script>alert("zf2");</script>',
+        'var_that_should_be_html_attr_escaped'                  => 'faketitle" onmouseover="alert(/ZF2!/);',
+        'var_that_should_be_css_escaped'                        => $bad_css_with_xss,
+        'another_var_that_should_be_css_escaped'                => $bad_css_with_xss2,
+        'var_that_can_be_safely_js_escaped'                     => "javascript's cool",
+        'a_var_that_can_be_safely_js_escaped'                   => '563',
+        'a_var_that_cant_be_guaranteed_to_be_safely_js_escaped' => ' var x = \'Yo!\'; alert(x); ',
     ];
 
     //an array of key(s) in the data array whose value(s) should each be html escaped
@@ -547,8 +547,8 @@ call to any of the **render*()** methods.
     //an array of key(s) in the data array whose value(s) should each be js escaped
     $data_vars_2_be_js_escaped = [
         'var_that_can_be_safely_js_escaped', 
-        'another_var_that_can_be_safely_js_escaped',
-        'another_var_that_cannot_be_guaranteed_to_be_safely_js_escaped'
+        'a_var_that_can_be_safely_js_escaped',
+        'a_var_that_cant_be_guaranteed_to_be_safely_js_escaped'
     ];
     
     $escape_encoding = 'utf-8'; // should be the same encoding in which the document is served 
