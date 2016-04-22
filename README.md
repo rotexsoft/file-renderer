@@ -747,7 +747,7 @@ will lead to the output below:
 </html>
 ```
 
-**Sharing Data between Layout and Page Content Views**
+##### Sharing Data between Layout and Page Content Views
 
 `two-step-view-implemetation-one-renderer-share-data.php`
 
