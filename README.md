@@ -2,6 +2,27 @@
 
 ![Build Status](https://travis-ci.org/rotexsoft/file-renderer.svg?branch=master&style=flat-square) &nbsp; https://travis-ci.org/rotexsoft/file-renderer 
 
+- [PHP File Renderer](#php-file-renderer)
+	- [Introduction](#introduction)
+		- [Main Features](#main-features)
+	- [Acknowledgement](#acknowledgement)
+	- [Contribution](#contribution)
+		- [Running Tests](#running-tests)
+	- [Requirements](#requirements)
+	- [Installation](#installation)
+	- [Usage](#usage)
+		- [Basic Usage](#basic-usage)
+		- [Getting, Setting and Unsetting View Data](#getting-setting-and-unsetting-view-data)
+			- [Setting View Data](#setting-view-data)
+			- [Getting View Data](#getting-view-data)
+			- [Unsetting View Data](#unsetting-view-data)
+		- [File paths](#file-paths)
+		- [Escaping Data to be Passed to Views](#escaping-data-to-be-passed-to-views)
+			- [Using Wild Cards in Escape Specification](#using-wild-cards-in-escape-specification)
+		- [Advanced Usage](#advanced-usage)
+			- [Implementing a Two-Step View Templating System](#implementing-a-two-step-view-templating-system)
+				- [Sharing Data between Layout and Page Content Views](#sharing-data-between-layout-and-page-content-views)
+
 ## Introduction
 
 This is a simple, elegant and flexible tool that can be used to render php files (also referred to as `Views` within this documentation)
