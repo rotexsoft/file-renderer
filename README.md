@@ -6,6 +6,7 @@
 	- [Introduction](#introduction)
 		- [Main Features](#main-features)
 	- [Acknowledgement](#acknowledgement)
+    - [Changelog](#changelog)
 	- [Contribution](#contribution)
 		- [Running Tests](#running-tests)
 	- [Requirements](#requirements)
@@ -49,6 +50,10 @@ Users of this package are still responsible for making sure that they validate o
 ## Acknowledgement
 
 The escaping functionality in this package is implemented using the [zend-escaper](https://github.com/zendframework/zend-escaper) package.
+
+## Changelog
+
+[Here](https://github.com/rotexsoft/file-renderer/releases).
 
 ## Contribution
 
