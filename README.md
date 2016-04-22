@@ -34,6 +34,8 @@ views; simply write your views in plain old php. This package also provides esca
 This package can easily be used by framework developers to implement the View layer of an MVC (Model-View-Controller) framework. 
 It can also be easily incorporated into existing frameworks.
 
+100% Unit Test Coverage.
+
 Users of this package are still responsible for making sure that they validate or sanitize data coming into their application(s) via user input 
 (eg. via html forms) with tools like  [Respect\Validation](https://github.com/Respect/Validation), [Valitron](https://github.com/vlucas/valitron),
 [Upload](https://github.com/brandonsavage/Upload), [Volan](https://github.com/serkin/Volan), [Sirius Validation](https://github.com/siriusphp/validation), 
