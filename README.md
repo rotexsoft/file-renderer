@@ -280,7 +280,7 @@ Escaping functionality is provided via the zend-escaper package. It is **STRONGL
 to understand the principles behind properly escaping data.
 
 Escaping is possible in four contexts: 
-* **Html Body:** this type of escaping should be used for view data variables which may contain html markup. 
+* **Html:** this type of escaping should be used for view data variables which may contain html markup. 
 For example:
 
 `./views/view-with-escapable-html.php`
@@ -309,7 +309,7 @@ it will be transformed to
 after **html** escaping is applied to it.
 
 * **Html Attribute:** this type of escaping should be used for view data variables which are meant to be 
-rendered as attribute values within html elements in the view. For example:
+rendered as attribute values within html elements in a view. For example:
 
 `./views/view-with-escapable-html-attrs.php`
 ```php
@@ -761,8 +761,8 @@ will lead to the output below:
     //views rendered using $renderer. Passing a data array with a 'page_content' 
     //entry to renderToString or renderToScreen will cause the intial value of
     //the 'page_content' entry (in this case 'Default Page Content!') to be
-    //ignored when rendering (the of the 'page_content' entry in the data array
-    //passed to renderToString or renderToScreen will be used instead).
+    //ignored when rendering (the value of the 'page_content' entry in the data 
+    //array passed to renderToString or renderToScreen will be used instead).
     $shared_data = ['page_content' => 'Default Page Content!'];
     $renderer = new \Rotexsoft\FileRenderer\Renderer('', $shared_data);
     
@@ -786,7 +786,9 @@ will lead to the output below:
                                                // to the constructor. Note that 
                                                // the values in $shared_data are
                                                // stored in a protected property
-                                               // of $renderer (ie. $renderer->data ). 
+                                               // of $renderer (ie. $renderer->data
+                                               // whose value is publicly accessible
+                                               // via $renderer->getData()). 
 ?>
 ```
 
