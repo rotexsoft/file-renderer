@@ -750,5 +750,76 @@ INPUT;
         $this->assertContains($expected_escaped_css, $data['sub_array']['css']);
         $this->assertContains($expected_escaped_js, $data['sub_array']['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['sub_array']['no_escape_variable']);
+        
+        /////////////////////// Test wild card
+        //html escape all data fields
+        $data = $original_data;
+        $renderer->escapeDataPublic($data, 'utf-8', array('*'));
+        
+        $expected_escaped_html = '&lt;script&gt;alert(&quot;zf2&quot;)&lt;/script&gt;';
+        $expected_escaped_html_attr = 'faketitle onmouseover=alert(/ZF2!/);';
+        $expected_escaped_css = <<<INPUT
+body {
+    background-image: url(&#039;http://example.com/foo.jpg?&lt;/style&gt;&lt;script&gt;alert(1)&lt;/script&gt;&#039;);
+}
+INPUT;
+        $expected_escaped_js = 'bar&amp;quot;; alert(&amp;quot;Meow!&amp;quot;); var xss=&amp;quot;true';
+        $expected_escaped_5th_field = "yabadabadoo!";
+        
+        $this->assertContains($expected_escaped_html, $data['html']);
+        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertContains($expected_escaped_css, $data['css']);
+        $this->assertContains($expected_escaped_js, $data['js']);
+        $this->assertEquals($expected_escaped_5th_field, $data['no_escape_variable']);
+      
+        //html attr escape all data fields
+        $data = $original_data;
+        $renderer->escapeDataPublic($data, 'utf-8', array(), array('*'));
+        
+        $expected_escaped_html = '&lt;script&gt;alert&#x28;&quot;zf2&quot;&#x29;&lt;&#x2F;script&gt;';
+        $expected_escaped_html_attr = 'faketitle&#x20;onmouseover&#x3D;alert&#x28;&#x2F;ZF2&#x21;&#x2F;&#x29;&#x3B;';
+        $expected_escaped_css = <<<INPUT
+body&#x20;&#x7B;&#x0A;&#x20;&#x20;&#x20;&#x20;background-image&#x3A;&#x20;url&#x28;&#x27;http&#x3A;&#x2F;&#x2F;example.com&#x2F;foo.jpg&#x3F;&lt;&#x2F;style&gt;&lt;script&gt;alert&#x28;1&#x29;&lt;&#x2F;script&gt;&#x27;&#x29;&#x3B;&#x0A;&#x7D;
+INPUT;
+        $expected_escaped_js = 'bar&amp;quot&#x3B;&#x3B;&#x20;alert&#x28;&amp;quot&#x3B;Meow&#x21;&amp;quot&#x3B;&#x29;&#x3B;&#x20;var&#x20;xss&#x3D;&amp;quot&#x3B;true';
+        $expected_escaped_5th_field = "yabadabadoo&#x21;";
+        
+        $this->assertContains($expected_escaped_html, $data['html']);
+        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertContains($expected_escaped_css, $data['css']);
+        $this->assertContains($expected_escaped_js, $data['js']);
+        $this->assertEquals($expected_escaped_5th_field, $data['no_escape_variable']);
+        
+        //css escape all data fields
+        $data = $original_data;
+        $renderer->escapeDataPublic($data, 'utf-8', array(), array(), array('*'));
+        
+        $expected_escaped_html = '\3C script\3E alert\28 \22 zf2\22 \29 \3C \2F script\3E ';
+        $expected_escaped_html_attr = 'faketitle\20 onmouseover\3D alert\28 \2F ZF2\21 \2F \29 \3B ';
+        $expected_escaped_css = 'body\20 \7B \A \20 \20 \20 \20 background\2D image\3A \20 url\28 \27 http\3A \2F \2F example\2E com\2F foo\2E jpg\3F \3C \2F style\3E \3C script\3E alert\28 1\29 \3C \2F script\3E \27 \29 \3B \A \7D ';
+        $expected_escaped_js = 'bar\26 quot\3B \3B \20 alert\28 \26 quot\3B Meow\21 \26 quot\3B \29 \3B \20 var\20 xss\3D \26 quot\3B true';
+        $expected_escaped_5th_field = 'yabadabadoo\21 ';
+        
+        $this->assertContains($expected_escaped_html, $data['html']);
+        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertContains($expected_escaped_css, $data['css']);
+        $this->assertContains($expected_escaped_js, $data['js']);
+        $this->assertEquals($expected_escaped_5th_field, $data['no_escape_variable']);
+       
+        //js escape all data fields
+        $data = $original_data;
+        $renderer->escapeDataPublic($data, 'utf-8', array(), array(), array(), array('*'));
+        
+        $expected_escaped_html = '\x3Cscript\x3Ealert\x28\x22zf2\x22\x29\x3C\x2Fscript\x3E';
+        $expected_escaped_html_attr = 'faketitle\x20onmouseover\x3Dalert\x28\x2FZF2\x21\x2F\x29\x3B';
+        $expected_escaped_css = 'body\x20\x7B\x0A\x20\x20\x20\x20background\x2Dimage\x3A\x20url\x28\x27http\x3A\x2F\x2Fexample.com\x2Ffoo.jpg\x3F\x3C\x2Fstyle\x3E\x3Cscript\x3Ealert\x281\x29\x3C\x2Fscript\x3E\x27\x29\x3B\x0A\x7D';
+        $expected_escaped_js = 'bar\x26quot\x3B\x3B\x20alert\x28\x26quot\x3BMeow\x21\x26quot\x3B\x29\x3B\x20var\x20xss\x3D\x26quot\x3Btrue';
+        $expected_escaped_5th_field = 'yabadabadoo\x21';
+        
+        $this->assertContains($expected_escaped_html, $data['html']);
+        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertContains($expected_escaped_css, $data['css']);
+        $this->assertContains($expected_escaped_js, $data['js']);
+        $this->assertEquals($expected_escaped_5th_field, $data['no_escape_variable']);
     }
 }

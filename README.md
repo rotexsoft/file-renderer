@@ -514,6 +514,20 @@ INPUT;
 ?>
 ```
 
+>#### Using Wild Cards in Escape Specification
+
+>To specify that all fields in the data array be **HTML escaped**, set the `$data_vars_2_be_html_escaped`
+array in the example above with a value of `['*']`
+
+>To specify that all fields in the data array be **HTML attribute escaped**, set the `$data_vars_2_be_html_attr_escaped`
+array in the example above with a value of `['*']`
+
+>To specify that all fields in the data array be **CSS escaped**, set the `$data_vars_2_be_css_escaped`
+array in the example above with a value of `['*']`
+
+>To specify that all fields in the data array be **Javascript escaped**, set the `$data_vars_2_be_js_escaped`
+array in the example above with a value of `['*']`
+
 * To enable escaping during a call to any of the **render*()** methods:
 
 ```php
@@ -613,7 +627,7 @@ INPUT;
 >Enabling escaping via the constructor, is a neat way to enforce escaping of specified
 view data variables in subsequent calls to the **render*()** methods without having to
 pass the escape paremeters each subsequent time any of the **render*()** methods is called.
-This is kind of a way to enable **auto-escaping** on an instance of the Renderer class. You
+This is how to enable **auto-escaping** on an instance of the Renderer class. You
 just have to make sure that the escaping parameters are set in a way that makes the most 
 sense for the view(s) you are trying to render.
 

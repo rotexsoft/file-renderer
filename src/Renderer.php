@@ -825,13 +825,13 @@ class Renderer
          
             $methods = array();
             
-            if( in_array($key, $data_vars_2_html_escape) ) { $methods[] = 'escapeHtml'; }
+            if(in_array($key, $data_vars_2_html_escape) || in_array('*', $data_vars_2_html_escape)) { $methods[] = 'escapeHtml'; }
             
-            if( in_array($key, $data_vars_2_html_attr_escape) ) { $methods[] = 'escapeHtmlAttr'; }
+            if(in_array($key, $data_vars_2_html_attr_escape) || in_array('*', $data_vars_2_html_attr_escape)) { $methods[] = 'escapeHtmlAttr'; }
             
-            if( in_array($key, $data_vars_2_css_escape) ) { $methods[] = 'escapeCss'; }
+            if(in_array($key, $data_vars_2_css_escape) || in_array('*', $data_vars_2_css_escape)) { $methods[] = 'escapeCss'; }
             
-            if( in_array($key, $data_vars_2_js_escape) ) { $methods[] = 'escapeJs'; }
+            if(in_array($key, $data_vars_2_js_escape) || in_array('*', $data_vars_2_js_escape)) { $methods[] = 'escapeJs'; }
             
             if( count($methods) > 0 || is_array($data[$key]) ) {
                 
