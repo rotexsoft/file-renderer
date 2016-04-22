@@ -275,7 +275,7 @@ You can also accomplish the same thing with the following:
 
 ### Escaping Data to be Passed to Views
 
-Escaping functionality is provided via the zend-escaper package. It is recommended that you read this 
+Escaping functionality is provided via the zend-escaper package. It is **STRONGLY RECOMMENDED** that you read this 
 [article](https://github.com/rotexdegba/zend-escaper/blob/master/doc/book/zend.escaper.theory-of-operation.md) 
 to understand the principles behind properly escaping data.
 
