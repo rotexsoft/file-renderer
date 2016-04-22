@@ -299,9 +299,13 @@ For example:
 </html>
 ```
 
-If `$var_that_should_be_html_escaped` has an initial value of `'<script>alert("zf2");</script>'`
-it will be transformed to `'&lt;script&gt;alert(&quot;zf2&quot;);&lt;/script&gt;'` after **html**
-escaping is applied to it.
+Given `$var_that_should_be_html_escaped` with an initial value of:
+> `'<script>alert("zf2");</script>'`
+
+it will be transformed to 
+> `'&lt;script&gt;alert(&quot;zf2&quot;);&lt;/script&gt;'` 
+
+after **html** escaping is applied to it.
 
 * **Html Attribute:** this type of escaping should be used for view data variables which are meant to be 
 rendered as attribute values within html elements in the view. For example:
@@ -324,8 +328,12 @@ rendered as attribute values within html elements in the view. For example:
 </html>
 ```
 
-If `$var_that_should_be_html_attr_escaped` has an initial value of `'faketitle" onmouseover="alert(/ZF2!/);'`
-it will be transformed to `'faketitle&quot;&#x20;onmouseover&#x3D;&quot;alert&#x28;&#x2F;ZF2&#x21;&#x2F;&#x29;&#x3B;'` 
+Given `$var_that_should_be_html_attr_escaped` has an initial value of: 
+>`'faketitle" onmouseover="alert(/ZF2!/);'`
+
+it will be transformed to 
+>`'faketitle&quot;&#x20;onmouseover&#x3D;&quot;alert&#x28;&#x2F;ZF2&#x21;&#x2F;&#x29;&#x3B;'` 
+
 after **html attribute** escaping is applied to it.
 
 * **Css:** this type of escaping should be used for view data variables which are meant to be rendered
@@ -350,14 +358,20 @@ within `<style>` tags or inside the `style` attribute of any html tag. For examp
 </html>
 ```
 
-If `$var_that_should_be_css_escaped` has an initial value of 
-`"body { background-image: url('http://example.com/foo.jpg?'); }</style><script>alert('You\\'ve been XSSed!')</script><style>"`
-it will be transformed to `"body\20 \7B \20 background\2D image\3A \20 url\28 \27 http\3A \2F \2F example\2E com\2F foo\2E jpg\3F \27 \29 \3B \20 \7D \3C \2F style\3E \3C script\3E alert\28 \27 You\5C \27 ve\20 been\20 XSSed\21 \27 \29 \3C \2F script\3E \3C style\3E"` 
+Given `$var_that_should_be_css_escaped` has an initial value of:
+>`"body { background-image: url('http://example.com/foo.jpg?'); }</style><script>alert('You\\'ve been XSSed!')</script><style>"`
+
+it will be transformed to 
+>`"body\20 \7B \20 background\2D image\3A \20 url\28 \27 http\3A \2F \2F example\2E com\2F foo\2E jpg\3F \27 \29 \3B \20 \7D \3C \2F style\3E \3C script\3E alert\28 \27 You\5C \27 ve\20 been\20 XSSed\21 \27 \29 \3C \2F script\3E \3C style\3E"` 
+
 after **css** escaping is applied to it.
 
-If `$another_var_that_should_be_css_escaped` has an initial value of 
-`' display: block; " onclick="alert(\'You\\\'ve been XSSed!\'); '`
-it will be transformed to `'\20 display\3A \20 block\3B \20 \22 \20 onclick\3D \22 alert\28 \27 You\5C \27 ve\20 been\20 XSSed\21 \27 \29 \3B \20 '` 
+Given `$another_var_that_should_be_css_escaped` has an initial value of:
+>`' display: block; " onclick="alert(\'You\\\'ve been XSSed!\'); '`
+
+it will be transformed to 
+>`'\20 display\3A \20 block\3B \20 \22 \20 onclick\3D \22 alert\28 \27 You\5C \27 ve\20 been\20 XSSed\21 \27 \29 \3B \20 '` 
+
 after **css** escaping is applied to it.
 
 * **Javascript:** this type of escaping can be safely used for view data variables which are meant to be 
@@ -393,17 +407,28 @@ rendered in a browser. For example:
 </html>
 ```
 
-If `$var_that_can_be_safely_js_escaped` has an initial value of `"javascript's cool"`
-it will be transformed to `'javascript\x27s\x20cool'` after **Javascript** escaping 
-is applied to it.
+Given `$var_that_can_be_safely_js_escaped` has an initial value of: 
+>`"javascript's cool"`
 
-If `$another_var_that_can_be_safely_js_escaped` has an initial value of 
-`'563'` it will be left unchanged with the same value of `'563'` 
+it will be transformed to 
+>`'javascript\x27s\x20cool'` 
+
 after **Javascript** escaping is applied to it.
 
-If `$another_var_that_cannot_be_guaranteed_to_be_safely_js_escaped` has an initial value of 
-`' var x = \'Yo!\'; alert(x); '` it will be transformed to 
-`'\x20var\x20x\x20\x3D\x20\x27Yo\x21\x27\x3B\x20alert\x28x\x29\x3B\x20'` 
+Given `$another_var_that_can_be_safely_js_escaped` has an initial value of: 
+>`'563'` 
+
+it will be left unchanged with the same value of 
+>`'563'` 
+
+after **Javascript** escaping is applied to it.
+
+Given `$another_var_that_cannot_be_guaranteed_to_be_safely_js_escaped` has an initial value of: 
+>`' var x = \'Yo!\'; alert(x); '` 
+
+it will be transformed to 
+>`'\x20var\x20x\x20\x3D\x20\x27Yo\x21\x27\x3B\x20alert\x28x\x29\x3B\x20'` 
+
 after **Javascript** escaping is applied to it.
 
 You can enable escaping either during the creation of the Renderer object and / or during a 
