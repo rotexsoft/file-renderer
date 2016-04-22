@@ -9,7 +9,7 @@ namespace Rotexsoft\FileRenderer;
  * @copyright Copyright (c) 2015-2016
  * @license   BSD-2-Clause https://github.com/rotexsoft/file-renderer/blob/master/LICENSE
  * 
- * @author Rotimi Adegbamigbe
+ * @author Rotimi Adegbamigbe (http://blog.rotimis-corner.com/)
  * 
  */
 class Renderer
@@ -476,76 +476,42 @@ class Renderer
      *                          it instead.
      *                          
      * @param array $data Array of data to be extracted to make local variables.
-     *                    It is combined together with $this->data. It will
-     *                    overwrite item(s) with the same key in $this->data.
+     *                    It is combined together with $this->data. For item(s) with
+     *                    the same key in $data & $this->data, the value of those item(s) 
+     *                    in $data will be used instead of their $this->data value(s).
      * 
      * @param string $escape_encoding Encoding to be used for escaping data values in $data and $this->data.
-     *                                Below is a list of supported encodings:  
-     *                                  'iso-8859-1',
-     *                                  'iso8859-1',
-     *                                  'iso-8859-5',
-     *                                  'iso8859-5',
-     *                                  'iso-8859-15',
-     *                                  'iso8859-15',
-     *                                  'utf-8',
-     *                                  'cp866',
-     *                                  'ibm866',
-     *                                  '866',
-     *                                  'cp1251',
-     *                                  'windows-1251',
-     *                                  'win-1251',
-     *                                  '1251',
-     *                                  'cp1252',
-     *                                  'windows-1252',
-     *                                  '1252',
-     *                                  'koi8-r',
-     *                                  'koi8-ru',
-     *                                  'koi8r',
-     *                                  'big5',
-     *                                  '950',
-     *                                  'gb2312',
-     *                                  '936',
-     *                                  'big5-hkscs',
-     *                                  'shift_jis',
-     *                                  'sjis',
-     *                                  'sjis-win',
-     *                                  'cp932',
-     *                                  '932',
-     *                                  'euc-jp',
-     *                                  'eucjp',
-     *                                  'eucjp-win',
-     *                                  'macroman'
+     *                                See documentation for $this->escape_encoding for more info.
      *                                  
      * @param array $data_vars_2_html_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                 individually escaped using Zend\Escaper\Escaper::escapeHtml($string). 
-     *                                 Set this for keys in $data and $this->data with values (only strings) like html tags 
-     *                                 and the likes (anything you would normally escape via htmlspecialchars).
+     *                                       individually escaped using Zend\Escaper\Escaper::escapeHtml($string). 
+     *                                       Set this for keys in $data and $this->data whose values (only strings) should be 
+     *                                       html escaped (anything you would normally escape via htmlspecialchars).
      * 
      * @param array $data_vars_2_html_attr_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                      individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string). 
-     *                                      Set this for keys in $data and $this->data with values (only strings) that will be rendered 
-     *                                      as attributes within html tags.
+     *                                            individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string). 
+     *                                            Set this for keys in $data and $this->data with values (only strings) that will be  
+     *                                            rendered as attributes within html tags.
      * 
      * @param array $data_vars_2_css_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                individually escaped using Zend\Escaper\Escaper::escapeCss($string). 
-     *                                Set this for keys in $data and $this->data with values (only strings) that will be 
-     *                                rendered inside css style tags or inside the style attribute of any 
-     *                                html element. CSS escaping via Zend\Escaper\Escaper::escapeCss($string) 
-     *                                excludes only basic alphanumeric characters and escapes all other 
-     *                                characters into valid CSS hexadecimal escapes.
+     *                                      individually escaped using Zend\Escaper\Escaper::escapeCss($string). 
+     *                                      Set this for keys in $data and $this->data with values (only strings) that will be 
+     *                                      rendered inside css style tags or inside the style attribute of any 
+     *                                      html element. CSS escaping via Zend\Escaper\Escaper::escapeCss($string) 
+     *                                      excludes only basic alphanumeric characters and escapes all other 
+     *                                      characters into valid CSS hexadecimal escapes.
      * 
      * @param array $data_vars_2_js_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                               individually escaped using Zend\Escaper\Escaper::escapeJs($string).
-     *                               Set this for keys in $data and $this->data with values (only strings) that will be 
-     *                               rendered as Javascript data values (eg. Javascript string literals). 
-     *                               Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies 
-     *                               to all literal strings and digits. It is not possible to safely escape 
-     *                               other Javascript markup.
+     *                                     individually escaped using Zend\Escaper\Escaper::escapeJs($string).
+     *                                     Set this for keys in $data and $this->data with values (only strings) that will be 
+     *                                     rendered as Javascript data values (eg. Javascript string literals). 
+     *                                     Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies 
+     *                                     to all literal strings and digits. It is not possible to safely escape 
+     *                                     other Javascript markup.
      * 
-     * @return string the output that is generated when $file_name or $this->file_name is included
+     * @return string the output that is generated when $file_name or $this->file_name is rendered.
      * 
      * @throws \Rotexsoft\FileRenderer\FileNotFoundException
-     * 
      */
     public function renderToString(
         $file_name='',
@@ -641,7 +607,7 @@ class Renderer
     
     /**
      * 
-     * Captures and prints out the output that is generated when a php file is included. 
+     * Captures and prints out the output that is generated when a renderable php file is executed. 
      * 
      * @param string $file_name Name of php file to be included (with/without
      *                          the directory path). If the directory path is 
@@ -657,76 +623,42 @@ class Renderer
      *                          it instead.
      *                          
      * @param array $data Array of data to be extracted to make local variables.
-     *                    It is combined together with $this->data. It will
-     *                    overwrite item(s) with the same key in $this->data.
+     *                    It is combined together with $this->data. For item(s) with
+     *                    the same key in $data & $this->data, the value of those item(s) 
+     *                    in $data will be used instead of their $this->data value(s).
      * 
      * @param string $escape_encoding Encoding to be used for escaping data values in $data and $this->data.
-     *                                Below is a list of supported encodings:  
-     *                                  'iso-8859-1',
-     *                                  'iso8859-1',
-     *                                  'iso-8859-5',
-     *                                  'iso8859-5',
-     *                                  'iso-8859-15',
-     *                                  'iso8859-15',
-     *                                  'utf-8',
-     *                                  'cp866',
-     *                                  'ibm866',
-     *                                  '866',
-     *                                  'cp1251',
-     *                                  'windows-1251',
-     *                                  'win-1251',
-     *                                  '1251',
-     *                                  'cp1252',
-     *                                  'windows-1252',
-     *                                  '1252',
-     *                                  'koi8-r',
-     *                                  'koi8-ru',
-     *                                  'koi8r',
-     *                                  'big5',
-     *                                  '950',
-     *                                  'gb2312',
-     *                                  '936',
-     *                                  'big5-hkscs',
-     *                                  'shift_jis',
-     *                                  'sjis',
-     *                                  'sjis-win',
-     *                                  'cp932',
-     *                                  '932',
-     *                                  'euc-jp',
-     *                                  'eucjp',
-     *                                  'eucjp-win',
-     *                                  'macroman'
+     *                                See documentation for $this->escape_encoding for more info.
      *                                  
      * @param array $data_vars_2_html_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                 individually escaped using Zend\Escaper\Escaper::escapeHtml($string). 
-     *                                 Set this for keys in $data and $this->data with values (only strings) like html tags 
-     *                                 and the likes (anything you would normally escape via htmlspecialchars).
+     *                                       individually escaped using Zend\Escaper\Escaper::escapeHtml($string). 
+     *                                       Set this for keys in $data and $this->data whose values (only strings) should be 
+     *                                       html escaped (anything you would normally escape via htmlspecialchars).
      * 
      * @param array $data_vars_2_html_attr_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                      individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string). 
-     *                                      Set this for keys in $data and $this->data with values (only strings) that will be rendered 
-     *                                      as attributes within html tags.
+     *                                            individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string). 
+     *                                            Set this for keys in $data and $this->data with values (only strings) that will be  
+     *                                            rendered as attributes within html tags.
      * 
      * @param array $data_vars_2_css_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                individually escaped using Zend\Escaper\Escaper::escapeCss($string). 
-     *                                Set this for keys in $data and $this->data with values (only strings) that will be 
-     *                                rendered inside css style tags or inside the style attribute of any 
-     *                                html element. CSS escaping via Zend\Escaper\Escaper::escapeCss($string) 
-     *                                excludes only basic alphanumeric characters and escapes all other 
-     *                                characters into valid CSS hexadecimal escapes.
+     *                                      individually escaped using Zend\Escaper\Escaper::escapeCss($string). 
+     *                                      Set this for keys in $data and $this->data with values (only strings) that will be 
+     *                                      rendered inside css style tags or inside the style attribute of any 
+     *                                      html element. CSS escaping via Zend\Escaper\Escaper::escapeCss($string) 
+     *                                      excludes only basic alphanumeric characters and escapes all other 
+     *                                      characters into valid CSS hexadecimal escapes.
      * 
      * @param array $data_vars_2_js_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                               individually escaped using Zend\Escaper\Escaper::escapeJs($string).
-     *                               Set this for keys in $data and $this->data with values (only strings) that will be 
-     *                               rendered as Javascript data values (eg. Javascript string literals). 
-     *                               Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies 
-     *                               to all literal strings and digits. It is not possible to safely escape 
-     *                               other Javascript markup.
+     *                                     individually escaped using Zend\Escaper\Escaper::escapeJs($string).
+     *                                     Set this for keys in $data and $this->data with values (only strings) that will be 
+     *                                     rendered as Javascript data values (eg. Javascript string literals). 
+     *                                     Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies 
+     *                                     to all literal strings and digits. It is not possible to safely escape 
+     *                                     other Javascript markup.
      * 
      * @return void
      * 
      * @throws \Rotexsoft\FileRenderer\FileNotFoundException
-     * 
      */
     public function renderToScreen(
         $file_name='', 
@@ -752,77 +684,30 @@ class Renderer
      * 
      * Escapes values in an array and all its sub-arrays. 
      *                          
-     * @param array $data Array of data to be escaped.
+     * @param array $data Array of data to be escaped. This array will be modifed during the escape operation.
      * 
      * @param string $escape_encoding Encoding to be used for escaping data values in $data and $this->data.
-     *                                Below is a list of supported encodings:  
-     *                                  'iso-8859-1',
-     *                                  'iso8859-1',
-     *                                  'iso-8859-5',
-     *                                  'iso8859-5',
-     *                                  'iso-8859-15',
-     *                                  'iso8859-15',
-     *                                  'utf-8',
-     *                                  'cp866',
-     *                                  'ibm866',
-     *                                  '866',
-     *                                  'cp1251',
-     *                                  'windows-1251',
-     *                                  'win-1251',
-     *                                  '1251',
-     *                                  'cp1252',
-     *                                  'windows-1252',
-     *                                  '1252',
-     *                                  'koi8-r',
-     *                                  'koi8-ru',
-     *                                  'koi8r',
-     *                                  'big5',
-     *                                  '950',
-     *                                  'gb2312',
-     *                                  '936',
-     *                                  'big5-hkscs',
-     *                                  'shift_jis',
-     *                                  'sjis',
-     *                                  'sjis-win',
-     *                                  'cp932',
-     *                                  '932',
-     *                                  'euc-jp',
-     *                                  'eucjp',
-     *                                  'eucjp-win',
-     *                                  'macroman'
+     *                                If this value is empty, the value of $this->escape_encoding will be used
+     *                                if it's not empty, else the default value of 'utf-8' will be finally used.
+     *                                See documentation for $this->escape_encoding for more info.
      *                                  
-     * @param array $data_vars_2_html_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                 individually escaped using Zend\Escaper\Escaper::escapeHtml($string). 
-     *                                 Set this for keys in $data and $this->data with values (only strings) like html tags 
-     *                                 and the likes (anything you would normally escape via htmlspecialchars).
+     * @param array $data_vars_2_html_escape An array of keys in $data whose values (only strings) will be 
+     *                                       individually escaped using Zend\Escaper\Escaper::escapeHtml($string).
      * 
-     * @param array $data_vars_2_html_attr_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                      individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string). 
-     *                                      Set this for keys in $data and $this->data with values (only strings) that will be rendered 
-     *                                      as attributes within html tags.
+     * @param array $data_vars_2_html_attr_escape An array of keys in $data whose values (only strings) will be 
+     *                                            individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string).
      * 
-     * @param array $data_vars_2_css_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                individually escaped using Zend\Escaper\Escaper::escapeCss($string). 
-     *                                Set this for keys in $data and $this->data with values (only strings) that will be 
-     *                                rendered inside css style tags or inside the style attribute of any 
-     *                                html element. CSS escaping via Zend\Escaper\Escaper::escapeCss($string) 
-     *                                excludes only basic alphanumeric characters and escapes all other 
-     *                                characters into valid CSS hexadecimal escapes.
+     * @param array $data_vars_2_css_escape An array of keys in $data whose values (only strings) will be 
+     *                                      individually escaped using Zend\Escaper\Escaper::escapeCss($string).
      * 
-     * @param array $data_vars_2_js_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                               individually escaped using Zend\Escaper\Escaper::escapeJs($string).
-     *                               Set this for keys in $data and $this->data with values (only strings) that will be 
-     *                               rendered as Javascript data values (eg. Javascript string literals). 
-     *                               Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies 
-     *                               to all literal strings and digits. It is not possible to safely escape 
-     *                               other Javascript markup.
+     * @param array $data_vars_2_js_escape An array of keys in $data whose values (only strings) will be 
+     *                                     individually escaped using Zend\Escaper\Escaper::escapeJs($string).
      * 
      * @param \Zend\Escaper\Escaper $escaper An optional escaper object that will be used for escaping. 
      * 
      * @return void
      * 
      * @throws \Rotexsoft\FileRenderer\FileNotFoundException
-     * 
      */
     protected function escapeData(
         array &$data,
@@ -938,7 +823,6 @@ class Renderer
      *                        the registered paths, false is returned.
      * 
      * @throws \InvalidArgumentException
-     * 
      */
     public function locateFile($file_name) {
         
@@ -981,7 +865,6 @@ class Renderer
             }
         }
         
-        //file not found
         return $located_file;
     }
     
@@ -1018,11 +901,10 @@ class Renderer
      * 
      * An enhancement to PHP's gettype function that displays the class name of a variable if the variable is an object.
      * 
-     * @param mixed $var a variable whose type is to be determined
-     * @param bool $cap_first flag to indicate if the variable's type should be returned with the first letter in uppercase
+     * @param mixed $var a variable whose type is to be determined.
+     * @param bool $cap_first flag to indicate if the variable's type should be returned with the first letter in uppercase.
      * 
-     * @return string the variable's type
-     * 
+     * @return string the variable's type.
      */
     protected function getVarType($var, $cap_first=false) {
 
