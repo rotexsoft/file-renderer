@@ -5,6 +5,10 @@ namespace Rotexsoft\FileRenderer;
  * 
  * Class for rendering the contents of a php file.
  *
+ * @link      https://github.com/rotexsoft/file-renderer
+ * @copyright Copyright (c) 2015-2016
+ * @license   BSD-2-Clause https://github.com/rotexsoft/file-renderer/blob/master/LICENSE
+ * 
  * @author Rotimi Adegbamigbe
  * 
  */
@@ -15,8 +19,8 @@ class Renderer
      * Path(s) to directorie(s) containing (*.php) files to be rendered via this 
      * class. 
      * 
-     * These paths will be searched when rendering a file with an instance of 
-     * this class.
+     * These paths will be searched when rendering a file with an instance of this class.
+     * The order of the search is from the first to the last element of this array.
      *
      * @var array
      *  
@@ -67,7 +71,7 @@ class Renderer
      * Zend\Escaper\Escaper::escapeHtmlAttr($string).
      * 
      * Set this for keys in $this->data with values (only strings) that will be rendered as attributes
-     * within html tags.
+     * within html elements.
      * 
      * @var array
      * 
@@ -96,8 +100,8 @@ class Renderer
      * An array of keys in $this->data whose values (only strings) will be individually escaped using 
      * Zend\Escaper\Escaper::escapeJs($string).
      * 
-     * Set this for keys in $this->data with values (only strings) that will be rendered as javascript 
-     * data values (eg. javascript string literals).
+     * Set this for keys in $this->data with values (only strings) that will be rendered as Javascript 
+     * data values (eg. Javascript string literals).
      * 
      * Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies to all 
      * literal strings & digits. It is not possible to safely escape other Javascript 
@@ -110,9 +114,12 @@ class Renderer
     
     /**
      * 
-     * Encoding to be used for escaping data values in $this->data, based on the contents
-     * of $this->data_vars_2_html_escape, $this->data_vars_2_html_attr_escape, $this->data_vars_2_css_escape 
-     * and $this->data_vars_2_js_escape. The default value is 'utf-8'.
+     * Encoding to be used for escaping data values in $this->data. 
+     * It is used in conjunction with $this->data_vars_2_html_escape, 
+     * $this->data_vars_2_html_attr_escape, $this->data_vars_2_css_escape 
+     * and $this->data_vars_2_js_escape. 
+     * 
+     * The default value is 'utf-8'.
      *      
      * Below is a list of supported encodings:
      *      
@@ -161,10 +168,11 @@ class Renderer
      * This array keeps track of the hashes of the data arrays that have been escaped via 
      * $this->escapeData(). THIS WILL ALLOW $this->escapeData() TO ONLY ESCAPE EACH UNIQUE
      * DATA ARRAY ONLY ONCE, SUBSEQUENT CALLS TO $this->escapeData() FOR THE SAME DATA 
-     * ARRAY WITH THE SAME ESCAPE PARAMETER ARRAYS SHOULD DO NOTHING TO THE DATA ARRAY. 
+     * ARRAY WITH THE SAME ESCAPE PARAMETER ARRAYS SHOULD DO NOTHING TO THE DATA ARRAY.
      * We only need to escape desired values in an array only once.
      * 
-     * @var array 
+     * @var array
+     * 
      */
     public $multi_escape_prevention_guard = array();
 
@@ -173,77 +181,41 @@ class Renderer
      * @param string $file_name name of a php file to be rendered. If path is not 
      *                          prepended to the name of the file, the file will 
      *                          be searched for in the list of paths registered 
-     *                          in $this->file_paths. It can be 
-     *                          left blank.
+     *                          in $this->file_paths. It can be left blank.
      * 
      * @param array $data An array of data to be extracted into variables for 
-     *                    use in the php fileto be rendered via an instance of 
+     *                    use in the php file to be rendered via an instance of 
      *                    this class.
      * 
      * @param array $file_paths An array of path(s) to directorie(s) containing 
      *                          (*.php) files to be rendered via this class.
      * 
      * @param string $escape_encoding Encoding to be used for escaping data values in $this->data.
-     *                                Below is a list of supported encodings:  
-     *                                  'iso-8859-1',
-     *                                  'iso8859-1',
-     *                                  'iso-8859-5',
-     *                                  'iso8859-5',
-     *                                  'iso-8859-15',
-     *                                  'iso8859-15',
-     *                                  'utf-8',
-     *                                  'cp866',
-     *                                  'ibm866',
-     *                                  '866',
-     *                                  'cp1251',
-     *                                  'windows-1251',
-     *                                  'win-1251',
-     *                                  '1251',
-     *                                  'cp1252',
-     *                                  'windows-1252',
-     *                                  '1252',
-     *                                  'koi8-r',
-     *                                  'koi8-ru',
-     *                                  'koi8r',
-     *                                  'big5',
-     *                                  '950',
-     *                                  'gb2312',
-     *                                  '936',
-     *                                  'big5-hkscs',
-     *                                  'shift_jis',
-     *                                  'sjis',
-     *                                  'sjis-win',
-     *                                  'cp932',
-     *                                  '932',
-     *                                  'euc-jp',
-     *                                  'eucjp',
-     *                                  'eucjp-win',
-     *                                  'macroman'
+     *                                See documentation for $this->escape_encoding for more info.
      *                                  
-     * @param array $data_vars_2_html_escape An array of keys in $this->data whose values (only strings) will be individually 
-     *                                 escaped using Zend\Escaper\Escaper::escapeHtml($string). Set this 
-     *                                 for keys in $this->data with values (only strings) like html tags and the likes 
-     *                                 (anything you would normally escape via htmlspecialchars).
+     * @param array $data_vars_2_html_escape An array of keys in $this->data whose values (only strings) 
+     *                                       will be individually escaped using Zend\Escaper\Escaper::escapeHtml($string). 
+     *                                       Set this for keys in $this->data with values (only strings) like html tags and 
+     *                                       the likes (anything you would normally escape via htmlspecialchars).
      * 
-     * @param array $data_vars_2_html_attr_escape An array of keys in $this->data whose values (only strings) will be 
-     *                                      individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string). 
-     *                                      Set this for keys in $this->data with values (only strings) that will be rendered as 
-     *                                      attributes within html tags.
+     * @param array $data_vars_2_html_attr_escape An array of keys in $this->data whose values (only strings) 
+     *                                            will be individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string). 
+     *                                            Set this for keys in $this->data with values (only strings) that will be rendered  
+     *                                            as attributes within html tags.
      * 
      * @param array $data_vars_2_css_escape An array of keys in $this->data whose values (only strings) will be individually 
-     *                                escaped using Zend\Escaper\Escaper::escapeCss($string). Set this 
-     *                                for keys in $this->data with values (only strings) that will be rendered inside 
-     *                                css style tags or inside the style attribute of any html element.
-     *                                CSS escaping via Zend\Escaper\Escaper::escapeCss($string) excludes 
-     *                                only basic alphanumeric characters and escapes all other characters 
-     *                                into valid CSS hexadecimal escapes.
+     *                                      escaped using Zend\Escaper\Escaper::escapeCss($string). Set this for keys in 
+     *                                      $this->data with values (only strings) that will be rendered inside css style 
+     *                                      tags or inside the style attribute of any html element. CSS escaping via 
+     *                                      Zend\Escaper\Escaper::escapeCss($string) excludes only basic alphanumeric 
+     *                                      characters and escapes all other characters into valid CSS hexadecimal escapes.
      * 
      * @param array $data_vars_2_js_escape An array of keys in $this->data whose values (only strings) will be individually 
-     *                               escaped using Zend\Escaper\Escaper::escapeJs($string). Set this for 
-     *                               keys in $this->data with values (only strings) that will be rendered as javascript 
-     *                               data values (eg. javascript string literals). Javascript escaping via 
-     *                               Zend\Escaper\Escaper::escapeJs($string) applies to all literal strings 
-     *                               and digits. It is not possible to safely escape other Javascript markup.
+     *                                     escaped using Zend\Escaper\Escaper::escapeJs($string). Set this for keys in 
+     *                                     $this->data with values (only strings) that will be rendered as Javascript 
+     *                                     data values (eg. Javascript string literals). Javascript escaping via 
+     *                                     Zend\Escaper\Escaper::escapeJs($string) applies to all literal strings 
+     *                                     and digits. It is not possible to safely escape other Javascript markup.
      * 
      * @throws \InvalidArgumentException
      */
@@ -276,50 +248,95 @@ class Renderer
         $this->data_vars_2_html_attr_escape = $data_vars_2_html_attr_escape;
     }
     
-    public function __set($name, $value) {
+    /**
+     * 
+     * Adds a new item to the $this->data array.
+     * 
+     * @param string $key key for a data value to be added to the $this->data array.
+     * @param  mixed $value a data value to be added to the $this->data array.
+     * 
+     * @return void
+     */
+    public function __set($key, $value) {
         
-        $this->data[$name] = $value;
+        $this->data[$key] = $value;
     }
 
-    public function __get($name) {
+    /**
+     * 
+     * Retreives a data value associated with the given key in the $this->data array.
+     * 
+     * @param string $key key for a data value to be retreived from the $this->data array.
+     * 
+     * @return mixed a data value associated with the given key in the $this->data array.
+     * 
+     * @throws \Exception if item with specified key is not in the $this->data array.
+     */
+    public function __get($key) {
         
-        if ( isset($this->data[$name]) ) {
+        if ( isset($this->data[$key]) ) {
 
-            return $this->data[$name];
+            return $this->data[$key];
             
         } else {
 
-            $msg = "ERROR: Item with key '$name' does not exist in " 
+            $msg = "ERROR: Item with key '$key' does not exist in " 
                    . get_class($this) .'.'. PHP_EOL . var_export($this, true);
             
             throw new \Exception($msg);
         }
     }
     
-    public function __isset($name) {
+    /**
+     * 
+     * Checks if the given key is set in the $this->data array.
+     * 
+     * @param string $key potential key for an item in the $this->data array.
+     * 
+     * @return bool true if item with given key is set in $this->data, else false.
+     */
+    public function __isset($key) {
         
-        return isset($this->data[$name]);
+        return isset($this->data[$key]);
     }
     
-    public function __unset($name) {
+    /**
+     * 
+     * Unset the item with the given key in the $this->data array.
+     * 
+     * @param string $key potential key for an item in the $this->data array.
+     * 
+     * @return void
+     */
+    public function __unset($key) {
         
-        unset($this->data[$name]);
+        if( isset($this->data[$key]) ) {
+            
+            unset($this->data[$key]);
+        }
     }
     
-    public function setVar($name, $value) {
+    /**
+     * 
+     * @see documentation for $this->__set($key, $value).
+     */
+    public function setVar($key, $value) {
         
-        $this->__set($name, $value);
+        $this->__set($key, $value);
     }
     
-    public function getVar($name) {
+    /**
+     * 
+     * @see documentation for $this->__get($key).
+     */
+    public function getVar($key) {
         
-        return $this->__get($name);
+        return $this->__get($key);
     }
 
     /**
      * 
-     * Returns the value of the `file_paths` property of an instance
-     * of this class.
+     * Returns the value of the `file_paths` property of an instance of this class.
      * 
      * @return array the array of path(s) to directorie(s) containing (*.php) 
      *               files to be rendered via this class.
@@ -348,8 +365,9 @@ class Renderer
      * Add a path to the end of the array of path(s) to directorie(s) containing 
      * (*.php) files to be rendered via this class.
      * 
-     * @param string $path
+     * @param string $path a path to the end of the $this->file_paths array.
      * 
+     * @return void
      */
     public function appendPath( $path ) {
         
@@ -361,8 +379,9 @@ class Renderer
      * Add a path to the beginning of the array of path(s) to directorie(s) 
      * containing (*.php) files to be rendered via this class.
      * 
-     * @param string $path
+     * @param string $path a path to the beginning of the $this->file_paths array.
      * 
+     * @return void
      */
     public function prependPath( $path ) {
         
@@ -374,10 +393,13 @@ class Renderer
      * Removes the first `n` elements in the array of path(s) to directorie(s) 
      * containing (*.php) files to be rendered via this class.
      * 
-     * @param string $number_of_paths_2_remove
+     * @param int $number_of_paths_2_remove number of elements to remove from the front of $this->file_paths.
      * 
+     * @return array an array of the removed elements.
      */
     public function removeFirstNPaths($number_of_paths_2_remove) {
+        
+        $removed_paths = array();
         
         if( is_numeric($number_of_paths_2_remove) ) {
             
@@ -387,10 +409,18 @@ class Renderer
                 $number_of_paths_2_remove > 0  
                 && count($this->file_paths) > 0 
             ) {
-                array_shift($this->file_paths);
+                $removed_path = array_shift($this->file_paths);
+                
+                if( !is_null($removed_path) ) {
+                    
+                    $removed_paths[] = $removed_path;
+                }
+                
                 $number_of_paths_2_remove--;
             }
         }
+        
+        return $removed_paths;
     }
     
     /**
@@ -398,10 +428,13 @@ class Renderer
      * Removes the last `n` elements in the array of path(s) to directorie(s) 
      * containing (*.php) files to be rendered via this class.
      * 
-     * @param string $number_of_paths_2_remove
+     * @param string $number_of_paths_2_remove number of elements to remove from the back of $this->file_paths.
      * 
+     * @return array an array of the removed elements.
      */
     public function removeLastNPaths($number_of_paths_2_remove) {
+        
+        $removed_paths = array();
         
         if( is_numeric($number_of_paths_2_remove) ) {
             
@@ -411,10 +444,18 @@ class Renderer
                 $number_of_paths_2_remove > 0  
                 && count($this->file_paths) > 0 
             ) {
-                array_pop($this->file_paths);
+                $removed_path = array_pop($this->file_paths);
+                
+                if( !is_null($removed_path) ) {
+                    
+                    $removed_paths[] = $removed_path;
+                }
+                
                 $number_of_paths_2_remove--;
             }
         }
+        
+        return array_reverse($removed_paths);
     }
     
     /**
@@ -496,7 +537,7 @@ class Renderer
      * @param array $data_vars_2_js_escape An array of keys in $data and $this->data whose values (only strings) will be 
      *                               individually escaped using Zend\Escaper\Escaper::escapeJs($string).
      *                               Set this for keys in $data and $this->data with values (only strings) that will be 
-     *                               rendered as javascript data values (eg. javascript string literals). 
+     *                               rendered as Javascript data values (eg. Javascript string literals). 
      *                               Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies 
      *                               to all literal strings and digits. It is not possible to safely escape 
      *                               other Javascript markup.
@@ -677,7 +718,7 @@ class Renderer
      * @param array $data_vars_2_js_escape An array of keys in $data and $this->data whose values (only strings) will be 
      *                               individually escaped using Zend\Escaper\Escaper::escapeJs($string).
      *                               Set this for keys in $data and $this->data with values (only strings) that will be 
-     *                               rendered as javascript data values (eg. javascript string literals). 
+     *                               rendered as Javascript data values (eg. Javascript string literals). 
      *                               Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies 
      *                               to all literal strings and digits. It is not possible to safely escape 
      *                               other Javascript markup.
@@ -771,7 +812,7 @@ class Renderer
      * @param array $data_vars_2_js_escape An array of keys in $data and $this->data whose values (only strings) will be 
      *                               individually escaped using Zend\Escaper\Escaper::escapeJs($string).
      *                               Set this for keys in $data and $this->data with values (only strings) that will be 
-     *                               rendered as javascript data values (eg. javascript string literals). 
+     *                               rendered as Javascript data values (eg. Javascript string literals). 
      *                               Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies 
      *                               to all literal strings and digits. It is not possible to safely escape 
      *                               other Javascript markup.

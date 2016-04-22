@@ -366,11 +366,13 @@ EOT;
         
         $this->assertEquals($original_file_paths, $renderer->getFilePaths());
         
-        $renderer->removeFirstNPaths(1);
+        $removed_paths = $renderer->removeFirstNPaths(1);
         $this->assertEquals($expected_file_paths1, $renderer->getFilePaths());
+        $this->assertEquals(array_slice($original_file_paths, 0, 1), $removed_paths);
         
-        $renderer->removeFirstNPaths(5);
-        $this->assertEquals($expected_file_paths2, $renderer->getFilePaths());        
+        $removed_paths = $renderer->removeFirstNPaths(5);
+        $this->assertEquals($expected_file_paths2, $renderer->getFilePaths());
+        $this->assertEquals(array_slice($original_file_paths, 1, 5), $removed_paths);
     }
     
     public function testThatRemoveLastNPathsWorksAsExpected() {
@@ -385,11 +387,13 @@ EOT;
         
         $this->assertEquals($original_file_paths, $renderer->getFilePaths());
         
-        $renderer->removeLastNPaths(1);
+        $removed_paths = $renderer->removeLastNPaths(1);
         $this->assertEquals($expected_file_paths1, $renderer->getFilePaths());
-        
-        $renderer->removeLastNPaths(5);
-        $this->assertEquals($expected_file_paths2, $renderer->getFilePaths());        
+        $this->assertEquals(array_slice($original_file_paths, -1, 1), $removed_paths);
+
+        $removed_paths = $renderer->removeLastNPaths(5);
+        $this->assertEquals($expected_file_paths2, $renderer->getFilePaths());
+        $this->assertEquals(array_slice($original_file_paths, -6, 5), $removed_paths);
     }
     
     public function testThatNormalizeFolderPathWorksAsExpected() {
