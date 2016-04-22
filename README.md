@@ -440,9 +440,10 @@ call to any of the **render*()** methods.
 <?php
     $file_paths = [];
     
-    $bad_css_with_xss = 
-        "body { background-image: url('http://example.com/foo.jpg?'); }</style><script>alert('You\\'ve been XSSed!')</script><style>";
-    
+    $bad_css_with_xss = <<<INPUT
+body { background-image: url('http://example.com/foo.jpg?'); }</style>
+<script>alert('You\\'ve been XSSed!')</script><style>
+INPUT;
     $bad_css_with_xss2 = ' display: block; " onclick="alert(\'You\\\'ve been XSSed!\'); ';
     
     $view_data = [
@@ -517,9 +518,11 @@ call to any of the **render*()** methods.
 
 ```php
 <?php
-    $bad_css_with_xss = 
-        "body { background-image: url('http://example.com/foo.jpg?'); }</style><script>alert('You\\'ve been XSSed!')</script><style>";
-    
+    $bad_css_with_xss = <<<INPUT
+body { background-image: url('http://example.com/foo.jpg?'); }</style>
+<script>alert('You\\'ve been XSSed!')</script><style>
+INPUT;
+
     $bad_css_with_xss2 = ' display: block; " onclick="alert(\'You\\\'ve been XSSed!\'); ';
     
     $view_data = [
