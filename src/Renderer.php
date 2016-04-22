@@ -793,7 +793,17 @@ class Renderer
         \Zend\Escaper\Escaper $escaper = null
     ) {
         if ( count($data) <= 0 ) {
+            
             //no data supplied; nothing to do
+            return;
+            
+        } else if(
+            count($data_vars_2_html_escape) <= 0
+            && count($data_vars_2_html_attr_escape) <= 0
+            && count($data_vars_2_css_escape) <= 0
+            && count($data_vars_2_js_escape) <= 0
+        ) {
+            //no field has been specified for escaping; nothing to do
             return;
         }
         
@@ -807,15 +817,7 @@ class Renderer
             && $this->multi_escape_prevention_guard[$hash_of_data_array]['data_vars_2_css_escape'] === $data_vars_2_css_escape
             && $this->multi_escape_prevention_guard[$hash_of_data_array]['data_vars_2_js_escape'] === $data_vars_2_js_escape
         ) {
-            //the data array has already been escaped
-            return;
-        } else if(
-            count($data_vars_2_html_escape) <= 0
-            && count($data_vars_2_html_attr_escape) <= 0
-            && count($data_vars_2_css_escape) <= 0
-            && count($data_vars_2_js_escape) <= 0
-        ) {
-            //no field has been specified for escaping; nothing to do
+            //the data array has already been escaped; don't wanna escape already escaped data
             return;
         }
         

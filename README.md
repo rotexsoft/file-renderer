@@ -7,7 +7,7 @@
 This is a simple, elegant and flexible tool that can be used to render php files (also referred to as `Views` within this documentation)
 that emit valid html output to a web-browser. It is designed to be unobtrusive; your view files can easily be used with a different 
 rendering or templating library. You do not need to learn any new syntax (or markup / templating language) in order to compose your 
-view; simply write your views in plain old php. This package also provides escaping functionality for data passed to the view file(s).
+views; simply write your views in plain old php. This package also provides escaping functionality for data passed to the view file(s).
 
 This package can easily be used by framework developers to implement the View layer of an MVC (Model-View-Controller) framework. 
 It can also be easily incorporated into existing frameworks.
@@ -70,7 +70,7 @@ Your main php script may look like below (let's call it `test.php` and assume it
     // rendering.
     $view_data = [ 'paragraph_data_from_file_renderer' => 'This is a Paragraph!!' ];
 
-    //you must include the file extension in the file name (in this case `.php`)
+    //you MUST include the file extension in the file name (in this case `.php`)
     $renderer = new \Rotexsoft\FileRenderer\Renderer('view.php', $view_data, $file_paths);
     
     //you could alternately create the Renderer object like below:
@@ -83,8 +83,9 @@ Your main php script may look like below (let's call it `test.php` and assume it
                                            //the file in a string variable.
     echo $output;
 
-    //Both render*() methods will inject the elements of the data array into the 
-    //view file first and then execute the view file.
+    //The render*() methods will extract the elements of the data array into 
+    //variables (array keys will be used as variable names) that will be 
+    //available to the view file to be rendered before rendering the view.
     
     //You can also pass the file name and data parameters to the render*() methods.
     //You will have to include the path in the file name if you did not supply an
@@ -662,6 +663,131 @@ Go [here](https://github.com/rotexdegba/zend-escaper/blob/master/doc/book/zend.e
 
 ### Advanced Usage
 
-#### Implementing a Two-Step View Templating Architecture
+#### Implementing a Two-Step View Templating System
 
-Documentation coming soon!
+The simplest way to implement a **Two-Step View Templating System** is to create two instances of the **Renderer** 
+class. One instance will be used to render the layout view file and the other will be used to render the page content
+that will be passed as a data field to the first renderer (ie. the layout renderer). A single instance of the **Renderer** 
+class could also be used to accomplish the same result. It's up to you to decide how data should be passed to the views. 
+
+**Implementation:** Assuming `layout.php`, `sample-content-page.php`, 
+`two-step-view-implemetation-two-renderers.php` and `two-step-view-implemetation-one-renderer.php`
+are all in the same folder.
+
+`layout.php`
+
+```php
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Two Step View Example</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <div>
+            <?php echo $page_content; ?>
+        </div>
+    </body>
+</html>
+```
+
+`sample-content-page.php`
+
+```html
+<p>This is a sample page to be injected into <strong>layout.php</strong>.</p>
+```
+
+`two-step-view-implemetation-two-renderers.php`
+
+```php
+<?php
+    $layout_data = [];
+    $layout_renderer = new \Rotexsoft\FileRenderer\Renderer();
+    $layout_page_content_renderer = new \Rotexsoft\FileRenderer\Renderer();
+    
+    //Render the page content and store it in the data array to be passed to the layout.
+    $layout_data['page_content'] = 
+             $layout_page_content_renderer->renderToString('./sample-content-page.php');
+    
+    //Render the layout
+    $layout_renderer->renderToScreen('./layout.php', $layout_data);
+?>
+```
+
+`two-step-view-implemetation-one-renderer.php`
+
+```php
+<?php
+    $layout_data = [];
+    $renderer = new \Rotexsoft\FileRenderer\Renderer();
+    
+    //Render the page content and store it in the data array to be passed to the layout.
+    $layout_data['page_content'] = $renderer->renderToString('./sample-content-page.php');
+    
+    //Render the layout
+    $renderer->renderToScreen('./layout.php', $layout_data);
+?>
+```
+
+Running `two-step-view-implemetation-two-renderers.php` or `two-step-view-implemetation-one-renderer.php`
+will lead to the output below:
+
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Two Step View Example</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <div>
+            <p>This is a sample page to be injected into <strong>view.php</strong>.</p>
+        </div>
+    </body>
+</html>
+```
+
+**Sharing Data between Layout and Page Content Views**
+
+`two-step-view-implemetation-one-renderer-share-data.php`
+
+```php
+<?php
+    $layout_data = []; //pass this data array to renderToScreen or renderToString
+                       //when rendering layout.php. This is additional data that
+                       //will only be available to layout.php.
+
+    //The 'page_content' entry in the array below will be available to all
+    //views rendered using $renderer. Passing a data array with a 'page_content' 
+    //entry to renderToString or renderToScreen will cause the intial value of
+    //the 'page_content' entry (in this case 'Default Page Content!') to be
+    //ignored when rendering (the of the 'page_content' entry in the data array
+    //passed to renderToString or renderToScreen will be used instead).
+    $shared_data = ['page_content' => 'Default Page Content!'];
+    $renderer = new \Rotexsoft\FileRenderer\Renderer('', $shared_data);
+    
+    //Render the page content and store it in the data array to be passed to the layout.
+    $layout_data['page_content'] = $renderer->renderToString('./sample-content-page.php');
+    
+    //Render the layout
+    $renderer->renderToScreen('./layout.php', $layout_data); // will cause 
+                                                             // $layout_data['page_content']
+                                                             // to be used as $page_content
+                                                             // in layout.php instead of the
+                                                             // value of $shared_data['page_content'].
+
+    $renderer->renderToScreen('./layout.php'); // This will cause 
+                                               // $shared_data['page_content']
+                                               // to be used as $page_content
+                                               // in layout.php because we are
+                                               // not passing any data array to
+                                               // renderToScreen so it looks for
+                                               // data in the $shared_data passed
+                                               // to the constructor. Note that 
+                                               // the values in $shared_data are
+                                               // stored in a protected property
+                                               // of $renderer (ie. $renderer->data ). 
+?>
+```
+
+The example above can be extended for use-cases where more than one renderer is being used.
