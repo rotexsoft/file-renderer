@@ -792,6 +792,11 @@ class Renderer
         array $data_vars_2_js_escape = array(),
         \Zend\Escaper\Escaper $escaper = null
     ) {
+        if ( count($data) <= 0 ) {
+            //no data supplied; nothing to do
+            return;
+        }
+        
         $hash_of_data_array = spl_object_hash(json_decode(json_encode($data)));
         
         if( 
@@ -811,9 +816,6 @@ class Renderer
             && count($data_vars_2_js_escape) <= 0
         ) {
             //no field has been specified for escaping; nothing to do
-            return;
-        } else if ( count($data) <= 0 ) {
-            //no data supplied; nothing to do
             return;
         }
         
