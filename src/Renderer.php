@@ -318,7 +318,12 @@ class Renderer
     
     /**
      * 
-     * @see documentation for $this->__set($key, $value).
+     * Adds a new item to the $this->data array.
+     * 
+     * @param string $key key for a data value to be added to the $this->data array.
+     * @param  mixed $value a data value to be added to the $this->data array.
+     * 
+     * @return void
      */
     public function setVar($key, $value) {
         
@@ -327,7 +332,13 @@ class Renderer
     
     /**
      * 
-     * @see documentation for $this->__get($key).
+     * Retreives a data value associated with the given key in the $this->data array.
+     * 
+     * @param string $key key for a data value to be retreived from the $this->data array.
+     * 
+     * @return mixed a data value associated with the given key in the $this->data array.
+     * 
+     * @throws \Exception if item with specified key is not in the $this->data array.
      */
     public function getVar($key) {
         
@@ -806,6 +817,8 @@ class Renderer
     }
     
     /**
+     * 
+     * This method locates a file to be rendered and returns the full path to the file or returns false if the file can't be located.
      * 
      * @param string $file_name Name of file (with / without the directory path) 
      *                          to be located in the registered possible paths 
