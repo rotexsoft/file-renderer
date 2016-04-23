@@ -174,7 +174,7 @@ class Renderer
      * @var array
      * 
      */
-    public $multi_escape_prevention_guard = array();
+    protected $multi_escape_prevention_guard = array();
 
     /**
      * 
