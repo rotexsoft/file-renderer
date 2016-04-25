@@ -97,12 +97,38 @@ Your main php script may look like below (let's call it `test.php` and assume it
     // a view file. For example, a variable named `$paragraph_data_from_file_renderer`
     // with the value `'This is a Paragraph!!'` will be available to the view during
     // rendering.
-    $view_data = [ 'paragraph_data_from_file_renderer' => 'This is a Paragraph!!' ];
 
-    //you MUST include the file extension in the file name (in this case `.php`)
-    $renderer = new \Rotexsoft\FileRenderer\Renderer('view.php', $view_data, $file_paths);
+    $bad_css_with_xss = <<<INPUT
+body { background-image: url('http://example.com/foo.jpg?'); }</style>
+<script>alert('You\\'ve been XSSed!')</script><style>
+INPUT;
+
+    $bad_css_with_xss2 = ' display: block; " onclick="alert(\'You\\\'ve been XSSed!\'); ';
+
+    $bad_url_segment_with_xss =  <<<INPUT 
+" onmouseover="alert('zf2') 
+INPUT;
+
+    $view_data = [
+        'paragraph_data_from_file_renderer'                     => 'This is a Paragraph!!'
+        'var_that_should_be_html_escaped'                       => '<script>alert("zf2");</script>',
+        'var_that_should_be_html_attr_escaped'                  => 'faketitle" onmouseover="alert(/ZF2!/);',
+        'var_that_should_be_css_escaped'                        => $bad_css_with_xss,
+        'another_var_that_should_be_css_escaped'                => $bad_css_with_xss2,
+        'var_that_can_be_safely_js_escaped'                     => "javascript's cool",
+        'a_var_that_can_be_safely_js_escaped'                   => '563',
+        'a_var_that_cant_be_guaranteed_to_be_safely_js_escaped' => ' var x = \'Yo!\'; alert(x); ',
+        'var_that_should_be_url_escaped'                        => $bad_url_segment_with_xss,
+    ];
+
+    //You MUST include the file extension in the file name (in this case `.php`)
+    //NOTE: that the fourth argument represents the encoding that will be used
+    //      by the escaping functions in the renderer. This value should be the
+    //      same as the encoding specified in the view file being rendered 
+    //      (eg. the charset value of the http-equiv meta tag in your view).
+    $renderer = new \Rotexsoft\FileRenderer\Renderer('view.php', $view_data, $file_paths, 'utf-8');
     
-    //you could alternately create the Renderer object like below:
+    //You could alternately create the Renderer object like below:
     //$renderer = new \Rotexsoft\FileRenderer\Renderer('./views/view.php', $view_data);
 
     $renderer->renderToScreen(); //Render the file immediately to the screen
@@ -135,19 +161,73 @@ Your main php script may look like below (let's call it `test.php` and assume it
 <!DOCTYPE html>
 <html>
     <head>
+        <title>Escaped Entities</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title></title>
+
+        <style>
+            // CSS escaping is being applied to the variable below
+            <?php echo $this->escapeCss($var_that_should_be_css_escaped); ?>
+        </style>
+
+        <script type="text/javascript">
+            // Javascript escaping is being applied to the variable below
+            var some_string = '<?php echo $this->escapeJs($var_that_can_be_safely_js_escaped); ?>';
+            alert(some_string);
+        </script>
     </head>
     <body>
+        <!-- An unescaped variable -->
         <p><?php echo $paragraph_data_from_file_renderer; ?></p>
+
+        <div>
+            <!-- Html Attribute escaping is being applied to the variable below -->
+            <span title="<?php echo $this->escapeHtmlAttr($var_that_should_be_html_attr_escaped); ?>" >
+                What framework are you using?
+                <!-- Html escaping is being applied to the variable below -->
+                <?php echo $this->escapeHtml($var_that_should_be_html_escaped); ?>
+            </span>
+        </div>
+        
+        <!-- CSS escaping is being applied to the variable below -->
+        <p style="<?php echo $this->escapeCss($another_var_that_should_be_css_escaped); ?>">
+            User controlled CSS needs to be properly escaped!
+            
+            <!-- Url escaping is being applied to the variable below -->
+            <a href="http://example.com/?name=<?php echo $this->escapeUrl($var_that_should_be_url_escaped); ?>">Click here!</a>
+        </p>
+        
+        <!-- Javascript escaping is being applied to the variable below -->
+        <p onclick="var a_number = <?php echo $this->escapeJs($a_var_that_can_be_safely_js_escaped); ?>; alert(a_number);">
+            Javascript escaping the variable in this paragraph's onclick attribute should
+            be safe if the variable contains basic alphanumeric characters. It will definitely
+            prevent XSS attacks.
+        </p>
+
+        <!-- Javascript escaping is being applied to the variable below -->
+        <p onclick="<?php echo $this->escapeJs($a_var_that_cant_be_guaranteed_to_be_safely_js_escaped); ?>">
+            Javascript escaping the variable in this paragraph's onclick attribute may lead
+            to Javascript syntax error(s) but will prevent XSS attacks.
+        </p>
     </body>
 </html>
+
 ```
 
 **NOTE:** the file name, if any, supplied to the **render*()** methods will be 
 considered first for rendering if the file exists. The file name supplied to the 
 constructor during object creation will be considered last for rendering if the 
 file name supplied to the **render*()** method can't be found.
+
+**NOTE:** you can access the Renderer object inside your view via the **`$this`** variable.
+There are five escape methods you can use within your view:
+* `$this->escapeHtml(string $some_string_variable):` an alias for PHP's htmlspecialchars() for escaping data which may contain html markup.
+* `$this->escapeHtmlAttr(string $some_string_variable):` for escaping data which is meant to be rendered as an attribute value within an html element in a view.
+* `$this->escapeCss(string $some_string_variable):` for escaping data which is meant to be rendered within `<style>` tags or inside the style attribute of any html element.
+* `$this->escapeJs(string $some_string_variable):` for escaping data which is meant to be rendered as string literals or digits within Javascript code in a view.
+* `$this->escapeUrl(string $some_string_variable):` an alias for PHP's rawurlencode() for escaping data being inserted into a URL and not to the whole URL itself.
+
+See the [Escaping Data to be Passed to Views](#escaping-data-to-be-passed-to-views) section for more info about escaping.
+
 
 ### Getting, Setting and Unsetting View Data
 
@@ -461,8 +541,19 @@ it will be transformed to
 
 after **Javascript** escaping is applied to it.
 
-You can enable escaping either during the creation of the Renderer object and / or during a 
-call to any of the **render*()** methods.
+You can enable escaping
+
+1. during the creation of the Renderer object.
+
+2. during a call to any of the **render*()** methods.
+
+3. manually within your view file by calling any of the public escape methods available in Renderer Class:
+    - `$this->escapeHtml(string $some_string_variable)`
+    - `$this->escapeHtmlAttr(string $some_string_variable)`
+    - `$this->escapeCss(string $some_string_variable)`
+    - `$this->escapeJs(string $some_string_variable)`
+    - `$this->escapeUrl(string $some_string_variable)`
+
 
 * To enable escaping during the creation of a Renderer object:
 

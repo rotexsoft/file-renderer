@@ -826,4 +826,64 @@ INPUT;
         $this->assertContains($expected_escaped_js, $data['js']);
         $this->assertEquals($expected_escaped_5th_field, $data['no_escape_variable']);
     }
+    
+    public function testThatEscapeHtmlWorksAsExpected() {
+        $file_name = 'view.php';
+        
+        $html_2_escape = '<script>alert("zf2")</script>';
+        $expected_escaped_html = '&lt;script&gt;alert(&quot;zf2&quot;)&lt;/script&gt;';
+
+        $renderer = new FileRendererWrapper($file_name, array(), array(), 'utf-8');
+        $this->assertContains($expected_escaped_html, $renderer->escapeHtml($html_2_escape));
+    }
+    
+    public function testThatEscapeHtmlAttrWorksAsExpected() {
+        $file_name = 'view.php';
+
+        $html_attr_2_escape = <<<INPUT
+faketitle onmouseover=alert(/ZF2!/);
+INPUT;
+        $expected_escaped_html_attr = 'faketitle&#x20;onmouseover&#x3D;alert&#x28;&#x2F;ZF2&#x21;&#x2F;&#x29;&#x3B;';
+
+        $renderer = new FileRendererWrapper($file_name, array(), array(), 'utf-8');
+        $this->assertContains($expected_escaped_html_attr, $renderer->escapeHtmlAttr($html_attr_2_escape));
+    }
+    
+    public function testThatEscapeCssWorksAsExpected() {
+        $file_name = 'view.php';
+
+        $css_2_escape = <<<INPUT
+body {
+    background-image: url('http://example.com/foo.jpg?</style><script>alert(1)</script>');
+}
+INPUT;
+        $expected_escaped_css = 'body\20 \7B \A \20 \20 \20 \20 background\2D image\3A \20 url\28 \27 http\3A \2F \2F example\2E com\2F foo\2E jpg\3F \3C \2F style\3E \3C script\3E alert\28 1\29 \3C \2F script\3E \27 \29 \3B \A \7D';
+
+        $renderer = new FileRendererWrapper($file_name, array(), array(), 'utf-8');
+        $this->assertContains($expected_escaped_css, $renderer->escapeCss($css_2_escape));
+    }
+    
+    public function testThatEscapeJsWorksAsExpected() {
+        $file_name = 'view.php';
+
+        $js_2_escape = <<<INPUT
+bar&quot;; alert(&quot;Meow!&quot;); var xss=&quot;true
+INPUT;
+        $expected_escaped_js = 'bar\x26quot\x3B\x3B\x20alert\x28\x26quot\x3BMeow\x21\x26quot\x3B\x29\x3B\x20var\x20xss\x3D\x26quot\x3Btrue';
+
+        $renderer = new FileRendererWrapper($file_name, array(), array(), 'utf-8');
+        $this->assertContains($expected_escaped_js, $renderer->escapeJs($js_2_escape));
+    }
+    
+    public function testThatEscapeUrlWorksAsExpected() {
+        $file_name = 'view.php';
+                
+        $url_2_escape =  <<<INPUT
+" onmouseover="alert('zf2')
+INPUT;
+        $expected_escaped_url = '%22%20onmouseover%3D%22alert%28%27zf2%27%29';
+
+        $renderer = new FileRendererWrapper($file_name, array(), array(), 'utf-8');
+        $this->assertEquals($expected_escaped_url, $renderer->escapeUrl($url_2_escape));
+    }
 }
