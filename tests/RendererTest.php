@@ -236,9 +236,9 @@ EOT;
     public function testExceptionMessageWhenNonExistentPropertyThatsNeverBeenSetIsAccessed() {
         
         $expected_msg = "ERROR: Item with key 'key1' does not exist in ";
+        $renderer = new FileRendererWrapper('file.txt');
         
         try {
-            $renderer = new FileRendererWrapper('file.txt');
             $renderer->__get('key1'); //explicit call to a property that isn't defined & hasn't been set
             
             //if the call to __get above did not throw an exception, then this test should fail

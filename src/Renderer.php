@@ -164,6 +164,17 @@ class Renderer
     protected $escape_encoding = 'utf-8';
     
     /**
+     *
+     * An instance of \Zend\Escaper\Escaper that would be used by the public escape*($string) methods.
+     * 
+     * 
+     * @var \Zend\Escaper\Escaper
+     * 
+     */
+    protected $escaper = null;
+
+
+    /**
      * 
      * This array keeps track of the hashes of the data arrays that have been escaped via 
      * $this->escapeData(). THIS WILL ALLOW $this->escapeData() TO ONLY ESCAPE EACH UNIQUE
@@ -246,6 +257,9 @@ class Renderer
         $this->data_vars_2_css_escape = $data_vars_2_css_escape;
         $this->data_vars_2_html_escape = $data_vars_2_html_escape;
         $this->data_vars_2_html_attr_escape = $data_vars_2_html_attr_escape;
+        
+        $encoding = empty($escape_encoding)? 'utf-8' : $escape_encoding;
+        $this->escaper = new \Zend\Escaper\Escaper($encoding);
     }
     
     /**
@@ -263,7 +277,9 @@ class Renderer
         
         //TODO: if value is an instance of \Rotexsoft\FileRenderer\Renderer
         //      copy key=>val pairs in $this->data to $value->data if key is
-        //      not existent in $value->data
+        //      not existent in $value->data.
+        //      ie. $merged_data = array_merge($this->data, $value->data);
+        //          foreach($merged_data as $k=>$v){ $value->$k = $v; }
     }
 
     /**
@@ -285,7 +301,7 @@ class Renderer
         } else {
 
             $msg = "ERROR: Item with key '$key' does not exist in " 
-                   . get_class($this) .'.'. PHP_EOL . var_export($this, true);
+                   . get_class($this) .'::getData().'. PHP_EOL . var_export($this->data, true);
             
             throw new \Exception($msg);
         }
@@ -717,11 +733,8 @@ class Renderer
      * @return string
      */
     public function escapeHtml($string) {
-        
-        $encoding = empty($this->escape_encoding)? 'utf-8' : $this->escape_encoding;
-        $escaper = new \Zend\Escaper\Escaper($encoding);
-        
-        return $escaper->escapeHtml($string);
+                
+        return $this->escaper->escapeHtml($string);
     }
     
     /**
@@ -734,10 +747,7 @@ class Renderer
      */
     public function escapeHtmlAttr($string) {
         
-        $encoding = empty($this->escape_encoding)? 'utf-8' : $this->escape_encoding;
-        $escaper = new \Zend\Escaper\Escaper($encoding);
-        
-        return $escaper->escapeHtmlAttr($string);
+        return $this->escaper->escapeHtmlAttr($string);
     }
     
     /**
@@ -748,11 +758,8 @@ class Renderer
      * @return string
      */
     public function escapeCss($string) {
-        
-        $encoding = empty($this->escape_encoding)? 'utf-8' : $this->escape_encoding;
-        $escaper = new \Zend\Escaper\Escaper($encoding);
-        
-        return $escaper->escapeCss($string);
+                
+        return $this->escaper->escapeCss($string);
     }
     
     /**
@@ -769,10 +776,7 @@ class Renderer
      */
     public function escapeJs($string) {
         
-        $encoding = empty($this->escape_encoding)? 'utf-8' : $this->escape_encoding;
-        $escaper = new \Zend\Escaper\Escaper($encoding);
-        
-        return $escaper->escapeJs($string);
+        return $this->escaper->escapeJs($string);
     }
     
     /**
@@ -785,10 +789,7 @@ class Renderer
      */
     public function escapeUrl($string) {
         
-        $encoding = empty($this->escape_encoding)? 'utf-8' : $this->escape_encoding;
-        $escaper = new \Zend\Escaper\Escaper($encoding);
-        
-        return $escaper->escapeUrl($string);
+        return $this->escaper->escapeUrl($string);
     }
     
     /**
