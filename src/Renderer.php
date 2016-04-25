@@ -863,7 +863,19 @@ class Renderer
                             ? ((empty($this->escape_encoding))? 'utf-8' : $this->escape_encoding) 
                             : $escape_encoding;
         
-        if( is_null($escaper) ) { $escaper = new \Zend\Escaper\Escaper($final_encoding); }
+        if( is_null($escaper) ) {
+            
+            if(
+                $this->escaper instanceof \Zend\Escaper\Escaper 
+                && $this->escaper->getEncoding() === $final_encoding
+            ) {    
+                $escaper = $this->escaper; //we can safely use the escaper associated with this class.
+                
+            } else {
+                
+                $escaper = new \Zend\Escaper\Escaper($final_encoding); 
+            }
+        }
         
         foreach( $data as $key => $value ) {
          
