@@ -473,6 +473,16 @@ EOT;
         $this->assertEquals($data['var1'], $renderer->renderToString('view.php'));
     }
     
+    public function testThat__ToStringWorksAsExpected() {
+    
+        $file_name = 'view.php';
+        $data = array( 'var1'=>'var1 at construct' );
+        $file_paths = array(__DIR__.'/sample-views', __DIR__.'/sample-views/sub1', __DIR__.'/sample-views/sub1/sub2');
+        $renderer = new FileRendererWrapper($file_name, $data, $file_paths);
+        
+        $this->assertEquals($data['var1'], $renderer->__toString());
+    }
+    
     public function testThatRenderToScreenWorksAsExpected() {
     
         $file_name = 'view.php';

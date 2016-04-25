@@ -260,6 +260,10 @@ class Renderer
     public function __set($key, $value) {
         
         $this->data[$key] = $value;
+        
+        //TODO: if value is an instance of \Rotexsoft\FileRenderer\Renderer
+        //      copy key=>val pairs in $this->data to $value->data if key is
+        //      not existent in $value->data
     }
 
     /**
@@ -614,6 +618,20 @@ class Renderer
                 );
         
         return $render_view($located_file, $merged_data);
+    }
+    
+    /**
+     * 
+     * Alias to $this->renderToString(..)
+     * 
+     * @return string the output that is generated when $this->file_name is rendered.
+     * 
+     * @throws \Rotexsoft\FileRenderer\FileNotFoundException
+     * 
+     */
+    public function __toString() {
+        
+        return $this->renderToString();
     }
     
     /**
