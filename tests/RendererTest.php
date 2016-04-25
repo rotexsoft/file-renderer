@@ -662,6 +662,13 @@ INPUT;
 
         $renderer = new FileRendererWrapper($file_name, $data);
         
+        //scenario where empty data array is passed
+        $empty_data = array();
+        $original_empty_data = $empty_data;
+        $renderer->escapeDataPublic($empty_data);
+        $this->assertEquals($original_empty_data, $empty_data);
+        
+        //other scenarios
         $renderer->escapeDataPublic($data, 'utf-8', array('html'), array('html_attr'), array('css'), array('js'));
         $this->assertContains($expected_escaped_html, $data['html']);
         $this->assertContains($expected_escaped_html_attr, $data['html_attr']);

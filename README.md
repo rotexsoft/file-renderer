@@ -220,11 +220,11 @@ file name supplied to the **render*()** method can't be found.
 
 **NOTE:** you can access the Renderer object inside your view via the **`$this`** variable.
 There are five escape methods you can use within your view:
-* `$this->escapeHtml(string $some_string_variable):` an alias for PHP's htmlspecialchars() for escaping data which may contain html markup.
-* `$this->escapeHtmlAttr(string $some_string_variable):` for escaping data which is meant to be rendered as an attribute value within an html element in a view.
-* `$this->escapeCss(string $some_string_variable):` for escaping data which is meant to be rendered within `<style>` tags or inside the style attribute of any html element.
-* `$this->escapeJs(string $some_string_variable):` for escaping data which is meant to be rendered as string literals or digits within Javascript code in a view.
-* `$this->escapeUrl(string $some_string_variable):` an alias for PHP's rawurlencode() for escaping data being inserted into a URL and not to the whole URL itself.
+* **`$this->escapeHtml(string $some_string_variable):`** an alias for PHP's htmlspecialchars() for escaping data which may contain html markup.
+* **`$this->escapeHtmlAttr(string $some_string_variable):`** for escaping data which is meant to be rendered as an attribute value within an html element in a view.
+* **`$this->escapeCss(string $some_string_variable):`** for escaping data which is meant to be rendered within `<style>` tags or inside the style attribute of any html element.
+* **`$this->escapeJs(string $some_string_variable):`** for escaping data which is meant to be rendered as string literals or digits within Javascript code in a view.
+* **`$this->escapeUrl(string $some_string_variable):`** an alias for PHP's rawurlencode() for escaping data being inserted into a URL and not to the whole URL itself.
 
 See the [Escaping Data to be Passed to Views](#escaping-data-to-be-passed-to-views) section for more info about escaping.
 
