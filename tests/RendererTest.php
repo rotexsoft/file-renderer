@@ -668,7 +668,16 @@ INPUT;
         $renderer->escapeDataPublic($empty_data);
         $this->assertEquals($original_empty_data, $empty_data);
         
-        //other scenarios
+        //test one 'iso-8859-1' scenaario
+        $renderer->escapeDataPublic($data, 'iso-8859-1', array('html'), array('html_attr'), array('css'), array('js'));
+        $this->assertContains($expected_escaped_html, $data['html']);
+        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertContains($expected_escaped_css, $data['css']);
+        $this->assertContains($expected_escaped_js, $data['js']);
+        $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
+        
+        //other utf-8 scenarios
+        $data = $original_data;
         $renderer->escapeDataPublic($data, 'utf-8', array('html'), array('html_attr'), array('css'), array('js'));
         $this->assertContains($expected_escaped_html, $data['html']);
         $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
