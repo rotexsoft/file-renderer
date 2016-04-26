@@ -105,12 +105,10 @@ INPUT;
 
     $bad_css_with_xss2 = ' display: block; " onclick="alert(\'You\\\'ve been XSSed!\'); ';
 
-    $bad_url_segment_with_xss =  <<<INPUT 
-" onmouseover="alert('zf2') 
-INPUT;
+    $bad_url_segment_with_xss = ' " onmouseover="alert(\'zf2\')';
 
     $view_data = [
-        'paragraph_data_from_file_renderer'                     => 'This is a Paragraph!!'
+        'paragraph_data_from_file_renderer'                     => 'This is a Paragraph!!',
         'var_that_should_be_html_escaped'                       => '<script>alert("zf2");</script>',
         'var_that_should_be_html_attr_escaped'                  => 'faketitle" onmouseover="alert(/ZF2!/);',
         'var_that_should_be_css_escaped'                        => $bad_css_with_xss,
