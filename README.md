@@ -163,7 +163,7 @@ INPUT;
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
         <style>
-            // CSS escaping is being applied to the variable below
+           <?php // CSS escaping is being applied to the variable below ?>
             <?php echo $this->escapeCss($var_that_should_be_css_escaped); ?>
         </style>
 
@@ -185,15 +185,15 @@ INPUT;
                 <?php echo $this->escapeHtml($var_that_should_be_html_escaped); ?>
             </span>
         </div>
-        
+
         <!-- CSS escaping is being applied to the variable below -->
         <p style="<?php echo $this->escapeCss($another_var_that_should_be_css_escaped); ?>">
             User controlled CSS needs to be properly escaped!
-            
+
             <!-- Url escaping is being applied to the variable below -->
             <a href="http://example.com/?name=<?php echo $this->escapeUrl($var_that_should_be_url_escaped); ?>">Click here!</a>
         </p>
-        
+
         <!-- Javascript escaping is being applied to the variable below -->
         <p onclick="var a_number = <?php echo $this->escapeJs($a_var_that_can_be_safely_js_escaped); ?>; alert(a_number);">
             Javascript escaping the variable in this paragraph's onclick attribute should

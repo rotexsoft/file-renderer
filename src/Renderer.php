@@ -585,42 +585,6 @@ class Renderer
             throw new FileNotFoundException($msg);
         }
         
-        ////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////
-        ////
-        //// Deliberately not specifying parameters in the anonymous function's 
-        //// definition signature below in order to avoid having any explicit 
-        //// variable(s) defined inside the anonymous function. Rather, the 
-        //// parameters are being accessed via func_get_arg() and not even 
-        //// assigned to any local variable(s) inside the function.
-        ////
-        //// This way we need not worry about any variable(s) being overwritten
-        //// inside the anonymous function when extract(..) is called within the 
-        //// anonymous function.
-        ////  
-        ////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////
-        $render_view = function()
-        {
-            //func_get_arg(0): the name of the file to be included whose output 
-            //                 is to be captured and returned
-
-            //func_get_arg(1): the data array from which to extract variables
-
-            //Extract variables from the data array which may be needed in the
-            //view file to be included below.
-            extract(func_get_arg(1));
-
-            // Capture the view output
-            ob_start();
-
-            // Load the view within the current scope
-            include func_get_arg(0);
-
-            // Get the captured output and close the buffer
-            return ob_get_clean();
-        };
-        
         $merged_data = array_merge($this->data, $data);
 
         //escape data
@@ -633,9 +597,46 @@ class Renderer
                     array_merge($this->data_vars_2_js_escape, $data_vars_2_js_escape)
                 );
         
-        return $render_view($located_file, $merged_data);
+        return $this->doRender($located_file, $merged_data);
     }
     
+    protected function doRender(){
+        
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        ////
+        //// Deliberately not specifying parameters in this function's 
+        //// signature in order to avoid having any explicit variable(s) 
+        //// defined inside the anonymous function. Rather, the parameters
+        //// are being accessed via func_get_arg() and not even assigned
+        //// to any local variable(s) inside the function.
+        ////
+        //// This way we need not worry about any variable(s) being overwritten
+        //// inside the function when extract(..) is called within the function.
+        ////  
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        
+        //func_get_arg(0): the name of the file to be included whose output 
+        //                 is to be captured and returned
+
+        //func_get_arg(1): the data array from which to extract variables
+
+        //Extract variables from the data array which may be needed in the
+        //view file to be included below.
+        extract(func_get_arg(1));
+
+        // Capture the view output
+        ob_start();
+
+        // Load the view within the current scope
+        include func_get_arg(0);
+
+        // Get the captured output and close the buffer
+        return ob_get_clean();
+    }
+
+
     /**
      * 
      * Alias to $this->renderToString(..)
