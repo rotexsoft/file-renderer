@@ -290,7 +290,7 @@ class Renderer
      * 
      * @return mixed a data value associated with the given key in the $this->data array.
      * 
-     * @throws \Exception if item with specified key is not in the $this->data array.
+     * @throws \OutOfBoundsException if item with specified key is not in the $this->data array.
      */
     public function __get($key) {
         
@@ -303,7 +303,7 @@ class Renderer
             $msg = "ERROR: Item with key '$key' does not exist in " 
                    . get_class($this) .'::getData().'. PHP_EOL . var_export($this->data, true);
             
-            throw new \Exception($msg);
+            throw new \OutOfBoundsException($msg);
         }
     }
     
@@ -358,7 +358,7 @@ class Renderer
      * 
      * @return mixed a data value associated with the given key in the $this->data array.
      * 
-     * @throws \Exception if item with specified key is not in the $this->data array.
+     * @throws \OutOfBoundsException if item with specified key is not in the $this->data array.
      */
     public function getVar($key) {
         
