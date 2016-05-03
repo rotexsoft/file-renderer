@@ -191,7 +191,7 @@ EOT;
             //if the constructor call above did not throw an exception, then this test should fail
             $message = __FUNCTION__.'() : Expected exception not thrown when creating'
                                    . ' File Renderer with an invalid (non-string) file name';
-            throw new Exception($message);
+            throw new \Exception($message);
             
         } catch (\Exception $e) {
             
@@ -244,7 +244,7 @@ EOT;
             //if the call to __get above did not throw an exception, then this test should fail
             $message = __FUNCTION__. '() : Expected exception not thrown when accessing non'
                                    . ' existent property.';
-            throw new Exception($message);
+            throw new \Exception($message);
             
         } catch (\Exception $e) {
             
@@ -259,7 +259,7 @@ EOT;
                 //then this test should fail
                 $message = __FUNCTION__. '() : Expected exception not thrown when accessing non'
                                        . ' existent property.';
-                throw new Exception($message);
+                throw new \Exception($message);
 
             } catch (\Exception $e) {
 
@@ -542,7 +542,7 @@ EOT;
             //if the call to locateFile above did not throw an exception, then this test should fail
             $message = __FUNCTION__. '(): Expected exception not thrown when locating file with an'
                                    . ' invalid (non-string) file name';
-            throw new Exception($message);
+            throw new \Exception($message);
             
         } catch (\Exception $e) {
             
@@ -588,7 +588,7 @@ EOT;
             //if the call to locateFile above did not throw an exception, then this test should fail
             $message = __FUNCTION__. '(): Expected exception not thrown when rendering file with an'
                                    . ' invalid (non-string) file name';
-            throw new Exception($message);
+            throw new \Exception($message);
             
         } catch (\Exception $e) {
 
@@ -613,7 +613,7 @@ EOT;
             //if the call to locateFile above did not throw an exception, then this test should fail
             $message = __FUNCTION__. '(): Expected exception not thrown when rendering file with an'
                                    . ' invalid (non-string) file name';
-            throw new Exception($message);
+            throw new \Exception($message);
             
         } catch (\Exception $e) {
             
