@@ -18,7 +18,6 @@
         "zendframework/zend-escaper": "^2.5.1"
     },
     "require-dev": {
-        "php": ">=5.3.23",
         "phpunit/phpunit": "^4.7"
     },
     "autoload": {

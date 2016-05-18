@@ -1040,5 +1040,3 @@ class Renderer
         return $cap_first ? ucfirst(gettype($var)) : gettype($var);
     }
 }
-
-class FileNotFoundException extends \Exception { }
