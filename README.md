@@ -2,7 +2,9 @@
 
 ![Build Status](https://img.shields.io/travis/rotexsoft/file-renderer/master.svg?style=flat-square) &nbsp; https://travis-ci.org/rotexsoft/file-renderer
 
-![Release](https://img.shields.io/github/release/rotexsoft/file-renderer.svg?style=flat-square) &nbsp; ![License](https://img.shields.io/badge/license-BSD-brightgreen.svg?style=flat-square) &nbsp; ![Codacy Badge](https://img.shields.io/codacy/6cf4ecf85e494f9ab3137656d918fa10.svg?style=flat-square) &nbsp; [![SensioLabsInsight](https://insight.sensiolabs.com/projects/46acc4a9-42b0-4632-b282-7736dad7da14/mini.png)](https://insight.sensiolabs.com/projects/46acc4a9-42b0-4632-b282-7736dad7da14) &nbsp; 
+![Codacy Badge](https://img.shields.io/codacy/6cf4ecf85e494f9ab3137656d918fa10.svg?style=flat-square) &nbsp; https://www.codacy.com/app/rotexdegba/file-renderer/dashboard
+
+![Release](https://img.shields.io/github/release/rotexsoft/file-renderer.svg?style=flat-square) &nbsp; ![License](https://img.shields.io/badge/license-BSD-brightgreen.svg?style=flat-square) &nbsp; [![SensioLabsInsight](https://insight.sensiolabs.com/projects/46acc4a9-42b0-4632-b282-7736dad7da14/mini.png)](https://insight.sensiolabs.com/projects/46acc4a9-42b0-4632-b282-7736dad7da14) &nbsp; 
 
 - [PHP File Renderer](#php-file-renderer)
 	- [Introduction](#introduction)
