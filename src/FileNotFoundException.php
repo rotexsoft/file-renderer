@@ -1,5 +1,6 @@
 <?php
 namespace Rotexsoft\FileRenderer;
+
 /**
  * 
  * Exception Class to be thrown when a file to be rendered cannot be located on the file-system.
