@@ -1,10 +1,12 @@
 # PHP File Renderer
 
-![Build Status](https://img.shields.io/travis/rotexsoft/file-renderer/master.svg?style=flat-square) &nbsp; [Travis](https://travis-ci.org/rotexsoft/file-renderer) 
+![Build Status](https://img.shields.io/travis/rotexsoft/file-renderer/master.png?style=flat-square) &nbsp; [Travis](https://travis-ci.org/rotexsoft/file-renderer) 
 
-![Codacy Badge](https://img.shields.io/codacy/6cf4ecf85e494f9ab3137656d918fa10.svg?style=flat-square) &nbsp; [Codacy](https://www.codacy.com/app/rotexdegba/file-renderer/dashboard) 
+![Codacy Badge](https://img.shields.io/codacy/6cf4ecf85e494f9ab3137656d918fa10.png?style=flat-square) &nbsp; [Codacy](https://www.codacy.com/app/rotexdegba/file-renderer/dashboard) 
 
-![Release](https://img.shields.io/github/release/rotexsoft/file-renderer.svg?style=flat-square) &nbsp; ![License](https://img.shields.io/badge/license-BSD-brightgreen.svg?style=flat-square) &nbsp; [![SensioLabsInsight](https://insight.sensiolabs.com/projects/46acc4a9-42b0-4632-b282-7736dad7da14/mini.png)](https://insight.sensiolabs.com/projects/46acc4a9-42b0-4632-b282-7736dad7da14) &nbsp; [![Coverage Status](https://coveralls.io/repos/github/rotexsoft/file-renderer/badge.png?branch=master)](https://coveralls.io/github/rotexsoft/file-renderer?branch=master)
+![Release](https://img.shields.io/github/release/rotexsoft/file-renderer.png?style=flat-square) &nbsp; ![License](https://img.shields.io/badge/license-BSD-brightgreen.png?style=flat-square) &nbsp; [![SensioLabsInsight](https://insight.sensiolabs.com/projects/46acc4a9-42b0-4632-b282-7736dad7da14/mini.png)](https://insight.sensiolabs.com/projects/46acc4a9-42b0-4632-b282-7736dad7da14) &nbsp; [![Coverage Status](https://coveralls.io/repos/github/rotexsoft/file-renderer/badge.png?branch=master)](https://coveralls.io/github/rotexsoft/file-renderer?branch=master)
+
+[![Dependency Status](https://www.versioneye.com/user/projects/573ce6f8ce8d0e004505e92b/badge.svg?style=flat)](https://www.versioneye.com/user/projects/573ce6f8ce8d0e004505e92b)
 
 - [PHP File Renderer](#php-file-renderer)
 	- [Introduction](#introduction)
