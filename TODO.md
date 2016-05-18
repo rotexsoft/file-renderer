@@ -1,5 +1,6 @@
 * Create custom email for project's composer.json
-* Implement data sharing between layouts and page content view. 
+* Add packagist downloads badge from http://shields.io/ to this project
+* Implement data sharing between layouts and page content view: 
     - Will need to think about how that should work. 
     - I am thinking of adding code to __set to copy the data fields from $this to the Renderer object being assigned. 
     - For example if you have $layout_renderer and $view_renderer and you do some thing like $layout_renderer->content = $view_renderer; 
