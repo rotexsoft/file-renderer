@@ -12,7 +12,7 @@ namespace Rotexsoft\FileRenderer;
  * @author Rotimi Adegbamigbe (http://blog.rotimis-corner.com/)
  * 
  */
-class FileNotFoundException extends \Exception
+class FileNotFoundException extends \Exception 
 {
-    //put your code here
+    
 }
