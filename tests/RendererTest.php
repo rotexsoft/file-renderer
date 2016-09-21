@@ -354,6 +354,20 @@ EOT;
         $this->assertEquals($expected_file_paths, $renderer->getFilePaths());        
     }
     
+    public function testThatHasPathWorksAsExpected() {
+        
+        $expected_file_name = 'fizaile';
+        $expected_data = array( 'a'=>'b' );
+        $original_file_paths = array('/b');
+        
+        $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $original_file_paths);
+        $renderer->prependPath('/a');
+        $renderer->appendPath('/c');
+        $this->assertEquals( $renderer->hasPath('/a'), true);
+        $this->assertEquals( $renderer->hasPath('/b'), true);
+        $this->assertEquals( $renderer->hasPath('/c'), true);
+    }
+    
     public function testThatRemoveFirstNPathsWorksAsExpected() {
         
         $expected_file_name = 'fizaile';

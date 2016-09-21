@@ -421,6 +421,19 @@ class Renderer
     
     /**
      * 
+     * Checks if a path has been registered for an instance of this class
+     * 
+     * @param string $path
+     * @return bool
+     */
+    public function hasPath($path) {
+        
+        return in_array($path, $this->file_paths);
+    }
+
+
+    /**
+     * 
      * Removes the first `n` elements in the array of path(s) to directorie(s) 
      * containing (*.php) files to be rendered via this class.
      * 
