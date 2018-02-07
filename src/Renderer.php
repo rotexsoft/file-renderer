@@ -630,25 +630,50 @@ class Renderer
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
         
-        //func_get_arg(0): the name of the file to be included whose output 
-        //                 is to be captured and returned
+        try {
 
-        //func_get_arg(1): the data array from which to extract variables
+            //func_get_arg(0): the name of the file to be included whose output 
+            //                 is to be captured and returned
 
-        //Extract variables from the data array which may be needed in the
-        //view file to be included below.
-        extract(func_get_arg(1));
+            //func_get_arg(1): the data array from which to extract variables
 
-        // Capture the view output
-        ob_start();
+            // Capture the view output
+            ob_start();
 
-        // Load the view within the current scope
-        include func_get_arg(0);
+            //Extract variables from the data array which may be needed in the
+            //view file to be included below.
+            //extract(func_get_arg(1));
 
-        // Get the captured output and close the buffer
-        return ob_get_clean();
+            // Load the view within the current scope
+            //include func_get_arg(0);
+
+            $this->includeFile(func_get_arg(0), func_get_arg(1));
+            
+            // Get the captured output and close the buffer
+            return ob_get_clean();
+            
+        } catch(\Throwable $e) { // PHP 7+
+            
+            ob_end_clean();
+            throw $e;
+            
+        } catch(\Exception $e) { // PHP < 7
+            
+            ob_end_clean();
+            throw $e;
+        }
+        
+        return ''; // technically, we should never get here
     }
 
+    /**
+     * @param string $file_to_include
+     * @param array $data
+     */
+    protected function includeFile ($file_to_include, array $data) {
+        extract(func_get_arg(1));
+        include func_get_arg(0);
+    }
 
     /**
      * 
