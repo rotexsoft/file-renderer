@@ -6,7 +6,7 @@ use Rotexsoft\FileRenderer\Tests\FileRendererWrapper;
  *
  * @author Rotimi Adegbamigbe
  */
-class RendererTest extends \PHPUnit_Framework_TestCase
+class RendererTest extends \PHPUnit\Framework\TestCase
 {
     protected function setUp() { parent::setUp(); }
 
