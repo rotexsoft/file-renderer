@@ -384,7 +384,7 @@ You can also accomplish the same thing with the following:
 ### Escaping Data to be Passed to Views
 
 Escaping functionality is provided via the zend-escaper package. It is **STRONGLY RECOMMENDED** that you read this
-[article](https://github.com/rotexdegba/zend-escaper/blob/master/doc/book/zend.escaper.theory-of-operation.md)
+[article](https://docs.zendframework.com/zend-escaper/theory-of-operation/)
 to understand the principles behind properly escaping data.
 
 Escaping is possible in four contexts:
@@ -758,16 +758,16 @@ More on escaping from the zend-escaper website:
 >HTML escaping is accomplished via Zend\Escaper\Escaper's escapeHtml method. Internally it uses PHP's htmlspecialchars,
 and additionally correctly sets the flags and encoding. One thing a developer needs to pay special attention too, is the
 encoding in which the document is served to the client; **it must be the same** as the encoding used for escaping!
-Go [here](https://github.com/rotexdegba/zend-escaper/blob/master/doc/book/zend.escaper.escaping-html.md) for more details.
+Go [here](https://docs.zendframework.com/zend-escaper/escaping-html/) for more details.
 
 >HTML Attribute escaping is accomplished via Zend\Escaper\Escaper's escapeHtmlAttr method. Internally it will convert the data to UTF-8,
 check for it's validity, and use an extended set of characters to escape that are not covered by htmlspecialchars to cover the cases
 where an attribute might be unquoted or quoted illegally.
-Go [here](https://github.com/rotexdegba/zend-escaper/blob/master/doc/book/zend.escaper.escaping-html-attributes.md) for more details.
+Go [here](https://docs.zendframework.com/zend-escaper/escaping-html-attributes/) for more details.
 
 >CSS escaping is accomplished via Zend\Escaper\Escaper's escapeCss method. CSS escaping excludes only basic alphanumeric characters
 and escapes all other characters into valid CSS hexadecimal escapes.
-Go [here](https://github.com/rotexdegba/zend-escaper/blob/master/doc/book/zend.escaper.escaping-css.md) for more details.
+Go [here](https://docs.zendframework.com/zend-escaper/escaping-css/) for more details.
 
 >Javascript escaping is accomplished via Zend\Escaper\Escaper's escapeJs method.
 Javascript string literals in HTML are subject to significant restrictions particularly due to the potential for unquoted attributes
@@ -778,7 +778,7 @@ characters and the comma, period and underscore characters as hexadecimal or uni
 Javascript escaping applies to all literal strings and digits. It is not possible to safely escape other Javascript markup.
 An extended set of characters are escaped beyond ECMAScript's rules for Javascript literal string escaping in order to prevent
 misinterpretation of Javascript as HTML leading to the injection of special characters and entities.
-Go [here](https://github.com/rotexdegba/zend-escaper/blob/master/doc/book/zend.escaper.escaping-javascript.md) for more details.
+Go [here](https://docs.zendframework.com/zend-escaper/escaping-javascript/) for more details.
 
 ### Advanced Usage
 
