@@ -8,7 +8,7 @@ php:
   - 7.1
   - 7.2
   - 7.3
-  - hhvm
+  - 7.4snapshot
 
 before_script:
   - travis_retry composer self-update
@@ -28,7 +28,7 @@ matrix:
     - php: 5.3
       dist: precise
   allow_failures:
-    - php: hhvm
+    - php: 7.4snapshot
 
 after_success:
   # - travis_retry php vendor/bin/coveralls
