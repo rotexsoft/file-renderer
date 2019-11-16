@@ -284,9 +284,9 @@ class Renderer
 
     /**
      * 
-     * Retreives a data value associated with the given key in the $this->data array.
+     * Retrieves a data value associated with the given key in the $this->data array.
      * 
-     * @param string $key key for a data value to be retreived from the $this->data array.
+     * @param string $key key for a data value to be retrieved from the $this->data array.
      * 
      * @return mixed a data value associated with the given key in the $this->data array.
      * 
