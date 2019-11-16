@@ -279,12 +279,6 @@ class Renderer
     public function __set($key, $value) {
         
         $this->data[$key] = $value;
-        
-        //TODO: if value is an instance of \Rotexsoft\FileRenderer\Renderer
-        //      copy key=>val pairs in $this->data to $value->data if key is
-        //      not existent in $value->data.
-        //      ie. $merged_data = array_merge($this->data, $value->data);
-        //          foreach($merged_data as $k=>$v){ $value->$k = $v; }
     }
 
     /**
@@ -647,13 +641,6 @@ class Renderer
 
             // Capture the view output
             ob_start();
-
-            //Extract variables from the data array which may be needed in the
-            //view file to be included below.
-            //extract(func_get_arg(1));
-
-            // Load the view within the current scope
-            //include func_get_arg(0);
 
             $this->includeFile(func_get_arg(0), func_get_arg(1));
             
