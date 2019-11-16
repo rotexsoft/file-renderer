@@ -30,7 +30,7 @@ class Renderer
      * @var array
      *  
      */
-    protected $file_paths = [];
+    protected $file_paths = array();
 
     /**
      *
@@ -55,7 +55,7 @@ class Renderer
      * @var array  
      *             
      */
-    protected $data = [];
+    protected $data = array();
     
     /**
      * 
