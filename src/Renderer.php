@@ -1,6 +1,11 @@
 <?php
 namespace Rotexsoft\FileRenderer;
 
+use InvalidArgumentException;
+use Zend\Escaper\Escaper;
+use OutOfBoundsException;
+use Throwable;
+use Exception;
 /**
  * 
  * Class for rendering the contents of a php file.
@@ -25,7 +30,7 @@ class Renderer
      * @var array
      *  
      */
-    protected $file_paths;
+    protected $file_paths = [];
 
     /**
      *
@@ -50,7 +55,7 @@ class Renderer
      * @var array  
      *             
      */
-    protected $data;
+    protected $data = [];
     
     /**
      * 
@@ -246,7 +251,7 @@ class Renderer
                    . PHP_EOL .'`'. $this->getVarType($file_name, true).'` was supplied with the value below:'
                    . PHP_EOL . var_export($file_name, true). PHP_EOL ;
             
-            throw new \InvalidArgumentException($msg);
+            throw new InvalidArgumentException($msg);
         }
         
         $this->data = $data;
@@ -259,7 +264,7 @@ class Renderer
         $this->data_vars_2_html_attr_escape = $data_vars_2_html_attr_escape;
         
         $encoding = empty($escape_encoding)? 'utf-8' : $escape_encoding;
-        $this->escaper = new \Zend\Escaper\Escaper($encoding);
+        $this->escaper = new Escaper($encoding);
     }
     
     /**
@@ -300,10 +305,10 @@ class Renderer
             
         } else {
 
-            $msg = "ERROR: Item with key '$key' does not exist in " 
+            $msg = sprintf('ERROR: Item with key \'%s\' does not exist in ', $key) 
                    . get_class($this) .'::getData().'. PHP_EOL . var_export($this->data, true);
             
-            throw new \OutOfBoundsException($msg);
+            throw new OutOfBoundsException($msg);
         }
     }
     
@@ -351,14 +356,14 @@ class Renderer
     }
     
     /**
-     * 
+     *    
      * Retreives a data value associated with the given key in the $this->data array.
-     * 
+     *    
      * @param string $key key for a data value to be retreived from the $this->data array.
-     * 
-     * @return mixed a data value associated with the given key in the $this->data array.
-     * 
+     *    
+     *    
      * @throws \OutOfBoundsException if item with specified key is not in the $this->data array.
+     * @return mixed
      */
     public function getVar($key) {
         
@@ -573,7 +578,7 @@ class Renderer
                  . PHP_EOL .'`'. $this->getVarType($file_name, true).'` was supplied with the value below:'
                  . PHP_EOL . var_export($file_name, true). PHP_EOL ;
             
-            throw new \InvalidArgumentException($msg);
+            throw new InvalidArgumentException($msg);
         }
         
         $located_file = $this->locateFile($file_name);
@@ -589,7 +594,7 @@ class Renderer
         if( $located_file === false ) {
             
             //The file does not exist in any of the registered possible paths
-            $msg = "ERROR: Could not load the file named `$file_name` "
+            $msg = sprintf('ERROR: Could not load the file named `%s` ', $file_name)
                 . "from any of the paths below:"
                 . PHP_EOL . implode(PHP_EOL, $this->file_paths) . PHP_EOL
                 . PHP_EOL . get_class($this) . '::' . __FUNCTION__ . '(...).' 
@@ -613,6 +618,9 @@ class Renderer
         return $this->doRender($located_file, $merged_data);
     }
     
+    /**
+     * @return string
+     */
     protected function doRender(){
         
         ////////////////////////////////////////////////////////////////////////
@@ -652,17 +660,17 @@ class Renderer
             // Get the captured output and close the buffer
             return ob_get_clean();
             
-        } catch(\Throwable $e) { // PHP 7+
+        } catch(Throwable $e) { // PHP 7+
             
             ob_end_clean();
             throw $e;
             
-        } catch(\Exception $e) { // PHP < 7
+        } catch(Exception $e) { // PHP < 7
             
             ob_end_clean();
             throw $e;
-        }
-        
+    }
+
         return ''; // technically, we should never get here
     }
 
@@ -867,7 +875,7 @@ class Renderer
         array $data_vars_2_html_attr_escape = array(),
         array $data_vars_2_css_escape = array(),
         array $data_vars_2_js_escape = array(),
-        \Zend\Escaper\Escaper $escaper = null
+        Escaper $escaper = null
     ) {
         if ( count($data) <= 0 ) {
             
@@ -876,8 +884,8 @@ class Renderer
             
         } else if(
             count($data_vars_2_html_escape) <= 0
-            && count($data_vars_2_html_attr_escape) <= 0
-            && count($data_vars_2_css_escape) <= 0
+        && count($data_vars_2_html_attr_escape) <= 0
+        && count($data_vars_2_css_escape) <= 0
             && count($data_vars_2_js_escape) <= 0
         ) {
             //no field has been specified for escaping; nothing to do
@@ -905,14 +913,14 @@ class Renderer
         if( is_null($escaper) ) {
             
             if(
-                $this->escaper instanceof \Zend\Escaper\Escaper 
+                $this->escaper instanceof Escaper 
                 && $this->escaper->getEncoding() === $final_encoding
             ) {    
                 $escaper = $this->escaper; //we can safely use the escaper associated with this class.
                 
             } else {
                 
-                $escaper = new \Zend\Escaper\Escaper($final_encoding); 
+                $escaper = new Escaper($final_encoding); 
             }
         }
         
@@ -950,7 +958,6 @@ class Renderer
                         // escape the value
                         $data[$key] = $escaper->$method($data[$key]);
                     }
-                    
                 } //if( is_array($data[$key]) ) ... else if( is_string($data[$key]) )
             } // if( count($methods) > 0 || is_array($data[$key]) )
         } // foreach( $data as $key => $value )
@@ -969,10 +976,10 @@ class Renderer
     }
     
     /**
-     * 
+     *    
      * This method locates a file to be rendered and returns the full path to the file or returns false if the file can't be located.
-     * 
-     * @param string $file_name Name of file (with / without the directory path) 
+     *    
+     * @param string $file_name Name of file (with / without the directory path)
      *                          to be located in the registered possible paths 
      *                          ($this->file_paths).
      * 
@@ -997,7 +1004,7 @@ class Renderer
                    . PHP_EOL .'`'. $this->getVarType($file_name, true).'` was supplied with the value below:'
                    . PHP_EOL . var_export($file_name, true). PHP_EOL ;
             
-            throw new \InvalidArgumentException($msg);
+            throw new InvalidArgumentException($msg);
         }
         
         $ds = DIRECTORY_SEPARATOR;
