@@ -8,7 +8,7 @@ use Rotexsoft\FileRenderer\Tests\FileRendererWrapper;
  */
 class RendererTest extends \PHPUnit\Framework\TestCase
 {
-    protected function setUp() { parent::setUp(); }
+    protected function setUp(): void { parent::setUp(); }
 
     public function testThatConstructorWorksAsExpected() {
         
@@ -166,10 +166,9 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testThatExceptionIsThrownWhenNonStringFileNameIsPassedToConstructor() {
+        
+        $this->expectException(\InvalidArgumentException::class);
         
         $invalid_file_name = array();        
         $renderer = new FileRendererWrapper($invalid_file_name);
@@ -249,7 +248,7 @@ EOT;
         } catch (\Exception $e) {
             
             //echo PHP_EOL.$e->getMessage().PHP_EOL.'yoooo'.PHP_EOL;
-            $this->assertContains($expected_msg, $e->getMessage());
+            $this->assertStringContainsString($expected_msg, $e->getMessage());
             
             try {
                 $renderer->key1; //Object access to a property that isn't defined & hasn't been set
@@ -264,7 +263,7 @@ EOT;
             } catch (\Exception $e) {
 
                 //echo PHP_EOL.$e->getMessage().PHP_EOL.'yoooo'.PHP_EOL;
-                $this->assertContains($expected_msg, $e->getMessage());
+                $this->assertStringContainsString($expected_msg, $e->getMessage());
             }
         }
     }
@@ -527,11 +526,10 @@ EOT;
         //$renderer->file_name is empty.
         $this->assertEquals($data['var1'], $result);
     }
-    
-    /**
-     * @expectedException InvalidArgumentException
-     */
+
     public function testThatExceptionIsThrownWhenNonStringFileNameIsPassedToLocateFile() {
+        
+        $this->expectException(\InvalidArgumentException::class);
         
         $renderer = new FileRendererWrapper('file.txt');
         $invalid_file_name = array();
@@ -563,21 +561,19 @@ EOT;
             $this->assertEquals($expected_msg, $e->getMessage());
         }
     }
-    
-    /**
-     * @expectedException InvalidArgumentException
-     */
+
     public function testThatExceptionIsThrownWhenNonStringFileNameIsPassedToRenderToString() {
+        
+        $this->expectException(\InvalidArgumentException::class);
         
         $renderer = new FileRendererWrapper('file.txt');
         $invalid_file_name = array();
         $renderer->renderToString($invalid_file_name);
     }
-    
-    /**
-     * @expectedException Rotexsoft\FileRenderer\FileNotFoundException
-     */
+
     public function testThatExceptionIsThrownWhenNonExistentFileNameIsPassedToRenderToString() {
+        
+        $this->expectException(\Rotexsoft\FileRenderer\FileNotFoundException::class);
         
         $renderer = new FileRendererWrapper('file.txt');
         $renderer->renderToString('non-existent-file.php');
@@ -684,82 +680,82 @@ INPUT;
         
         //test one 'iso-8859-1' scenaario
         $renderer->escapeDataPublic($data, 'iso-8859-1', array('html'), array('html_attr'), array('css'), array('js'));
-        $this->assertContains($expected_escaped_html, $data['html']);
-        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
-        $this->assertContains($expected_escaped_css, $data['css']);
-        $this->assertContains($expected_escaped_js, $data['js']);
+        $this->assertStringContainsString($expected_escaped_html, $data['html']);
+        $this->assertStringContainsString($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertStringContainsString($expected_escaped_css, $data['css']);
+        $this->assertStringContainsString($expected_escaped_js, $data['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
         
         //other utf-8 scenarios
         $data = $original_data;
         $renderer->escapeDataPublic($data, 'utf-8', array('html'), array('html_attr'), array('css'), array('js'));
-        $this->assertContains($expected_escaped_html, $data['html']);
-        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
-        $this->assertContains($expected_escaped_css, $data['css']);
-        $this->assertContains($expected_escaped_js, $data['js']);
+        $this->assertStringContainsString($expected_escaped_html, $data['html']);
+        $this->assertStringContainsString($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertStringContainsString($expected_escaped_css, $data['css']);
+        $this->assertStringContainsString($expected_escaped_js, $data['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
         
         ///////////////////////
         $data = $original_data;
         $renderer->escapeDataPublic($data, 'utf-8', array('html'));
-        $this->assertContains($expected_escaped_html, $data['html']);
-        $this->assertContains($original_data['html_attr'], $data['html_attr']);
-        $this->assertContains($original_data['css'], $data['css']);
-        $this->assertContains($original_data['js'], $data['js']);
+        $this->assertStringContainsString($expected_escaped_html, $data['html']);
+        $this->assertStringContainsString($original_data['html_attr'], $data['html_attr']);
+        $this->assertStringContainsString($original_data['css'], $data['css']);
+        $this->assertStringContainsString($original_data['js'], $data['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
         
         ///////////////////////
         $data = $original_data;
         $renderer->escapeDataPublic($data, 'utf-8', array(), array('html_attr'));
-        $this->assertContains($original_data['html'], $data['html']);
-        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
-        $this->assertContains($original_data['css'], $data['css']);
-        $this->assertContains($original_data['js'], $data['js']);
+        $this->assertStringContainsString($original_data['html'], $data['html']);
+        $this->assertStringContainsString($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertStringContainsString($original_data['css'], $data['css']);
+        $this->assertStringContainsString($original_data['js'], $data['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
         
         ///////////////////////
         $data = $original_data;
         $renderer->escapeDataPublic($data, 'utf-8', array(), array(), array('css'));
-        $this->assertContains($original_data['html'], $data['html']);
-        $this->assertContains($original_data['html_attr'], $data['html_attr']);
-        $this->assertContains($expected_escaped_css, $data['css']);
-        $this->assertContains($original_data['js'], $data['js']);
+        $this->assertStringContainsString($original_data['html'], $data['html']);
+        $this->assertStringContainsString($original_data['html_attr'], $data['html_attr']);
+        $this->assertStringContainsString($expected_escaped_css, $data['css']);
+        $this->assertStringContainsString($original_data['js'], $data['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
         
         /////////////////////// only js escape should be applied
         $data = $original_data;
         $renderer->escapeDataPublic($data, 'utf-8', array(), array(), array(), array('js'));
-        $this->assertContains($original_data['html'], $data['html']);
-        $this->assertContains($original_data['html_attr'], $data['html_attr']);
-        $this->assertContains($original_data['css'], $data['css']);
-        $this->assertContains($expected_escaped_js, $data['js']);
+        $this->assertStringContainsString($original_data['html'], $data['html']);
+        $this->assertStringContainsString($original_data['html_attr'], $data['html_attr']);
+        $this->assertStringContainsString($original_data['css'], $data['css']);
+        $this->assertStringContainsString($expected_escaped_js, $data['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
         
         /////////////////////// only html escape should be applied
         $data = $original_data;
         $renderer->escapeDataPublic($data, 'utf-8', array('html'), array('html'), array('html'), array('html'));
-        $this->assertContains($expected_escaped_html_4_escapes, $data['html']);
-        $this->assertContains($original_data['html_attr'], $data['html_attr']);
-        $this->assertContains($original_data['css'], $data['css']);
-        $this->assertContains($original_data['js'], $data['js']);
+        $this->assertStringContainsString($expected_escaped_html_4_escapes, $data['html']);
+        $this->assertStringContainsString($original_data['html_attr'], $data['html_attr']);
+        $this->assertStringContainsString($original_data['css'], $data['css']);
+        $this->assertStringContainsString($original_data['js'], $data['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
         
         /////////////////////// only html attr escape should be applied
         $data = $original_data;
         $renderer->escapeDataPublic($data, 'utf-8', array(), array('html_attr'), array('html_attr'), array('html_attr'));
-        $this->assertContains($original_data['html'], $data['html']);
-        $this->assertContains($expected_escaped_html_attr_3_escapes, $data['html_attr']);
-        $this->assertContains($original_data['css'], $data['css']);
-        $this->assertContains($original_data['js'], $data['js']);
+        $this->assertStringContainsString($original_data['html'], $data['html']);
+        $this->assertStringContainsString($expected_escaped_html_attr_3_escapes, $data['html_attr']);
+        $this->assertStringContainsString($original_data['css'], $data['css']);
+        $this->assertStringContainsString($original_data['js'], $data['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
         
         /////////////////////// only css escape should be applied
         $data = $original_data;
         $renderer->escapeDataPublic($data, 'utf-8', array(), array(), array('css'), array('css'));
-        $this->assertContains($original_data['html'], $data['html']);
-        $this->assertContains($original_data['html_attr'], $data['html_attr']);
-        $this->assertContains($expected_escaped_css_2_escapes, $data['css']);
-        $this->assertContains($original_data['js'], $data['js']);
+        $this->assertStringContainsString($original_data['html'], $data['html']);
+        $this->assertStringContainsString($original_data['html_attr'], $data['html_attr']);
+        $this->assertStringContainsString($expected_escaped_css_2_escapes, $data['css']);
+        $this->assertStringContainsString($original_data['js'], $data['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
         
         /////////////////////// add sub-array
@@ -767,32 +763,32 @@ INPUT;
         $data['sub_array'] = $data;
         $renderer->escapeDataPublic($data, 'utf-8', array('html'), array('html_attr'), array('css'), array('js'));
         
-        $this->assertContains($expected_escaped_html, $data['html']);
-        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
-        $this->assertContains($expected_escaped_css, $data['css']);
-        $this->assertContains($expected_escaped_js, $data['js']);
+        $this->assertStringContainsString($expected_escaped_html, $data['html']);
+        $this->assertStringContainsString($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertStringContainsString($expected_escaped_css, $data['css']);
+        $this->assertStringContainsString($expected_escaped_js, $data['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
         
-        $this->assertContains($expected_escaped_html, $data['sub_array']['html']);
-        $this->assertContains($expected_escaped_html_attr, $data['sub_array']['html_attr']);
-        $this->assertContains($expected_escaped_css, $data['sub_array']['css']);
-        $this->assertContains($expected_escaped_js, $data['sub_array']['js']);
+        $this->assertStringContainsString($expected_escaped_html, $data['sub_array']['html']);
+        $this->assertStringContainsString($expected_escaped_html_attr, $data['sub_array']['html_attr']);
+        $this->assertStringContainsString($expected_escaped_css, $data['sub_array']['css']);
+        $this->assertStringContainsString($expected_escaped_js, $data['sub_array']['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['sub_array']['no_escape_variable']);
         
         //test that calling escapeData the second time with the same data array and escape parameters 
         //does not lead to double escaping
         $renderer->escapeDataPublic($data, 'utf-8', array('html'), array('html_attr'), array('css'), array('js'));
         
-        $this->assertContains($expected_escaped_html, $data['html']);
-        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
-        $this->assertContains($expected_escaped_css, $data['css']);
-        $this->assertContains($expected_escaped_js, $data['js']);
+        $this->assertStringContainsString($expected_escaped_html, $data['html']);
+        $this->assertStringContainsString($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertStringContainsString($expected_escaped_css, $data['css']);
+        $this->assertStringContainsString($expected_escaped_js, $data['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
         
-        $this->assertContains($expected_escaped_html, $data['sub_array']['html']);
-        $this->assertContains($expected_escaped_html_attr, $data['sub_array']['html_attr']);
-        $this->assertContains($expected_escaped_css, $data['sub_array']['css']);
-        $this->assertContains($expected_escaped_js, $data['sub_array']['js']);
+        $this->assertStringContainsString($expected_escaped_html, $data['sub_array']['html']);
+        $this->assertStringContainsString($expected_escaped_html_attr, $data['sub_array']['html_attr']);
+        $this->assertStringContainsString($expected_escaped_css, $data['sub_array']['css']);
+        $this->assertStringContainsString($expected_escaped_js, $data['sub_array']['js']);
         $this->assertEquals($original_data['no_escape_variable'], $data['sub_array']['no_escape_variable']);
         
         /////////////////////// Test wild card
@@ -810,10 +806,10 @@ INPUT;
         $expected_escaped_js = 'bar&amp;quot;; alert(&amp;quot;Meow!&amp;quot;); var xss=&amp;quot;true';
         $expected_escaped_5th_field = "yabadabadoo!";
         
-        $this->assertContains($expected_escaped_html, $data['html']);
-        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
-        $this->assertContains($expected_escaped_css, $data['css']);
-        $this->assertContains($expected_escaped_js, $data['js']);
+        $this->assertStringContainsString($expected_escaped_html, $data['html']);
+        $this->assertStringContainsString($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertStringContainsString($expected_escaped_css, $data['css']);
+        $this->assertStringContainsString($expected_escaped_js, $data['js']);
         $this->assertEquals($expected_escaped_5th_field, $data['no_escape_variable']);
       
         //html attr escape all data fields
@@ -828,10 +824,10 @@ INPUT;
         $expected_escaped_js = 'bar&amp;quot&#x3B;&#x3B;&#x20;alert&#x28;&amp;quot&#x3B;Meow&#x21;&amp;quot&#x3B;&#x29;&#x3B;&#x20;var&#x20;xss&#x3D;&amp;quot&#x3B;true';
         $expected_escaped_5th_field = "yabadabadoo&#x21;";
         
-        $this->assertContains($expected_escaped_html, $data['html']);
-        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
-        $this->assertContains($expected_escaped_css, $data['css']);
-        $this->assertContains($expected_escaped_js, $data['js']);
+        $this->assertStringContainsString($expected_escaped_html, $data['html']);
+        $this->assertStringContainsString($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertStringContainsString($expected_escaped_css, $data['css']);
+        $this->assertStringContainsString($expected_escaped_js, $data['js']);
         $this->assertEquals($expected_escaped_5th_field, $data['no_escape_variable']);
         
         //css escape all data fields
@@ -844,10 +840,10 @@ INPUT;
         $expected_escaped_js = 'bar\26 quot\3B \3B \20 alert\28 \26 quot\3B Meow\21 \26 quot\3B \29 \3B \20 var\20 xss\3D \26 quot\3B true';
         $expected_escaped_5th_field = 'yabadabadoo\21 ';
         
-        $this->assertContains($expected_escaped_html, $data['html']);
-        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
-        $this->assertContains($expected_escaped_css, $data['css']);
-        $this->assertContains($expected_escaped_js, $data['js']);
+        $this->assertStringContainsString($expected_escaped_html, $data['html']);
+        $this->assertStringContainsString($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertStringContainsString($expected_escaped_css, $data['css']);
+        $this->assertStringContainsString($expected_escaped_js, $data['js']);
         $this->assertEquals($expected_escaped_5th_field, $data['no_escape_variable']);
        
         //js escape all data fields
@@ -860,10 +856,10 @@ INPUT;
         $expected_escaped_js = 'bar\x26quot\x3B\x3B\x20alert\x28\x26quot\x3BMeow\x21\x26quot\x3B\x29\x3B\x20var\x20xss\x3D\x26quot\x3Btrue';
         $expected_escaped_5th_field = 'yabadabadoo\x21';
         
-        $this->assertContains($expected_escaped_html, $data['html']);
-        $this->assertContains($expected_escaped_html_attr, $data['html_attr']);
-        $this->assertContains($expected_escaped_css, $data['css']);
-        $this->assertContains($expected_escaped_js, $data['js']);
+        $this->assertStringContainsString($expected_escaped_html, $data['html']);
+        $this->assertStringContainsString($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertStringContainsString($expected_escaped_css, $data['css']);
+        $this->assertStringContainsString($expected_escaped_js, $data['js']);
         $this->assertEquals($expected_escaped_5th_field, $data['no_escape_variable']);
     }
     
@@ -874,7 +870,7 @@ INPUT;
         $expected_escaped_html = '&lt;script&gt;alert(&quot;zf2&quot;)&lt;/script&gt;';
 
         $renderer = new FileRendererWrapper($file_name, array(), array(), 'utf-8');
-        $this->assertContains($expected_escaped_html, $renderer->escapeHtml($html_2_escape));
+        $this->assertStringContainsString($expected_escaped_html, $renderer->escapeHtml($html_2_escape));
     }
     
     public function testThatEscapeHtmlAttrWorksAsExpected() {
@@ -886,7 +882,7 @@ INPUT;
         $expected_escaped_html_attr = 'faketitle&#x20;onmouseover&#x3D;alert&#x28;&#x2F;ZF2&#x21;&#x2F;&#x29;&#x3B;';
 
         $renderer = new FileRendererWrapper($file_name, array(), array(), 'utf-8');
-        $this->assertContains($expected_escaped_html_attr, $renderer->escapeHtmlAttr($html_attr_2_escape));
+        $this->assertStringContainsString($expected_escaped_html_attr, $renderer->escapeHtmlAttr($html_attr_2_escape));
     }
     
     public function testThatEscapeCssWorksAsExpected() {
@@ -900,7 +896,7 @@ INPUT;
         $expected_escaped_css = 'body\20 \7B \A \20 \20 \20 \20 background\2D image\3A \20 url\28 \27 http\3A \2F \2F example\2E com\2F foo\2E jpg\3F \3C \2F style\3E \3C script\3E alert\28 1\29 \3C \2F script\3E \27 \29 \3B \A \7D';
 
         $renderer = new FileRendererWrapper($file_name, array(), array(), 'utf-8');
-        $this->assertContains($expected_escaped_css, $renderer->escapeCss($css_2_escape));
+        $this->assertStringContainsString($expected_escaped_css, $renderer->escapeCss($css_2_escape));
     }
     
     public function testThatEscapeJsWorksAsExpected() {
@@ -912,7 +908,7 @@ INPUT;
         $expected_escaped_js = 'bar\x26quot\x3B\x3B\x20alert\x28\x26quot\x3BMeow\x21\x26quot\x3B\x29\x3B\x20var\x20xss\x3D\x26quot\x3Btrue';
 
         $renderer = new FileRendererWrapper($file_name, array(), array(), 'utf-8');
-        $this->assertContains($expected_escaped_js, $renderer->escapeJs($js_2_escape));
+        $this->assertStringContainsString($expected_escaped_js, $renderer->escapeJs($js_2_escape));
     }
     
     public function testThatEscapeUrlWorksAsExpected() {
