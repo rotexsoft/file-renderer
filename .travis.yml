@@ -6,7 +6,7 @@ php:
   - 7.1
   - 7.2
   - 7.3
-  - 7.4snapshot
+  - 7.4
 
 before_script:
   - travis_retry composer self-update
@@ -30,7 +30,7 @@ matrix:
     - php: 5.5
       dist: trusty
   allow_failures:
-    - php: 7.4snapshot
+    #- php: 7.4snapshot
 
 after_success:
   # - travis_retry php vendor/bin/coveralls
