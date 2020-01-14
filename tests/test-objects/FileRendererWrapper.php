@@ -18,7 +18,7 @@ class FileRendererWrapper extends \Rotexsoft\FileRenderer\Renderer
     
     public function escapeDataPublic(
         array &$data, $esc_enc='utf-8', array $h_esc_keys=array(), array $h_att_esc_keys=array(), 
-        array $css_esc_keys=array(), array $js_esc_keys=array(), \Zend\Escaper\Escaper $esc=null
+        array $css_esc_keys=array(), array $js_esc_keys=array(), \Laminas\Escaper\Escaper $esc=null
     ) {
         parent::escapeData(
             $data, $esc_enc, $h_esc_keys, $h_att_esc_keys,  $css_esc_keys, $js_esc_keys, $esc

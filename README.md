@@ -56,7 +56,7 @@ Users of this package are still responsible for making sure that they validate o
 
 ## Acknowledgement
 
-The escaping functionality in this package is implemented using the [zend-escaper](https://github.com/zendframework/zend-escaper) package.
+The escaping functionality in this package is implemented using the [laminas-escaper](https://docs.laminas.dev/laminas-escaper/) package.
 
 ## Changelog
 
@@ -387,8 +387,8 @@ You can also accomplish the same thing with the following:
 
 ### Escaping Data to be Passed to Views
 
-Escaping functionality is provided via the zend-escaper package. It is **STRONGLY RECOMMENDED** that you read this
-[article](https://docs.zendframework.com/zend-escaper/theory-of-operation/)
+Escaping functionality is provided via the laminas-escaper package. It is **STRONGLY RECOMMENDED** that you read this
+[article](https://docs.laminas.dev/laminas-escaper/theory-of-operation/)
 to understand the principles behind properly escaping data.
 
 Escaping is possible in four contexts:
@@ -757,23 +757,23 @@ sense for the view(s) you are trying to render.
 
 Only string values in the data array and its sub-arrays (if any) will be escaped if escaping is enabled.
 
-More on escaping from the zend-escaper website:
+More on escaping from the laminas-escaper website:
 
->HTML escaping is accomplished via Zend\Escaper\Escaper's escapeHtml method. Internally it uses PHP's htmlspecialchars,
+>HTML escaping is accomplished via Laminas\Escaper\Escaper's escapeHtml method. Internally it uses PHP's htmlspecialchars,
 and additionally correctly sets the flags and encoding. One thing a developer needs to pay special attention too, is the
 encoding in which the document is served to the client; **it must be the same** as the encoding used for escaping!
-Go [here](https://docs.zendframework.com/zend-escaper/escaping-html/) for more details.
+Go [here](https://docs.laminas.dev/laminas-escaper/escaping-html/) for more details.
 
->HTML Attribute escaping is accomplished via Zend\Escaper\Escaper's escapeHtmlAttr method. Internally it will convert the data to UTF-8,
+>HTML Attribute escaping is accomplished via Laminas\Escaper\Escaper's escapeHtmlAttr method. Internally it will convert the data to UTF-8,
 check for it's validity, and use an extended set of characters to escape that are not covered by htmlspecialchars to cover the cases
 where an attribute might be unquoted or quoted illegally.
-Go [here](https://docs.zendframework.com/zend-escaper/escaping-html-attributes/) for more details.
+Go [here](https://docs.laminas.dev/laminas-escaper/escaping-html-attributes/) for more details.
 
->CSS escaping is accomplished via Zend\Escaper\Escaper's escapeCss method. CSS escaping excludes only basic alphanumeric characters
+>CSS escaping is accomplished via Laminas\Escaper\Escaper's escapeCss method. CSS escaping excludes only basic alphanumeric characters
 and escapes all other characters into valid CSS hexadecimal escapes.
-Go [here](https://docs.zendframework.com/zend-escaper/escaping-css/) for more details.
+Go [here](https://docs.laminas.dev/laminas-escaper/escaping-css/) for more details.
 
->Javascript escaping is accomplished via Zend\Escaper\Escaper's escapeJs method.
+>Javascript escaping is accomplished via Laminas\Escaper\Escaper's escapeJs method.
 Javascript string literals in HTML are subject to significant restrictions particularly due to the potential for unquoted attributes
 and any uncertainty as to whether Javascript will be viewed as being CDATA or PCDATA by the browser. To eliminate any possible XSS
 vulnerabilities, Javascript escaping for HTML extends the escaping rules of both ECMAScript and JSON to include any potentially
@@ -782,7 +782,7 @@ characters and the comma, period and underscore characters as hexadecimal or uni
 Javascript escaping applies to all literal strings and digits. It is not possible to safely escape other Javascript markup.
 An extended set of characters are escaped beyond ECMAScript's rules for Javascript literal string escaping in order to prevent
 misinterpretation of Javascript as HTML leading to the injection of special characters and entities.
-Go [here](https://docs.zendframework.com/zend-escaper/escaping-javascript/) for more details.
+Go [here](https://docs.laminas.dev/laminas-escaper/escaping-javascript/) for more details.
 
 ### Advanced Usage
 

@@ -2,7 +2,7 @@
 namespace Rotexsoft\FileRenderer;
 
 use InvalidArgumentException;
-use Zend\Escaper\Escaper;
+use Laminas\Escaper\Escaper;
 use OutOfBoundsException;
 use Throwable;
 use Exception;
@@ -60,7 +60,7 @@ class Renderer
     /**
      * 
      * An array of keys in $this->data whose values (only strings) will be individually escaped using 
-     * Zend\Escaper\Escaper::escapeHtml($string).
+     * Laminas\Escaper\Escaper::escapeHtml($string).
      * 
      * Set this for keys in $this->data with values (only strings) like html tags and the likes (anything
      * you would normally escape via htmlspecialchars).
@@ -73,7 +73,7 @@ class Renderer
     /**
      * 
      * An array of keys in $this->data whose values (only strings) will be individually escaped using 
-     * Zend\Escaper\Escaper::escapeHtmlAttr($string).
+     * Laminas\Escaper\Escaper::escapeHtmlAttr($string).
      * 
      * Set this for keys in $this->data with values (only strings) that will be rendered as attributes
      * within html elements.
@@ -86,12 +86,12 @@ class Renderer
     /**
      * 
      * An array of keys in $this->data whose values (only strings) will be individually escaped using 
-     * Zend\Escaper\Escaper::escapeCss($string).
+     * Laminas\Escaper\Escaper::escapeCss($string).
      * 
      * Set this for keys in $this->data with values (only strings) that will be rendered inside css style 
      * tags or inside the style attribute of any html element. 
      * 
-     * CSS escaping via Zend\Escaper\Escaper::escapeCss($string) excludes only basic 
+     * CSS escaping via Laminas\Escaper\Escaper::escapeCss($string) excludes only basic 
      * alphanumeric characters and escapes all other characters into valid CSS 
      * hexadecimal escapes.
      * 
@@ -103,12 +103,12 @@ class Renderer
     /**
      * 
      * An array of keys in $this->data whose values (only strings) will be individually escaped using 
-     * Zend\Escaper\Escaper::escapeJs($string).
+     * Laminas\Escaper\Escaper::escapeJs($string).
      * 
      * Set this for keys in $this->data with values (only strings) that will be rendered as Javascript 
      * data values (eg. Javascript string literals).
      * 
-     * Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies to all 
+     * Javascript escaping via Laminas\Escaper\Escaper::escapeJs($string) applies to all 
      * literal strings & digits. It is not possible to safely escape other Javascript 
      * markup.
      * 
@@ -170,10 +170,10 @@ class Renderer
     
     /**
      *
-     * An instance of \Zend\Escaper\Escaper that would be used by the public escape*($string) methods.
+     * An instance of \Laminas\Escaper\Escaper that would be used by the public escape*($string) methods.
      * 
      * 
-     * @var \Zend\Escaper\Escaper
+     * @var \Laminas\Escaper\Escaper
      * 
      */
     protected $escaper = null;
@@ -210,27 +210,27 @@ class Renderer
      *                                See documentation for $this->escape_encoding for more info.
      *                                  
      * @param array $data_vars_2_html_escape An array of keys in $this->data whose values (only strings) 
-     *                                       will be individually escaped using Zend\Escaper\Escaper::escapeHtml($string). 
+     *                                       will be individually escaped using Laminas\Escaper\Escaper::escapeHtml($string). 
      *                                       Set this for keys in $this->data with values (only strings) like html tags and 
      *                                       the likes (anything you would normally escape via htmlspecialchars).
      * 
      * @param array $data_vars_2_html_attr_escape An array of keys in $this->data whose values (only strings) 
-     *                                            will be individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string). 
+     *                                            will be individually escaped using Laminas\Escaper\Escaper::escapeHtmlAttr($string). 
      *                                            Set this for keys in $this->data with values (only strings) that will be rendered  
      *                                            as attributes within html tags.
      * 
      * @param array $data_vars_2_css_escape An array of keys in $this->data whose values (only strings) will be individually 
-     *                                      escaped using Zend\Escaper\Escaper::escapeCss($string). Set this for keys in 
+     *                                      escaped using Laminas\Escaper\Escaper::escapeCss($string). Set this for keys in 
      *                                      $this->data with values (only strings) that will be rendered inside css style 
      *                                      tags or inside the style attribute of any html element. CSS escaping via 
-     *                                      Zend\Escaper\Escaper::escapeCss($string) excludes only basic alphanumeric 
+     *                                      Laminas\Escaper\Escaper::escapeCss($string) excludes only basic alphanumeric 
      *                                      characters and escapes all other characters into valid CSS hexadecimal escapes.
      * 
      * @param array $data_vars_2_js_escape An array of keys in $this->data whose values (only strings) will be individually 
-     *                                     escaped using Zend\Escaper\Escaper::escapeJs($string). Set this for keys in 
+     *                                     escaped using Laminas\Escaper\Escaper::escapeJs($string). Set this for keys in 
      *                                     $this->data with values (only strings) that will be rendered as Javascript 
      *                                     data values (eg. Javascript string literals). Javascript escaping via 
-     *                                     Zend\Escaper\Escaper::escapeJs($string) applies to all literal strings 
+     *                                     Laminas\Escaper\Escaper::escapeJs($string) applies to all literal strings 
      *                                     and digits. It is not possible to safely escape other Javascript markup.
      * 
      * @throws \InvalidArgumentException
@@ -527,28 +527,28 @@ class Renderer
      *                                See documentation for $this->escape_encoding for more info.
      *                                  
      * @param array $data_vars_2_html_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                       individually escaped using Zend\Escaper\Escaper::escapeHtml($string). 
+     *                                       individually escaped using Laminas\Escaper\Escaper::escapeHtml($string). 
      *                                       Set this for keys in $data and $this->data whose values (only strings) should be 
      *                                       html escaped (anything you would normally escape via htmlspecialchars).
      * 
      * @param array $data_vars_2_html_attr_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                            individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string). 
+     *                                            individually escaped using Laminas\Escaper\Escaper::escapeHtmlAttr($string). 
      *                                            Set this for keys in $data and $this->data with values (only strings) that will be  
      *                                            rendered as attributes within html tags.
      * 
      * @param array $data_vars_2_css_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                      individually escaped using Zend\Escaper\Escaper::escapeCss($string). 
+     *                                      individually escaped using Laminas\Escaper\Escaper::escapeCss($string). 
      *                                      Set this for keys in $data and $this->data with values (only strings) that will be 
      *                                      rendered inside css style tags or inside the style attribute of any 
-     *                                      html element. CSS escaping via Zend\Escaper\Escaper::escapeCss($string) 
+     *                                      html element. CSS escaping via Laminas\Escaper\Escaper::escapeCss($string) 
      *                                      excludes only basic alphanumeric characters and escapes all other 
      *                                      characters into valid CSS hexadecimal escapes.
      * 
      * @param array $data_vars_2_js_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                     individually escaped using Zend\Escaper\Escaper::escapeJs($string).
+     *                                     individually escaped using Laminas\Escaper\Escaper::escapeJs($string).
      *                                     Set this for keys in $data and $this->data with values (only strings) that will be 
      *                                     rendered as Javascript data values (eg. Javascript string literals). 
-     *                                     Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies 
+     *                                     Javascript escaping via Laminas\Escaper\Escaper::escapeJs($string) applies 
      *                                     to all literal strings and digits. It is not possible to safely escape 
      *                                     other Javascript markup.
      * 
@@ -710,28 +710,28 @@ class Renderer
      *                                See documentation for $this->escape_encoding for more info.
      *                                  
      * @param array $data_vars_2_html_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                       individually escaped using Zend\Escaper\Escaper::escapeHtml($string). 
+     *                                       individually escaped using Laminas\Escaper\Escaper::escapeHtml($string). 
      *                                       Set this for keys in $data and $this->data whose values (only strings) should be 
      *                                       html escaped (anything you would normally escape via htmlspecialchars).
      * 
      * @param array $data_vars_2_html_attr_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                            individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string). 
+     *                                            individually escaped using Laminas\Escaper\Escaper::escapeHtmlAttr($string). 
      *                                            Set this for keys in $data and $this->data with values (only strings) that will be  
      *                                            rendered as attributes within html tags.
      * 
      * @param array $data_vars_2_css_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                      individually escaped using Zend\Escaper\Escaper::escapeCss($string). 
+     *                                      individually escaped using Laminas\Escaper\Escaper::escapeCss($string). 
      *                                      Set this for keys in $data and $this->data with values (only strings) that will be 
      *                                      rendered inside css style tags or inside the style attribute of any 
-     *                                      html element. CSS escaping via Zend\Escaper\Escaper::escapeCss($string) 
+     *                                      html element. CSS escaping via Laminas\Escaper\Escaper::escapeCss($string) 
      *                                      excludes only basic alphanumeric characters and escapes all other 
      *                                      characters into valid CSS hexadecimal escapes.
      * 
      * @param array $data_vars_2_js_escape An array of keys in $data and $this->data whose values (only strings) will be 
-     *                                     individually escaped using Zend\Escaper\Escaper::escapeJs($string).
+     *                                     individually escaped using Laminas\Escaper\Escaper::escapeJs($string).
      *                                     Set this for keys in $data and $this->data with values (only strings) that will be 
      *                                     rendered as Javascript data values (eg. Javascript string literals). 
-     *                                     Javascript escaping via Zend\Escaper\Escaper::escapeJs($string) applies 
+     *                                     Javascript escaping via Laminas\Escaper\Escaper::escapeJs($string) applies 
      *                                     to all literal strings and digits. It is not possible to safely escape 
      *                                     other Javascript markup.
      * 
@@ -838,18 +838,18 @@ class Renderer
      *                                See documentation for $this->escape_encoding for more info.
      *                                  
      * @param array $data_vars_2_html_escape An array of keys in $data whose values (only strings) will be 
-     *                                       individually escaped using Zend\Escaper\Escaper::escapeHtml($string).
+     *                                       individually escaped using Laminas\Escaper\Escaper::escapeHtml($string).
      * 
      * @param array $data_vars_2_html_attr_escape An array of keys in $data whose values (only strings) will be 
-     *                                            individually escaped using Zend\Escaper\Escaper::escapeHtmlAttr($string).
+     *                                            individually escaped using Laminas\Escaper\Escaper::escapeHtmlAttr($string).
      * 
      * @param array $data_vars_2_css_escape An array of keys in $data whose values (only strings) will be 
-     *                                      individually escaped using Zend\Escaper\Escaper::escapeCss($string).
+     *                                      individually escaped using Laminas\Escaper\Escaper::escapeCss($string).
      * 
      * @param array $data_vars_2_js_escape An array of keys in $data whose values (only strings) will be 
-     *                                     individually escaped using Zend\Escaper\Escaper::escapeJs($string).
+     *                                     individually escaped using Laminas\Escaper\Escaper::escapeJs($string).
      * 
-     * @param \Zend\Escaper\Escaper $escaper An optional escaper object that will be used for escaping. 
+     * @param \Laminas\Escaper\Escaper $escaper An optional escaper object that will be used for escaping. 
      * 
      * @return void
      * 
