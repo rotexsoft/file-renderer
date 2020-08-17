@@ -7,4 +7,3 @@
       All the data attributes in $layout_renderer should get copied to $view_renderer. 
     - I should also add a __toString() method to the Renderer class to support this.
     - Would need to test the nesting of $this when a Renderer is assigned as one of the data values of this.
-
