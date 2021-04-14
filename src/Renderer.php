@@ -822,7 +822,7 @@ class Renderer
             return;
         }
         
-        $hash_of_data_array = spl_object_hash(json_decode(json_encode($data)));
+        $hash_of_data_array = spl_object_hash(json_decode(json_encode($data, JSON_THROW_ON_ERROR), false, 512, JSON_THROW_ON_ERROR));
         
         if( 
             array_key_exists($hash_of_data_array, $this->multi_escape_prevention_guard) 
@@ -896,7 +896,7 @@ class Renderer
         
         //add the hash of the data array we have just escaped to the list of
         //hashes of escaped data arrays
-        $hash_of_escaped_data_array = spl_object_hash(json_decode(json_encode($data)));
+        $hash_of_escaped_data_array = spl_object_hash(json_decode(json_encode($data, JSON_THROW_ON_ERROR), false, 512, JSON_THROW_ON_ERROR));
         
         $this->multi_escape_prevention_guard[$hash_of_escaped_data_array] = array(
             'escape_encoding'=>$escape_encoding,
