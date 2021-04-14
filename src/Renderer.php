@@ -30,7 +30,7 @@ class Renderer
      * @var array
      *  
      */
-    protected $file_paths = array();
+    protected $file_paths = [];
 
     /**
      *
@@ -55,7 +55,7 @@ class Renderer
      * @var array  
      *             
      */
-    protected $data = array();
+    protected $data = [];
     
     /**
      * 
@@ -68,7 +68,7 @@ class Renderer
      * @var array
      * 
      */
-    protected $data_vars_2_html_escape = array();
+    protected $data_vars_2_html_escape = [];
     
     /**
      * 
@@ -81,7 +81,7 @@ class Renderer
      * @var array
      * 
      */
-    protected $data_vars_2_html_attr_escape = array();
+    protected $data_vars_2_html_attr_escape = [];
     
     /**
      * 
@@ -98,7 +98,7 @@ class Renderer
      * @var array
      * 
      */
-    protected $data_vars_2_css_escape = array();
+    protected $data_vars_2_css_escape = [];
     
     /**
      * 
@@ -115,7 +115,7 @@ class Renderer
      * @var array
      * 
      */
-    protected $data_vars_2_js_escape = array();
+    protected $data_vars_2_js_escape = [];
     
     /**
      * 
@@ -176,7 +176,7 @@ class Renderer
      * @var \Laminas\Escaper\Escaper
      * 
      */
-    protected $escaper = null;
+    protected $escaper;
 
 
     /**
@@ -190,7 +190,7 @@ class Renderer
      * @var array
      * 
      */
-    protected $multi_escape_prevention_guard = array();
+    protected $multi_escape_prevention_guard = [];
 
     /**
      * 
@@ -236,24 +236,15 @@ class Renderer
      * @throws \InvalidArgumentException
      */
     public function __construct(
-            $file_name='', 
-            array $data = array(), 
-            array $file_paths = array(), 
+            string $file_name='', 
+            array $data = [], 
+            array $file_paths = [], 
             $escape_encoding = 'utf-8',
-            array $data_vars_2_html_escape = array(),
-            array $data_vars_2_html_attr_escape = array(),
-            array $data_vars_2_css_escape = array(),
-            array $data_vars_2_js_escape = array()
+            array $data_vars_2_html_escape = [],
+            array $data_vars_2_html_attr_escape = [],
+            array $data_vars_2_css_escape = [],
+            array $data_vars_2_js_escape = []
     ) {
-        if( !is_string($file_name) ) {
-            
-            $msg = "ERROR: ". get_class($this) ."::__construct(...) expects first parameter (the name of the php file to be rendered) to be a `string`." 
-                   . PHP_EOL .'`'. $this->getVarType($file_name, true).'` was supplied with the value below:'
-                   . PHP_EOL . var_export($file_name, true). PHP_EOL ;
-            
-            throw new InvalidArgumentException($msg);
-        }
-        
         $this->data = $data;
         $this->file_name = $file_name;
         $this->file_paths = $file_paths;
@@ -336,30 +327,28 @@ class Renderer
     }
     
     /**
-     * 
+     *
      * Adds a new item to the $this->data array.
-     * 
+     *
      * @param string $key key for a data value to be added to the $this->data array.
      * @param  mixed $value a data value to be added to the $this->data array.
-     * 
-     * @return void
      */
-    public function setVar($key, $value) {
+    public function setVar(string $key, $value): void {
         
         $this->__set($key, $value);
     }
     
     /**
-     *    
+     *
      * Retreives a data value associated with the given key in the $this->data array.
-     *    
+     *
      * @param string $key key for a data value to be retreived from the $this->data array.
-     *    
-     *    
+     *
+     *
      * @throws \OutOfBoundsException if item with specified key is not in the $this->data array.
      * @return mixed
      */
-    public function getVar($key) {
+    public function getVar(string $key) {
         
         return $this->__get($key);
     }
@@ -372,7 +361,7 @@ class Renderer
      *               files to be rendered via this class.
      * 
      */
-    public function getFilePaths() {
+    public function getFilePaths(): array {
         
         return $this->file_paths;
     }
@@ -385,47 +374,40 @@ class Renderer
      *               to be rendered via an instance of this class.
      * 
      */
-    public function getData() {
+    public function getData(): array {
         
         return $this->data;
     }
     
     /**
-     * 
+     *
      * Add a path to the end of the array of path(s) to directorie(s) containing 
      * (*.php) files to be rendered via this class.
-     * 
+     *
      * @param string $path a path to the end of the $this->file_paths array.
-     * 
-     * @return void
      */
-    public function appendPath( $path ) {
+    public function appendPath( string $path ): void {
         
         $this->file_paths[] = $path;
     }
 
     /**
-     * 
+     *
      * Add a path to the beginning of the array of path(s) to directorie(s) 
      * containing (*.php) files to be rendered via this class.
-     * 
+     *
      * @param string $path a path to the beginning of the $this->file_paths array.
-     * 
-     * @return void
      */
-    public function prependPath( $path ) {
+    public function prependPath( string $path ): void {
         
         array_unshift($this->file_paths, $path);
     }
     
     /**
-     * 
+     *
      * Checks if a path has been registered for an instance of this class
-     * 
-     * @param string $path
-     * @return bool
      */
-    public function hasPath($path) {
+    public function hasPath(string $path): bool {
         
         return in_array($path, $this->file_paths);
     }
@@ -440,27 +422,22 @@ class Renderer
      * 
      * @return array an array of the removed elements.
      */
-    public function removeFirstNPaths($number_of_paths_2_remove) {
+    public function removeFirstNPaths(int $number_of_paths_2_remove): array {
         
-        $removed_paths = array();
-        
-        if( is_numeric($number_of_paths_2_remove) ) {
-            
-            $number_of_paths_2_remove = (int) $number_of_paths_2_remove;
-            
-            while ( 
-                $number_of_paths_2_remove > 0  
-                && count($this->file_paths) > 0 
-            ) {
-                $removed_path = array_shift($this->file_paths);
-                
-                if( !is_null($removed_path) ) {
-                    
-                    $removed_paths[] = $removed_path;
-                }
-                
-                $number_of_paths_2_remove--;
+        $removed_paths = [];
+
+        while ( 
+            $number_of_paths_2_remove > 0  
+            && count($this->file_paths) > 0 
+        ) {
+            $removed_path = array_shift($this->file_paths);
+
+            if( !is_null($removed_path) ) {
+
+                $removed_paths[] = $removed_path;
             }
+
+            $number_of_paths_2_remove--;
         }
         
         return $removed_paths;
@@ -471,31 +448,26 @@ class Renderer
      * Removes the last `n` elements in the array of path(s) to directorie(s) 
      * containing (*.php) files to be rendered via this class.
      * 
-     * @param string $number_of_paths_2_remove number of elements to remove from the back of $this->file_paths.
+     * @param int $number_of_paths_2_remove number of elements to remove from the back of $this->file_paths.
      * 
      * @return array an array of the removed elements.
      */
-    public function removeLastNPaths($number_of_paths_2_remove) {
+    public function removeLastNPaths(int $number_of_paths_2_remove): array {
         
-        $removed_paths = array();
+        $removed_paths = [];
         
-        if( is_numeric($number_of_paths_2_remove) ) {
-            
-             $number_of_paths_2_remove = (int) $number_of_paths_2_remove;
-            
-            while ( 
-                $number_of_paths_2_remove > 0  
-                && count($this->file_paths) > 0 
-            ) {
-                $removed_path = array_pop($this->file_paths);
-                
-                if( !is_null($removed_path) ) {
-                    
-                    $removed_paths[] = $removed_path;
-                }
-                
-                $number_of_paths_2_remove--;
+        while ( 
+           $number_of_paths_2_remove > 0  
+           && count($this->file_paths) > 0 
+        ) {
+            $removed_path = array_pop($this->file_paths);
+
+            if( !is_null($removed_path) ) {
+
+                $removed_paths[] = $removed_path;
             }
+
+            $number_of_paths_2_remove--;
         }
         
         return array_reverse($removed_paths);
@@ -557,23 +529,14 @@ class Renderer
      * @throws \Rotexsoft\FileRenderer\FileNotFoundException
      */
     public function renderToString(
-        $file_name='',
-        array $data = array(),
-        $escape_encoding = 'utf-8',
-        array $data_vars_2_html_escape = array(),
-        array $data_vars_2_html_attr_escape = array(),
-        array $data_vars_2_css_escape = array(),
-        array $data_vars_2_js_escape = array() 
-    ) {
-        if( !is_string($file_name) ) {
-            
-            $msg = "ERROR: ". get_class($this) ."::".__FUNCTION__."(..) expects"
-                 . " first parameter (the name of the php file to be rendered) to be a `string`." 
-                 . PHP_EOL .'`'. $this->getVarType($file_name, true).'` was supplied with the value below:'
-                 . PHP_EOL . var_export($file_name, true). PHP_EOL ;
-            
-            throw new InvalidArgumentException($msg);
-        }
+        string $file_name='',
+        array $data = [],
+        string $escape_encoding = 'utf-8',
+        array $data_vars_2_html_escape = [],
+        array $data_vars_2_html_attr_escape = [],
+        array $data_vars_2_css_escape = [],
+        array $data_vars_2_js_escape = [] 
+    ): string {
         
         $located_file = $this->locateFile($file_name);
         
@@ -609,14 +572,16 @@ class Renderer
                     array_merge($this->data_vars_2_js_escape, $data_vars_2_js_escape)
                 );
         
-        return $this->doRender($located_file, $merged_data);
+        $output = $this->doRender($located_file, $merged_data);
+        
+        return is_string($output) ? $output : '';
     }
     
     /**
-     * @return string
+     * @return string|bool|void
      */
-    protected function doRender(){
-        
+    protected function doRender() {
+
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
         ////
@@ -631,7 +596,7 @@ class Renderer
         ////  
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
-        
+
         try {
 
             //func_get_arg(0): the name of the file to be included whose output 
@@ -643,30 +608,25 @@ class Renderer
             ob_start();
 
             $this->includeFile(func_get_arg(0), func_get_arg(1));
-            
+
             // Get the captured output and close the buffer
             return ob_get_clean();
-            
+
         } catch(Throwable $e) { // PHP 7+
-            
+
             ob_end_clean();
             throw $e;
-            
+
         } catch(Exception $e) { // PHP < 7
-            
+
             ob_end_clean();
             throw $e;
+        } // technically, we should never get here
     }
 
-        return ''; // technically, we should never get here
-    }
-
-    /**
-     * @param string $file_to_include
-     * @param array $data
-     */
-    protected function includeFile ($file_to_include, array $data) {
-        extract(func_get_arg(1));
+    protected function includeFile (string $file_to_include, array $data): void {
+        $funcGetArg = func_get_arg(1);
+        extract($funcGetArg);
         include func_get_arg(0);
     }
 
@@ -685,9 +645,9 @@ class Renderer
     }
     
     /**
-     * 
+     *
      * Captures and prints out the output that is generated when a renderable php file is executed. 
-     * 
+     *
      * @param string $file_name Name of php file to be included (with/without
      *                          the directory path). If the directory path is 
      *                          included & the file exists, it is included and
@@ -695,30 +655,30 @@ class Renderer
      *                          not included, the file will be searched for from 
      *                          the list of directories registered in 
      *                          $this->file_paths.
-     *                          
+     *                         
      *                          If $file_name still can't be found or is an empty 
      *                          string or is not supplied, this method tries to 
      *                          locate $this->file_name if possible and renders 
      *                          it instead.
-     *                          
+     *                         
      * @param array $data Array of data to be extracted to make local variables.
      *                    It is combined together with $this->data. For item(s) with
      *                    the same key in $data & $this->data, the value of those item(s) 
      *                    in $data will be used instead of their $this->data value(s).
-     * 
+     *
      * @param string $escape_encoding Encoding to be used for escaping data values in $data and $this->data.
      *                                See documentation for $this->escape_encoding for more info.
-     *                                  
+     *                                 
      * @param array $data_vars_2_html_escape An array of keys in $data and $this->data whose values (only strings) will be 
      *                                       individually escaped using Laminas\Escaper\Escaper::escapeHtml($string). 
      *                                       Set this for keys in $data and $this->data whose values (only strings) should be 
      *                                       html escaped (anything you would normally escape via htmlspecialchars).
-     * 
+     *
      * @param array $data_vars_2_html_attr_escape An array of keys in $data and $this->data whose values (only strings) will be 
      *                                            individually escaped using Laminas\Escaper\Escaper::escapeHtmlAttr($string). 
      *                                            Set this for keys in $data and $this->data with values (only strings) that will be  
      *                                            rendered as attributes within html tags.
-     * 
+     *
      * @param array $data_vars_2_css_escape An array of keys in $data and $this->data whose values (only strings) will be 
      *                                      individually escaped using Laminas\Escaper\Escaper::escapeCss($string). 
      *                                      Set this for keys in $data and $this->data with values (only strings) that will be 
@@ -726,7 +686,7 @@ class Renderer
      *                                      html element. CSS escaping via Laminas\Escaper\Escaper::escapeCss($string) 
      *                                      excludes only basic alphanumeric characters and escapes all other 
      *                                      characters into valid CSS hexadecimal escapes.
-     * 
+     *
      * @param array $data_vars_2_js_escape An array of keys in $data and $this->data whose values (only strings) will be 
      *                                     individually escaped using Laminas\Escaper\Escaper::escapeJs($string).
      *                                     Set this for keys in $data and $this->data with values (only strings) that will be 
@@ -734,20 +694,19 @@ class Renderer
      *                                     Javascript escaping via Laminas\Escaper\Escaper::escapeJs($string) applies 
      *                                     to all literal strings and digits. It is not possible to safely escape 
      *                                     other Javascript markup.
-     * 
-     * @return void
-     * 
+     *
+     *
      * @throws \Rotexsoft\FileRenderer\FileNotFoundException
      */
     public function renderToScreen(
-        $file_name='', 
-        array $data = array(),
-        $escape_encoding = 'utf-8',
-        array $data_vars_2_html_escape = array(),
-        array $data_vars_2_html_attr_escape = array(),
-        array $data_vars_2_css_escape = array(),
-        array $data_vars_2_js_escape = array()
-    ) {
+        string $file_name='', 
+        array $data = [],
+        string $escape_encoding = 'utf-8',
+        array $data_vars_2_html_escape = [],
+        array $data_vars_2_html_attr_escape = [],
+        array $data_vars_2_css_escape = [],
+        array $data_vars_2_js_escape = []
+    ): void {
         echo $this->renderToString(
                         $file_name, 
                         $data, 
@@ -762,11 +721,8 @@ class Renderer
     /**
      * Escape a string for the HTML Body context where there are very few characters
      * of special meaning. Internally this will use htmlspecialchars().
-     *
-     * @param string $string
-     * @return string
      */
-    public function escapeHtml($string) {
+    public function escapeHtml(string $string): string {
                 
         return $this->escaper->escapeHtml($string);
     }
@@ -775,11 +731,8 @@ class Renderer
      * Escape a string for the HTML Attribute context. We use an extended set of characters
      * to escape that are not covered by htmlspecialchars() to cover cases where an attribute
      * might be unquoted or quoted illegally (e.g. backticks are valid quotes for IE).
-     *
-     * @param string $string
-     * @return string
      */
-    public function escapeHtmlAttr($string) {
+    public function escapeHtmlAttr(string $string): string {
         
         return $this->escaper->escapeHtmlAttr($string);
     }
@@ -787,11 +740,8 @@ class Renderer
     /**
      * Escape a string for the CSS context. CSS escaping can be applied to any string being
      * inserted into CSS and escapes everything except alphanumerics.
-     *
-     * @param string $string
-     * @return string
      */
-    public function escapeCss($string) {
+    public function escapeCss(string $string): string {
                 
         return $this->escaper->escapeCss($string);
     }
@@ -804,11 +754,8 @@ class Renderer
      * of cases where HTML escaping was not applied on top of Javascript escaping correctly.
      * Backslash escaping is not used as it still leaves the escaped character as-is and so
      * is not useful in a HTML context.
-     *
-     * @param string $string
-     * @return string
      */
-    public function escapeJs($string) {
+    public function escapeJs(string $string): string {
         
         return $this->escaper->escapeJs($string);
     }
@@ -817,53 +764,49 @@ class Renderer
      * Escape a string for the URI or Parameter contexts. This should not be used to escape
      * an entire URI - only a subcomponent being inserted. The function is a simple proxy
      * to rawurlencode() which now implements RFC 3986 since PHP 5.3 completely.
-     *
-     * @param string $string
-     * @return string
      */
-    public function escapeUrl($string) {
+    public function escapeUrl(string $string): string {
         
         return $this->escaper->escapeUrl($string);
     }
     
     /**
-     * 
+     *
      * Escapes values in an array and all its sub-arrays. 
-     *                          
+     *                         
      * @param array $data Array of data to be escaped. This array will be modifed during the escape operation.
-     * 
+     *
      * @param string $escape_encoding Encoding to be used for escaping data values in $data and $this->data.
      *                                If this value is empty, the value of $this->escape_encoding will be used
      *                                if it's not empty, else the default value of 'utf-8' will be finally used.
      *                                See documentation for $this->escape_encoding for more info.
-     *                                  
+     *                                 
      * @param array $data_vars_2_html_escape An array of keys in $data whose values (only strings) will be 
      *                                       individually escaped using Laminas\Escaper\Escaper::escapeHtml($string).
-     * 
+     *
      * @param array $data_vars_2_html_attr_escape An array of keys in $data whose values (only strings) will be 
      *                                            individually escaped using Laminas\Escaper\Escaper::escapeHtmlAttr($string).
-     * 
+     *
      * @param array $data_vars_2_css_escape An array of keys in $data whose values (only strings) will be 
      *                                      individually escaped using Laminas\Escaper\Escaper::escapeCss($string).
-     * 
+     *
      * @param array $data_vars_2_js_escape An array of keys in $data whose values (only strings) will be 
      *                                     individually escaped using Laminas\Escaper\Escaper::escapeJs($string).
-     * 
+     *
      * @param \Laminas\Escaper\Escaper $escaper An optional escaper object that will be used for escaping. 
-     * 
-     * @return void
+     *
      * 
      * @throws \Rotexsoft\FileRenderer\FileNotFoundException
      */
     protected function escapeData(
         array &$data,
-        $escape_encoding = 'utf-8',
-        array $data_vars_2_html_escape = array(),
-        array $data_vars_2_html_attr_escape = array(),
-        array $data_vars_2_css_escape = array(),
-        array $data_vars_2_js_escape = array(),
+        string $escape_encoding = 'utf-8',
+        array $data_vars_2_html_escape = [],
+        array $data_vars_2_html_attr_escape = [],
+        array $data_vars_2_css_escape = [],
+        array $data_vars_2_js_escape = [],
         Escaper $escaper = null
-    ) {
+    ): void {
         if ( count($data) <= 0 ) {
             
             //no data supplied; nothing to do
@@ -912,21 +855,23 @@ class Renderer
         }
         
         foreach( $data as $key => $value ) {
-         
-            $methods = array();
-            
+
+            $methods = [];
+
             if(in_array($key, $data_vars_2_html_escape) || in_array('*', $data_vars_2_html_escape)) { $methods[] = 'escapeHtml'; }
-            
+
             if(in_array($key, $data_vars_2_html_attr_escape) || in_array('*', $data_vars_2_html_attr_escape)) { $methods[] = 'escapeHtmlAttr'; }
-            
+
             if(in_array($key, $data_vars_2_css_escape) || in_array('*', $data_vars_2_css_escape)) { $methods[] = 'escapeCss'; }
-            
+
             if(in_array($key, $data_vars_2_js_escape) || in_array('*', $data_vars_2_js_escape)) { $methods[] = 'escapeJs'; }
-            
-            if( count($methods) > 0 || is_array($data[$key]) ) {
-                
+
+            /** @noRector \Rector\Php71\Rector\FuncCall\CountOnNullRector */
+            if( 
+                count($methods) > 0  || is_array($data[$key])
+            ) {
                 if( is_array($data[$key]) ) {
-                    
+
                     // recursively escape sub-array
                     $this->escapeData(
                                 $data[$key], 
@@ -937,11 +882,11 @@ class Renderer
                                 $data_vars_2_js_escape,
                                 $escaper // pass already instantiated escaper
                             );
-                    
+
                 } else if( is_string($data[$key]) ) {
-                    
+
                     foreach($methods as $method) {
-                        
+
                         // escape the value
                         $data[$key] = $escaper->$method($data[$key]);
                     }
@@ -983,16 +928,7 @@ class Renderer
      * 
      * @throws \InvalidArgumentException
      */
-    public function locateFile($file_name) {
-        
-        if( !is_string($file_name) ) {
-                        
-            $msg = "ERROR: ". get_class($this) ."::".__FUNCTION__."(...) expects first parameter (the name of the php file to be located) to be a `string`." 
-                   . PHP_EOL .'`'. $this->getVarType($file_name, true).'` was supplied with the value below:'
-                   . PHP_EOL . var_export($file_name, true). PHP_EOL ;
-            
-            throw new InvalidArgumentException($msg);
-        }
+    public function locateFile(string $file_name) {
         
         $ds = DIRECTORY_SEPARATOR;
         
@@ -1028,12 +964,11 @@ class Renderer
     }
     
     /**
-     * 
+     *
      * Trims off the right-most character at the end of the string `$file_path` 
      * if it is a directory separator charater (ie. '\' or '/').
-     * 
-     * @param string $file_path
-     * 
+     *
+     *
      * @return string `$file_path` as is if right-most character at the end of the 
      *                string is not a directory separator charater (ie. '\' or '/').
      *                If the right-most character at the end of the string `$file_path`
@@ -1041,7 +976,7 @@ class Renderer
      *                `$file_path` without the right-most directory separator charater
      *                at the end.
      */
-    protected function normalizeFolderPath($file_path) {
+    protected function normalizeFolderPath(string $file_path): string {
 
         //trim right-most linux style path separator if any
         $trimed_path = rtrim($file_path, '/');
@@ -1065,7 +1000,7 @@ class Renderer
      * 
      * @return string the variable's type.
      */
-    protected function getVarType($var, $cap_first=false) {
+    protected function getVarType($var, bool $cap_first=false): string {
 
         if( is_object($var) ) { return $cap_first ? ucfirst(get_class($var)) : get_class($var); }
 

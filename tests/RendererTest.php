@@ -166,39 +166,6 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
     }
 
-    public function testThatExceptionIsThrownWhenNonStringFileNameIsPassedToConstructor() {
-        
-        $this->expectException(\InvalidArgumentException::class);
-        
-        $invalid_file_name = array();        
-        $renderer = new FileRendererWrapper($invalid_file_name);
-    }
-
-    public function testExceptionMessageWhenNonStringFileNameIsPassedToConstructor() {
-        
-        $expected_msg = <<<EOT
-ERROR: Rotexsoft\FileRenderer\Tests\FileRendererWrapper::__construct(...) expects first parameter (the name of the php file to be rendered) to be a `string`.
-`Array` was supplied with the value below:
-array (
-)
-
-EOT;
-        try {
-            $invalid_file_name = array();        
-            $renderer = new FileRendererWrapper($invalid_file_name);
-            
-            //if the constructor call above did not throw an exception, then this test should fail
-            $message = __FUNCTION__.'() : Expected exception not thrown when creating'
-                                   . ' File Renderer with an invalid (non-string) file name';
-            throw new \Exception($message);
-            
-        } catch (\Exception $e) {
-            
-            //echo PHP_EOL.$e->getMessage().PHP_EOL.'yoooo'.PHP_EOL;
-            $this->assertEquals($expected_msg, $e->getMessage());
-        }
-    }
-
     public function testThat__setWorksAsExpected() {
         
         $renderer = new FileRendererWrapper('file.txt');
@@ -527,50 +494,6 @@ EOT;
         $this->assertEquals($data['var1'], $result);
     }
 
-    public function testThatExceptionIsThrownWhenNonStringFileNameIsPassedToLocateFile() {
-        
-        $this->expectException(\InvalidArgumentException::class);
-        
-        $renderer = new FileRendererWrapper('file.txt');
-        $invalid_file_name = array();
-        $renderer->locateFile($invalid_file_name);
-    }
-    
-
-    public function testExceptionMessageWhenNonStringFileNameIsPassedToLocateFile() {
-        
-        $expected_msg = <<<EOT
-ERROR: Rotexsoft\FileRenderer\Tests\FileRendererWrapper::locateFile(...) expects first parameter (the name of the php file to be located) to be a `string`.
-`Array` was supplied with the value below:
-array (
-)
-
-EOT;
-        try {
-            $invalid_file_name = array();        
-            $renderer = new FileRendererWrapper('test.txt');
-            $renderer->locateFile($invalid_file_name);
-            
-            //if the call to locateFile above did not throw an exception, then this test should fail
-            $message = __FUNCTION__. '(): Expected exception not thrown when locating file with an'
-                                   . ' invalid (non-string) file name';
-            throw new \Exception($message);
-            
-        } catch (\Exception $e) {
-            
-            $this->assertEquals($expected_msg, $e->getMessage());
-        }
-    }
-
-    public function testThatExceptionIsThrownWhenNonStringFileNameIsPassedToRenderToString() {
-        
-        $this->expectException(\InvalidArgumentException::class);
-        
-        $renderer = new FileRendererWrapper('file.txt');
-        $invalid_file_name = array();
-        $renderer->renderToString($invalid_file_name);
-    }
-
     public function testThatExceptionIsThrownWhenNonExistentFileNameIsPassedToRenderToString() {
         
         $this->expectException(\Rotexsoft\FileRenderer\FileNotFoundException::class);
@@ -602,31 +525,6 @@ EOT;
             
         } catch (\Exception $e) {
 
-            $this->assertEquals($expected_msg, $e->getMessage());
-        }
-    }
-    
-    public function testExceptionMessageWhenNonStringFileNameIsPassedToRenderToString() {
-        
-        $expected_msg = <<<EOT
-ERROR: Rotexsoft\FileRenderer\Tests\FileRendererWrapper::renderToString(..) expects first parameter (the name of the php file to be rendered) to be a `string`.
-`Array` was supplied with the value below:
-array (
-)
-
-EOT;
-        try {
-            $invalid_file_name = array();        
-            $renderer = new FileRendererWrapper('test.txt');
-            $renderer->renderToString($invalid_file_name);
-            
-            //if the call to locateFile above did not throw an exception, then this test should fail
-            $message = __FUNCTION__. '(): Expected exception not thrown when rendering file with an'
-                                   . ' invalid (non-string) file name';
-            throw new \Exception($message);
-            
-        } catch (\Exception $e) {
-            
             $this->assertEquals($expected_msg, $e->getMessage());
         }
     }
