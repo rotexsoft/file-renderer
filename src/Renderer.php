@@ -1,7 +1,6 @@
 <?php
 namespace Rotexsoft\FileRenderer;
 
-use InvalidArgumentException;
 use Laminas\Escaper\Escaper;
 use OutOfBoundsException;
 use Throwable;
@@ -232,8 +231,6 @@ class Renderer
      *                                     data values (eg. Javascript string literals). Javascript escaping via 
      *                                     Laminas\Escaper\Escaper::escapeJs($string) applies to all literal strings 
      *                                     and digits. It is not possible to safely escape other Javascript markup.
-     * 
-     * @throws \InvalidArgumentException
      */
     public function __construct(
             string $file_name='', 
@@ -925,8 +922,6 @@ class Renderer
      * 
      *                        Finally, if $file_name cannot be found in any of 
      *                        the registered paths, false is returned.
-     * 
-     * @throws \InvalidArgumentException
      */
     public function locateFile(string $file_name) {
         
