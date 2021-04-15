@@ -621,6 +621,9 @@ class Renderer
         } // technically, we should never get here
     }
 
+    /**
+     * @psalm-suppress UnresolvableInclude
+     */
     protected function includeFile (string $file_to_include, array $data): void {
         $funcGetArg = func_get_arg(1);
         extract($funcGetArg);
@@ -794,6 +797,7 @@ class Renderer
      *
      * 
      * @throws \Rotexsoft\FileRenderer\FileNotFoundException
+     * @psalm-suppress RedundantConditionGivenDocblockType
      */
     protected function escapeData(
         array &$data,
