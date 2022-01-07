@@ -75,7 +75,7 @@ related pull requests are greatly welcomed.
 
 ## Requirements
 
-* PHP 7.3+
+* PHP 7.4+
 * Not currently certified for use with HHVM (unit tests failing when run in an HHVM environment).
 
 ## Installation
