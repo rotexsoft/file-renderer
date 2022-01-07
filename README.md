@@ -1,4 +1,5 @@
 # PHP File Renderer
+[![PHP Tests and Code Quality Tools](https://github.com/rotexsoft/file-renderer/workflows/Run%20PHP%20Tests%20and%20Code%20Quality%20Tools/badge.svg)](https://github.com/rotexsoft/file-renderer/actions?query=workflow%3A%22Run+PHP+Tests+and+Code+Quality+Tools%22) &nbsp;
 [![Build Status](https://img.shields.io/travis/rotexsoft/file-renderer/master.png?style=flat-square)](https://travis-ci.org/rotexsoft/file-renderer) &nbsp; 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/6cf4ecf85e494f9ab3137656d918fa10)](https://www.codacy.com/manual/rotexdegba/file-renderer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rotexsoft/file-renderer&amp;utm_campaign=Badge_Grade) &nbsp; 
 [![Release](https://img.shields.io/github/release/rotexsoft/file-renderer.png?style=flat-square)](https://github.com/rotexsoft/file-renderer/releases/latest) &nbsp; 
