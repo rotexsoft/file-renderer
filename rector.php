@@ -24,7 +24,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         SetList::PHP_72,
         SetList::DEAD_CODE,
         SetList::PHP_73,
-        //SetList::PHP_74,
+        SetList::PHP_74,
         //SetList::PHP_80,
         SetList::DEAD_CODE,
         SetList::PSR_4,

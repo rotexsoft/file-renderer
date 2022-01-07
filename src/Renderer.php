@@ -19,114 +19,107 @@ use Exception;
 class Renderer
 {
     /**
-     * 
+     *
      * Path(s) to directorie(s) containing (*.php) files to be rendered via this 
      * class. 
-     * 
+     *
      * These paths will be searched when rendering a file with an instance of this class.
      * The order of the search is from the first to the last element of this array.
      *
-     * @var array
-     *  
+     * 
      */
-    protected $file_paths = [];
+    protected array $file_paths = [];
 
     /**
      *
      * Name of php a file to be rendered. 
-     * 
+     *
      * If path is not prepended to the name of the file, the file will be 
      * searched for in the list of paths registered in $this->file_paths.
-     * 
+     *
      * It could be left blank (which means that a file name must supplied when
      * calling any of the render* methods).
-     * 
-     * @var string 
-     * 
+     *
+     *
      */
-    protected $file_name;
+    protected string $file_name;
     
     /**
-     * 
+     *
      * An array of data to be extracted into variables for use in the php file 
      * to be rendered via an instance of this class.
      *
-     * @var array  
-     *             
+     *            
      */
-    protected $data = [];
+    protected array $data = [];
     
     /**
-     * 
+     *
      * An array of keys in $this->data whose values (only strings) will be individually escaped using 
      * Laminas\Escaper\Escaper::escapeHtml($string).
-     * 
+     *
      * Set this for keys in $this->data with values (only strings) like html tags and the likes (anything
      * you would normally escape via htmlspecialchars).
-     * 
-     * @var array
-     * 
+     *
+     *
      */
-    protected $data_vars_2_html_escape = [];
+    protected array $data_vars_2_html_escape = [];
     
     /**
-     * 
+     *
      * An array of keys in $this->data whose values (only strings) will be individually escaped using 
      * Laminas\Escaper\Escaper::escapeHtmlAttr($string).
-     * 
+     *
      * Set this for keys in $this->data with values (only strings) that will be rendered as attributes
      * within html elements.
-     * 
-     * @var array
-     * 
+     *
+     *
      */
-    protected $data_vars_2_html_attr_escape = [];
+    protected array $data_vars_2_html_attr_escape = [];
     
     /**
-     * 
+     *
      * An array of keys in $this->data whose values (only strings) will be individually escaped using 
      * Laminas\Escaper\Escaper::escapeCss($string).
-     * 
+     *
      * Set this for keys in $this->data with values (only strings) that will be rendered inside css style 
      * tags or inside the style attribute of any html element. 
-     * 
+     *
      * CSS escaping via Laminas\Escaper\Escaper::escapeCss($string) excludes only basic 
      * alphanumeric characters and escapes all other characters into valid CSS 
      * hexadecimal escapes.
-     * 
-     * @var array
-     * 
+     *
+     *
      */
-    protected $data_vars_2_css_escape = [];
+    protected array $data_vars_2_css_escape = [];
     
     /**
-     * 
+     *
      * An array of keys in $this->data whose values (only strings) will be individually escaped using 
      * Laminas\Escaper\Escaper::escapeJs($string).
-     * 
+     *
      * Set this for keys in $this->data with values (only strings) that will be rendered as Javascript 
      * data values (eg. Javascript string literals).
-     * 
+     *
      * Javascript escaping via Laminas\Escaper\Escaper::escapeJs($string) applies to all 
      * literal strings & digits. It is not possible to safely escape other Javascript 
      * markup.
-     * 
-     * @var array
-     * 
+     *
+     *
      */
-    protected $data_vars_2_js_escape = [];
+    protected array $data_vars_2_js_escape = [];
     
     /**
-     * 
+     *
      * Encoding to be used for escaping data values in $this->data. 
      * It is used in conjunction with $this->data_vars_2_html_escape, 
      * $this->data_vars_2_html_attr_escape, $this->data_vars_2_css_escape 
      * and $this->data_vars_2_js_escape. 
-     * 
+     *
      * The default value is 'utf-8'.
-     *      
+     *     
      * Below is a list of supported encodings:
-     *      
+     *     
      *      'iso-8859-1',
      *      'iso8859-1',
      *      'iso-8859-5',
@@ -161,35 +154,32 @@ class Renderer
      *      'eucjp',
      *      'eucjp-win',
      *      'macroman'
-     * 
-     * @var string
-     * 
+     *
+     *
      */
-    protected $escape_encoding = 'utf-8';
+    protected string $escape_encoding = 'utf-8';
     
     /**
      *
      * An instance of \Laminas\Escaper\Escaper that would be used by the public escape*($string) methods.
-     * 
-     * 
-     * @var \Laminas\Escaper\Escaper
-     * 
+     *
+     *
+     *
      */
-    protected $escaper;
+    protected \Laminas\Escaper\Escaper $escaper;
 
 
     /**
-     * 
+     *
      * This array keeps track of the hashes of the data arrays that have been escaped via 
      * $this->escapeData(). THIS WILL ALLOW $this->escapeData() TO ONLY ESCAPE EACH UNIQUE
      * DATA ARRAY ONLY ONCE, SUBSEQUENT CALLS TO $this->escapeData() FOR THE SAME DATA 
      * ARRAY WITH THE SAME ESCAPE PARAMETER ARRAYS SHOULD DO NOTHING TO THE DATA ARRAY.
      * We only need to escape desired values in an array only once.
-     * 
-     * @var array
-     * 
+     *
+     *
      */
-    protected $multi_escape_prevention_guard = [];
+    protected array $multi_escape_prevention_guard = [];
 
     /**
      * 
@@ -343,7 +333,7 @@ class Renderer
      *
      *
      * @throws \OutOfBoundsException if item with specified key is not in the $this->data array.
-     * @return mixed
+     * @return mixed|void
      */
     public function getVar(string $key) {
         
