@@ -1,10 +1,8 @@
 # PHP File Renderer
 [![PHP Tests and Code Quality Tools](https://github.com/rotexsoft/file-renderer/workflows/Run%20PHP%20Tests%20and%20Code%20Quality%20Tools/badge.svg)](https://github.com/rotexsoft/file-renderer/actions?query=workflow%3A%22Run+PHP+Tests+and+Code+Quality+Tools%22) &nbsp;
 [![Build Status](https://img.shields.io/travis/rotexsoft/file-renderer/master.png?style=flat-square)](https://travis-ci.org/rotexsoft/file-renderer) &nbsp; 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6cf4ecf85e494f9ab3137656d918fa10)](https://www.codacy.com/manual/rotexdegba/file-renderer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rotexsoft/file-renderer&amp;utm_campaign=Badge_Grade) &nbsp; 
 [![Release](https://img.shields.io/github/release/rotexsoft/file-renderer.png?style=flat-square)](https://github.com/rotexsoft/file-renderer/releases/latest) &nbsp; 
 [![License](https://img.shields.io/badge/license-BSD-brightgreen.png?style=flat-square)](https://github.com/rotexsoft/file-renderer/blob/master/LICENSE) &nbsp; 
-[![SensioLabsInsight](https://img.shields.io/sensiolabs/i/46acc4a9-42b0-4632-b282-7736dad7da14.png?style=flat-square)](https://insight.sensiolabs.com/projects/46acc4a9-42b0-4632-b282-7736dad7da14) &nbsp; 
 [![Coverage Status](https://img.shields.io/coveralls/rotexsoft/file-renderer/master.svg?style=flat-square)](https://coveralls.io/github/rotexsoft/file-renderer?branch=master) &nbsp; 
 [![Dependency Status](https://www.versioneye.com/user/projects/573ce6f8ce8d0e004505e92b/badge.svg?style=flat)](https://www.versioneye.com/user/projects/573ce6f8ce8d0e004505e92b)
 
