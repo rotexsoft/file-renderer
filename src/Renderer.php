@@ -15,6 +15,8 @@ use Exception;
  * 
  * @author Rotimi Adegbamigbe (http://blog.rotimis-corner.com/)
  * 
+ * @psalm-suppress RedundantCondition
+ * 
  */
 class Renderer
 {
