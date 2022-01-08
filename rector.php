@@ -10,28 +10,32 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 return static function (ContainerConfigurator $containerConfigurator): void {
     
     // get parameters
-    $parameters = $containerConfigurator->parameters();
+    //$parameters = $containerConfigurator->parameters();
 
     // Define what rule sets will be applied
-    $parameters->set(Option::SETS, [
-        SetList::PHP_52,
-        SetList::PHP_53,
-        SetList::PHP_54,
-        SetList::PHP_55,
-        SetList::PHP_56,
-        SetList::PHP_70,
-        SetList::PHP_71,
-        SetList::PHP_72,
-        SetList::DEAD_CODE,
-        SetList::PHP_73,
-        SetList::PHP_74,
-        //SetList::PHP_80,
-        SetList::DEAD_CODE,
-        SetList::PSR_4,
-        SetList::TYPE_DECLARATION,
-        SetList::TYPE_DECLARATION_STRICT,
-    ]);
 
+    // here we can define, what sets of rules will be applied
+    // tip: use "SetList" class to autocomplete sets
+    $containerConfigurator->import(SetList::PHP_52);
+    $containerConfigurator->import(SetList::PHP_53);
+    $containerConfigurator->import(SetList::PHP_54);
+    $containerConfigurator->import(SetList::PHP_55);
+    $containerConfigurator->import(SetList::PHP_56);
+    $containerConfigurator->import(SetList::PHP_70);
+    $containerConfigurator->import(SetList::PHP_71);
+    $containerConfigurator->import(SetList::PHP_72);
+    $containerConfigurator->import(SetList::PHP_73);
+    $containerConfigurator->import(SetList::PHP_74);
+    //$containerConfigurator->import(SetList::PHP_80);
+    //$containerConfigurator->import(SetList::PHP_81);
+    $containerConfigurator->import(SetList::DEAD_CODE);
+    $containerConfigurator->import(SetList::PSR_4);
+    $containerConfigurator->import(SetList::TYPE_DECLARATION);
+    $containerConfigurator->import(SetList::TYPE_DECLARATION_STRICT);
+    
     // get services (needed for register a single rule)
-    // $services = $containerConfigurator->services();
+    $services = $containerConfigurator->services();
+    
+    //TODO:PHP8 comment once PHP 8 becomes minimum version
+    $services->remove(Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector::class);
 };
