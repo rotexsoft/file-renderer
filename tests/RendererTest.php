@@ -456,20 +456,22 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     
     public function testThatDoRenderWorksAsExpected() {
     
-        $file_name = 'view.php';
         $data = [ 'var1'=>'var1 at construct' ];
-        $file_paths = [__DIR__.'/sample-views'];
-        $renderer = new FileRendererWrapper($file_name, $data, $file_paths);
+        $ds = DIRECTORY_SEPARATOR;
+        $renderer = new FileRendererWrapper();
         
         //make sure $renderer->file_name is used when renderToString()
         //is called with no args.
-        $this->assertEquals($data['var1'], $renderer->doRenderPublic('view.php', $data));
+        $this->assertEquals(
+            $data['var1'], 
+            $renderer->doRenderPublic(__DIR__."{$ds}sample-views{$ds}view.php", $data)
+        );
         
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Exception thrown from exception-throwing-view.php');
         
         //renderer a file that throws exception
-        $renderer->doRenderPublic('exception-throwing-view.php');
+        $renderer->doRenderPublic(__DIR__."{$ds}sample-views{$ds}exception-throwing-view.php", []);
         
         
     }

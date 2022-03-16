@@ -851,34 +851,30 @@ class Renderer
             return;
         }
         
-        $hash_of_data_array = null;
-        $dataAsJsonStr = json_encode($data, JSON_THROW_ON_ERROR);
+        $hashArray = function(array &$data): string {
         
-        if(is_string($dataAsJsonStr)) {
-            
-            $dataAsObj = json_decode($dataAsJsonStr, false, 512, JSON_THROW_ON_ERROR);
-            
-            if(is_object($dataAsObj)) {
-                $hash_of_data_array = spl_object_hash($dataAsObj);
-            }
-        }
-        
-        if(is_null($hash_of_data_array)){
-            
+            $hash_of_data_array_as_str = '';
+
             $serialized_data = serialize($data);
             $available_hash_algos = hash_algos();
-            
+
             if (in_array('sha512', $available_hash_algos)) {
-                $hash_of_data_array = hash('sha512', $serialized_data);
+                $hash_of_data_array_as_str = hash('sha512', $serialized_data);
             } elseif (in_array('sha384', $available_hash_algos)) {
-                $hash_of_data_array = hash('sha384', $serialized_data);
+                $hash_of_data_array_as_str = hash('sha384', $serialized_data);
             } elseif (in_array('sha256', $available_hash_algos)) {
-                $hash_of_data_array = hash('sha256', $serialized_data);
+                $hash_of_data_array_as_str = hash('sha256', $serialized_data);
             } else {
-                $hash_of_data_array = hash('sha1', $serialized_data);
+                $hash_of_data_array_as_str = hash('sha1', $serialized_data);
             }
-        }
+            
+            return $hash_of_data_array_as_str;
+        };
+            
+        $hash_of_data_array = $hashArray($data);
         
+//var_dump($hash_of_data_array);
+//var_dump($this->multi_escape_prevention_guard);
         if( 
             array_key_exists($hash_of_data_array, $this->multi_escape_prevention_guard) 
             && $this->multi_escape_prevention_guard[$hash_of_data_array]['escape_encoding'] === $escape_encoding
@@ -948,7 +944,7 @@ class Renderer
         
         //add the hash of the data array we have just escaped to the list of
         //hashes of escaped data arrays
-        $hash_of_escaped_data_array = spl_object_hash(json_decode(json_encode($data, JSON_THROW_ON_ERROR), false, 512, JSON_THROW_ON_ERROR));
+        $hash_of_escaped_data_array = $hashArray($data);;
         
         $this->multi_escape_prevention_guard[$hash_of_escaped_data_array] = [
             'escape_encoding'=>$escape_encoding,
