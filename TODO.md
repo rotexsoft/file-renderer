@@ -1,5 +1,3 @@
-* Create custom email for project's composer.json
-* Add packagist downloads badge from http://shields.io/ to this project
 * Implement data sharing between layouts and page content view: 
     - Will need to think about how that should work. 
     - I am thinking of adding code to __set to copy the data fields from $this to the Renderer object being assigned. 

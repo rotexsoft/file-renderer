@@ -3,7 +3,10 @@
 [![Build Status](https://img.shields.io/travis/rotexsoft/file-renderer/master.png?style=flat-square)](https://travis-ci.org/rotexsoft/file-renderer) &nbsp; 
 [![Release](https://img.shields.io/github/release/rotexsoft/file-renderer.png?style=flat-square)](https://github.com/rotexsoft/file-renderer/releases/latest) &nbsp; 
 [![License](https://img.shields.io/badge/license-BSD-brightgreen.png?style=flat-square)](https://github.com/rotexsoft/file-renderer/blob/master/LICENSE) &nbsp; 
-[![Coverage Status](https://img.shields.io/coveralls/rotexsoft/file-renderer/master.svg?style=flat-square)](https://coveralls.io/github/rotexsoft/file-renderer?branch=master) &nbsp; 
+[![Coverage Status](https://img.shields.io/coveralls/rotexsoft/file-renderer/master.svg?style=flat-square)](https://coveralls.io/github/rotexsoft/file-renderer?branch=master) &nbsp;
+
+![Packagist Downloads](https://img.shields.io/packagist/dt/rotexsoft/file-renderer) &nbsp;
+ 
 [![Dependency Status](https://www.versioneye.com/user/projects/573ce6f8ce8d0e004505e92b/badge.svg?style=flat)](https://www.versioneye.com/user/projects/573ce6f8ce8d0e004505e92b)
 
 - [PHP File Renderer](#php-file-renderer)
