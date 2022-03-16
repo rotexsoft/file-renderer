@@ -217,6 +217,16 @@ class Renderer
      *
      */
     protected array $multi_escape_prevention_guard = [];
+    
+    /**
+     * 
+     * If true, when __toString() is called on an instance of this class,  
+     * __toString() will also be invoked on every instance of this class
+     * in $this->data
+     * 
+     */
+    protected bool $auto_render_all_renderers_in_data_on_to_string = true;
+
 
     /**
      * 
@@ -666,11 +676,60 @@ class Renderer
      * @return string the output that is generated when $this->file_name is rendered.
      * 
      * @throws \Rotexsoft\FileRenderer\FileNotFoundException
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedFunctionCall
      * 
      */
     public function __toString() {
         
-        return $this->renderToString();
+        $traverseArray = function(iterable $array, string &$result) use (&$traverseArray):void{
+
+            foreach($array as $value){
+                //If $value is an iterable.
+                if(\is_iterable($value)){
+                    //We need to loop through it.
+                    $traverseArray($value, $result);
+                } else {
+                    //It is not an iterable, so stringify if it's another Renderer.
+                    if($value instanceof \Rotexsoft\FileRenderer\Renderer) {
+
+                        $resultPreException = $result;
+
+                        try {
+
+                            $result .= $value->__toString();
+                        } catch (\Throwable $ex) {
+
+                            // restore pre exception value
+                            $result = $resultPreException;
+                        } // try..catch (\Throwable $ex)
+                    } // if($value instanceof \Rotexsoft\FileRenderer\Renderer)
+                } // if(\is_iterable($value))..else
+            } // foreach($array as $value){
+        };//$traverseArray = function(iterable $array, string &$result) use ($traverseArray)
+        
+        $output = $this->renderToString();
+        
+        if($this->auto_render_all_renderers_in_data_on_to_string){
+            
+            $traverseArray($this->data, $output);
+        }
+        
+        return $output;
+    }
+    
+    public function enableAutoRenderAllRenderersInDataOnToString(): self {
+        
+        $this->auto_render_all_renderers_in_data_on_to_string = true;
+        
+        return $this;
+    }
+    
+    public function disableAutoRenderAllRenderersInDataOnToString(): self {
+        
+        $this->auto_render_all_renderers_in_data_on_to_string = false;
+        
+        return $this;
     }
     
     /**
@@ -872,9 +931,7 @@ class Renderer
         };
             
         $hash_of_data_array = $hashArray($data);
-        
-//var_dump($hash_of_data_array);
-//var_dump($this->multi_escape_prevention_guard);
+
         if( 
             array_key_exists($hash_of_data_array, $this->multi_escape_prevention_guard) 
             && $this->multi_escape_prevention_guard[$hash_of_data_array]['escape_encoding'] === $escape_encoding
