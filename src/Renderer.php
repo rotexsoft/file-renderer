@@ -4,7 +4,42 @@ namespace Rotexsoft\FileRenderer;
 use Laminas\Escaper\Escaper;
 use OutOfBoundsException;
 use Throwable;
-use Exception;
+
+use function array_keys;
+use function array_key_exists;
+use function array_merge;
+use function array_pop;
+use function array_reverse;
+use function array_shift;
+use function array_unshift;
+use function count;
+use function extract;
+use function file_exists;
+use function func_get_arg;
+use function gettype;
+use function get_class;
+use function hash;
+use function hash_algos;
+use function implode;
+use function in_array;
+use function is_array;
+use function is_file;
+use function is_null;
+use function is_object;
+use function is_string;
+use function json_decode;
+use function json_encode;
+use function ob_end_clean;
+use function ob_get_clean;
+use function ob_start;
+use function rtrim;
+use function serialize;
+use function spl_object_hash;
+use function sprintf;
+use function strlen;
+use function ucfirst;
+use function var_export;
+
 /**
  * 
  * Class for rendering the contents of a php file.
@@ -28,7 +63,7 @@ class Renderer
      * These paths will be searched when rendering a file with an instance of this class.
      * The order of the search is from the first to the last element of this array.
      *
-     * 
+     * @var string[]
      */
     protected array $file_paths = [];
 
@@ -194,7 +229,7 @@ class Renderer
      *                    use in the php file to be rendered via an instance of 
      *                    this class.
      * 
-     * @param array $file_paths An array of path(s) to directorie(s) containing 
+     * @param string[] $file_paths An array of path(s) to directorie(s) containing 
      *                          (*.php) files to be rendered via this class.
      * 
      * @param string $escape_encoding Encoding to be used for escaping data values in $this->data.
@@ -417,7 +452,7 @@ class Renderer
 
         while ( 
             $number_of_paths_2_remove > 0  
-            && count($this->file_paths) > 0 
+            && $this->file_paths !== [] 
         ) {
             $removed_path = array_shift($this->file_paths);
 
@@ -447,7 +482,7 @@ class Renderer
         
         while ( 
            $number_of_paths_2_remove > 0  
-           && count($this->file_paths) > 0 
+           && $this->file_paths !== [] 
         ) {
             $removed_path = array_pop($this->file_paths);
 
@@ -561,15 +596,20 @@ class Renderer
                     array_merge($this->data_vars_2_js_escape, $data_vars_2_js_escape)
                 );
         
-        $output = $this->doRender($located_file, $merged_data);
+        $output = $this->doRender($located_file.'', $merged_data);
         
         return is_string($output) ? $output : '';
     }
     
     /**
+     * 
+     * @param string $file_to_include file to be rendered, including path & name
+     * @param array $data array whose keys are variables & values are values for the variables to be injected into the file to be rendered
+     * 
      * @return string|bool|void
+     * 
      */
-    protected function doRender() {
+    protected function doRender(string $file_to_include, array $data) {
 
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
@@ -596,7 +636,7 @@ class Renderer
             // Capture the view output
             ob_start();
 
-            $this->includeFile(func_get_arg(0), func_get_arg(1));
+            $this->includeFile($file_to_include, $data);
 
             // Get the captured output and close the buffer
             return ob_get_clean();
@@ -605,16 +645,13 @@ class Renderer
 
             ob_end_clean();
             throw $e;
-
-        } catch(Exception $e) { // PHP < 7
-
-            ob_end_clean();
-            throw $e;
-        } // technically, we should never get here
+        }
     }
 
     /**
      * @psalm-suppress UnresolvableInclude
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedArgument
      */
     protected function includeFile (string $file_to_include, array $data): void {
         $funcGetArg = func_get_arg(1);
@@ -789,6 +826,9 @@ class Renderer
      *
      * 
      * @throws \Rotexsoft\FileRenderer\FileNotFoundException
+     * @psalm-suppress MixedArgument
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedArrayAccess
      * @psalm-suppress RedundantConditionGivenDocblockType
      */
     protected function escapeData(
@@ -800,22 +840,44 @@ class Renderer
         array $data_vars_2_js_escape = [],
         Escaper $escaper = null
     ): void {
-        if ( count($data) <= 0 ) {
-            
+        if (count($data) <= 0) {
             //no data supplied; nothing to do
             return;
-            
-        } else if(
-            count($data_vars_2_html_escape) <= 0
-        && count($data_vars_2_html_attr_escape) <= 0
-        && count($data_vars_2_css_escape) <= 0
-            && count($data_vars_2_js_escape) <= 0
-        ) {
+        } elseif (count($data_vars_2_html_escape) <= 0
+               && count($data_vars_2_html_attr_escape) <= 0
+               && count($data_vars_2_css_escape) <= 0
+               && count($data_vars_2_js_escape) <= 0) {
             //no field has been specified for escaping; nothing to do
             return;
         }
         
-        $hash_of_data_array = spl_object_hash(json_decode(json_encode($data, JSON_THROW_ON_ERROR), false, 512, JSON_THROW_ON_ERROR));
+        $hash_of_data_array = null;
+        $dataAsJsonStr = json_encode($data, JSON_THROW_ON_ERROR);
+        
+        if(is_string($dataAsJsonStr)) {
+            
+            $dataAsObj = json_decode($dataAsJsonStr, false, 512, JSON_THROW_ON_ERROR);
+            
+            if(is_object($dataAsObj)) {
+                $hash_of_data_array = spl_object_hash($dataAsObj);
+            }
+        }
+        
+        if(is_null($hash_of_data_array)){
+            
+            $serialized_data = serialize($data);
+            $available_hash_algos = hash_algos();
+            
+            if (in_array('sha512', $available_hash_algos)) {
+                $hash_of_data_array = hash('sha512', $serialized_data);
+            } elseif (in_array('sha384', $available_hash_algos)) {
+                $hash_of_data_array = hash('sha384', $serialized_data);
+            } elseif (in_array('sha256', $available_hash_algos)) {
+                $hash_of_data_array = hash('sha256', $serialized_data);
+            } else {
+                $hash_of_data_array = hash('sha1', $serialized_data);
+            }
+        }
         
         if( 
             array_key_exists($hash_of_data_array, $this->multi_escape_prevention_guard) 
@@ -847,7 +909,7 @@ class Renderer
             }
         }
         
-        foreach( $data as $key => $value ) {
+        foreach( array_keys($data) as $key ) {
 
             $methods = [];
 
@@ -863,8 +925,7 @@ class Renderer
             if( 
                 count($methods) > 0  || is_array($data[$key])
             ) {
-                if( is_array($data[$key]) ) {
-
+                if (is_array($data[$key])) {
                     // recursively escape sub-array
                     $this->escapeData(
                                 $data[$key], 
@@ -875,9 +936,7 @@ class Renderer
                                 $data_vars_2_js_escape,
                                 $escaper // pass already instantiated escaper
                             );
-
-                } else if( is_string($data[$key]) ) {
-
+                } elseif (is_string($data[$key])) {
                     foreach($methods as $method) {
 
                         // escape the value
@@ -891,13 +950,13 @@ class Renderer
         //hashes of escaped data arrays
         $hash_of_escaped_data_array = spl_object_hash(json_decode(json_encode($data, JSON_THROW_ON_ERROR), false, 512, JSON_THROW_ON_ERROR));
         
-        $this->multi_escape_prevention_guard[$hash_of_escaped_data_array] = array(
+        $this->multi_escape_prevention_guard[$hash_of_escaped_data_array] = [
             'escape_encoding'=>$escape_encoding,
             'data_vars_2_html_escape'=>$data_vars_2_html_escape,
             'data_vars_2_html_attr_escape'=>$data_vars_2_html_attr_escape,
             'data_vars_2_css_escape'=>$data_vars_2_css_escape,
             'data_vars_2_js_escape'=>$data_vars_2_js_escape
-        );
+        ];
     }
     
     /**
