@@ -8,18 +8,38 @@ use Rotexsoft\FileRenderer\Tests\FileRendererWrapper;
  */
 class RendererTest extends \PHPUnit\Framework\TestCase
 {
-    protected function setUp(): void { parent::setUp(); }
+    /**
+     * A value between 0 & 3 see \Rotexsoft\FileRenderer::hash_algos() in ./tests/bootstrap.php
+     */
+    public static int $hash_algo_index = 0;
+
+
+    protected function setUp(): void { 
+        
+        parent::setUp();
+        
+        if(static::$hash_algo_index === 4) {
+            
+            static::$hash_algo_index = 0;
+        }
+    }
+    
+    protected function tearDown(): void {
+        
+        parent::tearDown();
+        static::$hash_algo_index++;
+    }
 
     public function testThatConstructorWorksAsExpected() {
         
         $expected_file_name = 'fizaile';
-        $expected_data = array( 'a'=>'b' );
-        $expected_file_paths = array('/a');
+        $expected_data = ['a'=>'b'];
+        $expected_file_paths = ['/a'];
         $expected_escape_encoding = 'utf-8';
-        $expected_js_escaper_keys = array('a');
-        $expected_css_escaper_keys = array('b');
-        $expected_html_escaper_keys = array('c');
-        $expected_html_attr_escaper_keys = array('d');
+        $expected_js_escaper_keys = ['a'];
+        $expected_css_escaper_keys = ['b'];
+        $expected_html_escaper_keys = ['c'];
+        $expected_html_attr_escaper_keys = ['d'];
         
         $renderer = new FileRendererWrapper(
                             $expected_file_name, 
@@ -71,33 +91,33 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         //test default vals
         $renderer = new FileRendererWrapper($expected_file_name);
         $this->assertEquals($expected_file_name, $file_name_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $data_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $file_paths_in_obj->getValue($renderer));
+        $this->assertEquals([], $data_in_obj->getValue($renderer));
+        $this->assertEquals([], $file_paths_in_obj->getValue($renderer));
         $this->assertEquals('utf-8', $escape_encoding_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $html_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $html_attr_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $css_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $html_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $html_attr_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $css_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $js_escaper_keys_in_obj->getValue($renderer));
         
         $renderer = new FileRendererWrapper($expected_file_name, $expected_data);
         $this->assertEquals($expected_file_name, $file_name_in_obj->getValue($renderer));
         $this->assertEquals($expected_data, $data_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $file_paths_in_obj->getValue($renderer));
+        $this->assertEquals([], $file_paths_in_obj->getValue($renderer));
         $this->assertEquals('utf-8', $escape_encoding_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $html_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $html_attr_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $css_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $html_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $html_attr_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $css_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $js_escaper_keys_in_obj->getValue($renderer));
         
         $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $expected_file_paths);
         $this->assertEquals($expected_file_name, $file_name_in_obj->getValue($renderer));
         $this->assertEquals($expected_data, $data_in_obj->getValue($renderer));
         $this->assertEquals($expected_file_paths, $file_paths_in_obj->getValue($renderer));
         $this->assertEquals('utf-8', $escape_encoding_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $html_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $html_attr_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $css_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $html_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $html_attr_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $css_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $js_escaper_keys_in_obj->getValue($renderer));
         
         $renderer = new FileRendererWrapper(
                             $expected_file_name, 
@@ -109,10 +129,10 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected_data, $data_in_obj->getValue($renderer));
         $this->assertEquals($expected_file_paths, $file_paths_in_obj->getValue($renderer));
         $this->assertEquals($expected_escape_encoding, $escape_encoding_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $html_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $html_attr_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $css_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $html_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $html_attr_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $css_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $js_escaper_keys_in_obj->getValue($renderer));
         
         $renderer = new FileRendererWrapper(
                             $expected_file_name, 
@@ -126,9 +146,9 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected_file_paths, $file_paths_in_obj->getValue($renderer));
         $this->assertEquals($expected_escape_encoding, $escape_encoding_in_obj->getValue($renderer));
         $this->assertEquals($expected_html_escaper_keys, $html_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $html_attr_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $css_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $html_attr_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $css_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $js_escaper_keys_in_obj->getValue($renderer));
         
         $renderer = new FileRendererWrapper(
                             $expected_file_name, 
@@ -144,8 +164,8 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected_escape_encoding, $escape_encoding_in_obj->getValue($renderer));
         $this->assertEquals($expected_html_escaper_keys, $html_escaper_keys_in_obj->getValue($renderer));
         $this->assertEquals($expected_html_attr_escaper_keys, $html_attr_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $css_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $css_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $js_escaper_keys_in_obj->getValue($renderer));
         
         $renderer = new FileRendererWrapper(
                             $expected_file_name, 
@@ -163,7 +183,7 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected_html_escaper_keys, $html_escaper_keys_in_obj->getValue($renderer));
         $this->assertEquals($expected_html_attr_escaper_keys, $html_attr_escaper_keys_in_obj->getValue($renderer));
         $this->assertEquals($expected_css_escaper_keys, $css_escaper_keys_in_obj->getValue($renderer));
-        $this->assertEquals(array(), $js_escaper_keys_in_obj->getValue($renderer));
+        $this->assertEquals([], $js_escaper_keys_in_obj->getValue($renderer));
     }
 
     public function testThat__setWorksAsExpected() {
@@ -237,7 +257,7 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     
     public function testThat__getWorksAsExpected() {
         
-        $renderer = new FileRendererWrapper('file.txt', array('key1'=>'val1', 'key2'=>'val2'));
+        $renderer = new FileRendererWrapper('file.txt', ['key1'=>'val1', 'key2'=>'val2']);
         
         $this->assertEquals('val1', $renderer->__get('key1'));
         $this->assertEquals('val2', $renderer->__get('key2'));
@@ -247,7 +267,7 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     
     public function testThatGetVarWorksAsExpected() {
         
-        $renderer = new FileRendererWrapper('file.txt', array('key1'=>'val1', 'key2'=>'val2'));
+        $renderer = new FileRendererWrapper('file.txt', ['key1'=>'val1', 'key2'=>'val2']);
         
         $this->assertEquals('val1', $renderer->getVar('key1'));
         $this->assertEquals('val2', $renderer->getVar('key2'));
@@ -255,7 +275,7 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     
     public function testThat__issetWorksAsExpected() {
         
-        $renderer = new FileRendererWrapper('file.txt', array('key1'=>'val1', 'key2'=>'val2'));
+        $renderer = new FileRendererWrapper('file.txt', ['key1'=>'val1', 'key2'=>'val2']);
         
         $this->assertEquals(true, $renderer->__isset('key1'));
         $this->assertEquals(true, $renderer->__isset('key2'));
@@ -264,7 +284,7 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     
     public function testThat__unsetWorksAsExpected() {
         
-        $renderer = new FileRendererWrapper('file.txt', array('key1'=>'val1', 'key2'=>'val2'));
+        $renderer = new FileRendererWrapper('file.txt', ['key1'=>'val1', 'key2'=>'val2']);
         
         $this->assertEquals(true, $renderer->__isset('key1'));
         $renderer->__unset('key1');
@@ -279,8 +299,8 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     public function testThatGetDataWorksAsExpected() {
         
         $expected_file_name = 'fizaile';
-        $expected_data = array( 'a'=>'b' );
-        $expected_file_paths = array('/a');
+        $expected_data = ['a'=>'b'];
+        $expected_file_paths = ['/a'];
         
         $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $expected_file_paths);
         $this->assertEquals($expected_data, $renderer->getData());        
@@ -289,8 +309,8 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     public function testThatGetFilePathsWorksAsExpected() {
         
         $expected_file_name = 'fizaile';
-        $expected_data = array( 'a'=>'b' );
-        $expected_file_paths = array('/a');
+        $expected_data = ['a'=>'b'];
+        $expected_file_paths = ['/a'];
         
         $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $expected_file_paths);
         $this->assertEquals($expected_file_paths, $renderer->getFilePaths());        
@@ -299,9 +319,9 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     public function testThatAppendPathWorksAsExpected() {
         
         $expected_file_name = 'fizaile';
-        $expected_data = array( 'a'=>'b' );
-        $original_file_paths = array('/a');
-        $expected_file_paths = array('/a', '/b');
+        $expected_data = ['a'=>'b'];
+        $original_file_paths = ['/a'];
+        $expected_file_paths = ['/a', '/b'];
         
         $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $original_file_paths);
         $renderer->appendPath('/b');
@@ -311,9 +331,9 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     public function testThatPrependPathWorksAsExpected() {
         
         $expected_file_name = 'fizaile';
-        $expected_data = array( 'a'=>'b' );
-        $original_file_paths = array('/b');
-        $expected_file_paths = array('/a', '/b');
+        $expected_data = ['a'=>'b'];
+        $original_file_paths = ['/b'];
+        $expected_file_paths = ['/a', '/b'];
         
         $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $original_file_paths);
         $renderer->prependPath('/a');
@@ -323,8 +343,8 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     public function testThatHasPathWorksAsExpected() {
         
         $expected_file_name = 'fizaile';
-        $expected_data = array( 'a'=>'b' );
-        $original_file_paths = array('/b');
+        $expected_data = ['a'=>'b'];
+        $original_file_paths = ['/b'];
         
         $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $original_file_paths);
         $renderer->prependPath('/a');
@@ -337,10 +357,10 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     public function testThatRemoveFirstNPathsWorksAsExpected() {
         
         $expected_file_name = 'fizaile';
-        $expected_data = array( 'a'=>'b' );
-        $original_file_paths = array('/a', '/b', '/c', '/d', '/e', '/f', '/g');
-        $expected_file_paths1 = array('/b', '/c', '/d', '/e', '/f', '/g');
-        $expected_file_paths2 = array('/g');
+        $expected_data = ['a'=>'b'];
+        $original_file_paths = ['/a', '/b', '/c', '/d', '/e', '/f', '/g'];
+        $expected_file_paths1 = ['/b', '/c', '/d', '/e', '/f', '/g'];
+        $expected_file_paths2 = ['/g'];
         
         $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $original_file_paths);
         
@@ -358,10 +378,10 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     public function testThatRemoveLastNPathsWorksAsExpected() {
         
         $expected_file_name = 'fizaile';
-        $expected_data = array( 'a'=>'b' );
-        $original_file_paths = array('/a', '/b', '/c', '/d', '/e', '/f', '/g');
-        $expected_file_paths1 = array('/a', '/b', '/c', '/d', '/e', '/f');
-        $expected_file_paths2 = array('/a');
+        $expected_data = ['a'=>'b'];
+        $original_file_paths = ['/a', '/b', '/c', '/d', '/e', '/f', '/g'];
+        $expected_file_paths1 = ['/a', '/b', '/c', '/d', '/e', '/f'];
+        $expected_file_paths2 = ['/a'];
         
         $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $original_file_paths);
         
@@ -397,8 +417,8 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("String", $renderer->getVarTypePublic('sfff', true)); 
 
         //array
-        $this->assertEquals("array", $renderer->getVarTypePublic(array())); 
-        $this->assertEquals("Array", $renderer->getVarTypePublic(array(), true)); 
+        $this->assertEquals("array", $renderer->getVarTypePublic([])); 
+        $this->assertEquals("Array", $renderer->getVarTypePublic([], true)); 
 
         //boolean
         $this->assertEquals("boolean", $renderer->getVarTypePublic(false)); 
@@ -422,8 +442,8 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     public function testThatLocateFileWorksAsExpected() {
     
         $file_name = 'fizaile';
-        $data = array( 'a'=>'b' );
-        $file_paths = array(__DIR__.'/sample-views', __DIR__.'/sample-views/sub1', __DIR__.'/sample-views/sub1/sub2');
+        $data = ['a'=>'b'];
+        $file_paths = [__DIR__.'/sample-views', __DIR__.'/sample-views/sub1', __DIR__.'/sample-views/sub1/sub2'];
         $renderer = new FileRendererWrapper($file_name, $data, $file_paths);
         
         $this->assertEquals(__DIR__.'/sample-views/sub1/sub2/view2.php', $renderer->locateFile(__DIR__.'/sample-views/sub1/sub2/view2.php'));
@@ -437,8 +457,8 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     public function testThatRenderToStringWorksAsExpected() {
     
         $file_name = 'view.php';
-        $data = array( 'var1'=>'var1 at construct' );
-        $file_paths = array(__DIR__.'/sample-views', __DIR__.'/sample-views/sub1', __DIR__.'/sample-views/sub1/sub2');
+        $data = ['var1'=>'var1 at construct'];
+        $file_paths = [__DIR__.'/sample-views', __DIR__.'/sample-views/sub1', __DIR__.'/sample-views/sub1/sub2'];
         $renderer = new FileRendererWrapper($file_name, $data, $file_paths);
         
         //make sure $renderer->file_name is used when renderToString()
@@ -479,18 +499,81 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     public function testThat__ToStringWorksAsExpected() {
     
         $file_name = 'view.php';
-        $data = array( 'var1'=>'var1 at construct' );
-        $file_paths = array(__DIR__.'/sample-views', __DIR__.'/sample-views/sub1', __DIR__.'/sample-views/sub1/sub2');
+        $data = ['var1'=>'var1 at construct'];
+        $file_paths = [__DIR__.'/sample-views', __DIR__.'/sample-views/sub1', __DIR__.'/sample-views/sub1/sub2'];
         $renderer = new FileRendererWrapper($file_name, $data, $file_paths);
         
         $this->assertEquals($data['var1'], $renderer->__toString());
+        
+        
+        // Test the rendering of other renderers associated with the current renderer
+        $recursive_path = __DIR__.DIRECTORY_SEPARATOR.'sample-views'.DIRECTORY_SEPARATOR.'recursive-tostring';
+        $renderer1 = new FileRendererWrapper('view1.php', [], [$recursive_path]);
+        $renderer2 = new FileRendererWrapper('view2.php', [], [$recursive_path]);
+        $renderer3 = new FileRendererWrapper('view3.php', [], [$recursive_path]);
+        $renderer4 = new FileRendererWrapper('view4.php', [], [$recursive_path]);
+        $renderer5 = new FileRendererWrapper('view3.php', [], [$recursive_path]);
+        $renderer6 = new FileRendererWrapper('view1.php', [], [$recursive_path]);
+        $renderer7 = new FileRendererWrapper('view-with-exception.php', [], [$recursive_path]);
+        
+
+        $renderer1->view = $renderer2;
+        $renderer2->view = $renderer3;
+        $renderer2->view2 = $renderer5;
+        $renderer3->view = $renderer4;
+        $renderer4->view = $renderer7;
+        $renderer6->view = [$renderer2, $renderer3, $renderer5, $renderer4];
+        
+        $this->assertEquals(
+            'Hello There from View 2 from view 3 from view 4 from view 3 ', 
+            $renderer1->__toString()
+        );
+        
+        $this->assertEquals(
+            'from View 2 from view 3 from view 4 from view 3 ', 
+            $renderer2->__toString()
+        );
+        
+        $this->assertEquals(
+            'from view 3 from view 4 ', 
+            $renderer3->__toString()
+        );
+        
+        $this->assertEquals(
+            'from view 4 ', 
+            $renderer4->__toString()
+        );
+        
+        $this->assertEquals(
+            'from view 3 ', 
+            $renderer5->__toString()
+        );
+        
+        $this->assertEquals(
+            'Hello There from View 2 from view 3 from view 4 from view 3 from view 3 from view 4 from view 3 from view 4 ', 
+            $renderer6->__toString()
+        );
+        
+        $renderer1->disableAutoRenderAllRenderersInDataOnToString();
+        
+        $this->assertEquals(
+            'Hello There ', 
+            $renderer1->__toString()
+        );
+        
+        $renderer1->enableAutoRenderAllRenderersInDataOnToString();
+        
+        $this->assertEquals(
+            'Hello There from View 2 from view 3 from view 4 from view 3 ', 
+            $renderer1->__toString()
+        );
     }
     
     public function testThatRenderToScreenWorksAsExpected() {
     
         $file_name = 'view.php';
-        $data = array( 'var1'=>'var1 at construct' );
-        $file_paths = array(__DIR__.'/sample-views', __DIR__.'/sample-views/sub1', __DIR__.'/sample-views/sub1/sub2');
+        $data = ['var1'=>'var1 at construct'];
+        $file_paths = [__DIR__.'/sample-views', __DIR__.'/sample-views/sub1', __DIR__.'/sample-views/sub1/sub2'];
         $renderer = new FileRendererWrapper($file_name, $data, $file_paths);
         
         //capture result via output buffering since renderToScreen() echos output instead of 
@@ -537,8 +620,8 @@ Rotexsoft\FileRenderer\Tests\FileRendererWrapper::renderToString(...).
 
 EOT;
         try {
-            $file_paths = array('/a', '/b', '/c');
-            $renderer = new FileRendererWrapper('test.txt', array(), $file_paths);
+            $file_paths = ['/a', '/b', '/c'];
+            $renderer = new FileRendererWrapper('test.txt', [], $file_paths);
             $renderer->renderToString('non-existent-file.php');
             
             //if the call to locateFile above did not throw an exception, then this test should fail
@@ -552,7 +635,48 @@ EOT;
         }
     }
     
-    public function testThatEscapeDataWorksAsExpected() {
+    public function testThatEscapeDataWorksAsExpectedHashAlgoSha512() {
+        
+        // This iteration will use Sha512 inside escapeData to hash all data arrays
+        // because \RendererTest::$hash_algo_index will have a value of 0
+        // see \Rotexsoft\FileRenderer::hash_algos() in ./tests/bootstrap.php
+        
+        $this->executeEscapeDataTests();
+    }
+    
+    public function testThatEscapeDataWorksAsExpectedHashAlgoSha384() {
+        
+        // This iteration will use Sha512 inside escapeData to hash all data arrays
+        // because \RendererTest::$hash_algo_index will have a value of 1
+        // see \Rotexsoft\FileRenderer::hash_algos() in ./tests/bootstrap.php
+        
+        $this->executeEscapeDataTests();
+    }
+    
+    public function testThatEscapeDataWorksAsExpectedHashAlgoSha256() {
+        
+        // This iteration will use Sha512 inside escapeData to hash all data arrays
+        // because \RendererTest::$hash_algo_index will have a value of 2
+        // see \Rotexsoft\FileRenderer::hash_algos() in ./tests/bootstrap.php
+        
+        $this->executeEscapeDataTests();
+    }
+    
+    public function testThatEscapeDataWorksAsExpectedHashAlgoSha1() {
+        
+        // This iteration will use Sha512 inside escapeData to hash all data arrays
+        // because \RendererTest::$hash_algo_index will have a value of 3
+        // see \Rotexsoft\FileRenderer::hash_algos() in ./tests/bootstrap.php
+        
+        $this->executeEscapeDataTests();
+    }
+    
+    public function testThatEscapeDataWorksAsExpectedSha512() {
+        
+        $this->executeEscapeDataTests();
+    }
+    
+    protected function executeEscapeDataTests() {
     
         $file_name = 'view.php';
         
@@ -582,25 +706,27 @@ bar&quot;; alert(&quot;Meow!&quot;); var xss=&quot;true
 INPUT;
         $expected_escaped_js = 'bar\x26quot\x3B\x3B\x20alert\x28\x26quot\x3BMeow\x21\x26quot\x3B\x29\x3B\x20var\x20xss\x3D\x26quot\x3Btrue';
     
-        $data = array( 
-                    'html' => $html_2_escape,
-                    'html_attr' => $html_attr_2_escape,
-                    'css' => $css_2_escape,
-                    'js' => $js_2_escape,
-                    'no_escape_variable' => 'yabadabadoo!',
-                );
+        $data = [
+            'html' => $html_2_escape,
+            'html_attr' => $html_attr_2_escape,
+            'css' => $css_2_escape,
+            'js' => $js_2_escape,
+            'no_escape_variable' => 'yabadabadoo!',
+        ];
         $original_data = $data;
 
         $renderer = new FileRendererWrapper($file_name, $data);
+        $renderer_no_encoding = (new FileRendererWrapper($file_name, $data))
+                                                    ->setEscapeEncoding('');
         
         //scenario where empty data array is passed
-        $empty_data = array();
+        $empty_data = [];
         $original_empty_data = $empty_data;
         $renderer->escapeDataPublic($empty_data);
         $this->assertEquals($original_empty_data, $empty_data);
         
         //test one 'iso-8859-1' scenaario
-        $renderer->escapeDataPublic($data, 'iso-8859-1', array('html'), array('html_attr'), array('css'), array('js'));
+        $renderer->escapeDataPublic($data, 'iso-8859-1', ['html'], ['html_attr'], ['css'], ['js']);
         $this->assertStringContainsString($expected_escaped_html, $data['html']);
         $this->assertStringContainsString($expected_escaped_html_attr, $data['html_attr']);
         $this->assertStringContainsString($expected_escaped_css, $data['css']);
@@ -609,7 +735,15 @@ INPUT;
         
         //other utf-8 scenarios
         $data = $original_data;
-        $renderer->escapeDataPublic($data, 'utf-8', array('html'), array('html_attr'), array('css'), array('js'));
+        $renderer->escapeDataPublic($data, 'utf-8', ['html'], ['html_attr'], ['css'], ['js']);
+        $this->assertStringContainsString($expected_escaped_html, $data['html']);
+        $this->assertStringContainsString($expected_escaped_html_attr, $data['html_attr']);
+        $this->assertStringContainsString($expected_escaped_css, $data['css']);
+        $this->assertStringContainsString($expected_escaped_js, $data['js']);
+        $this->assertEquals($original_data['no_escape_variable'], $data['no_escape_variable']);
+        
+        $data = $original_data;
+        $renderer_no_encoding->escapeDataPublic($data, '', ['html'], ['html_attr'], ['css'], ['js']);
         $this->assertStringContainsString($expected_escaped_html, $data['html']);
         $this->assertStringContainsString($expected_escaped_html_attr, $data['html_attr']);
         $this->assertStringContainsString($expected_escaped_css, $data['css']);
@@ -618,7 +752,7 @@ INPUT;
         
         ///////////////////////
         $data = $original_data;
-        $renderer->escapeDataPublic($data, 'utf-8', array('html'));
+        $renderer->escapeDataPublic($data, 'utf-8', ['html']);
         $this->assertStringContainsString($expected_escaped_html, $data['html']);
         $this->assertStringContainsString($original_data['html_attr'], $data['html_attr']);
         $this->assertStringContainsString($original_data['css'], $data['css']);
@@ -627,7 +761,7 @@ INPUT;
         
         ///////////////////////
         $data = $original_data;
-        $renderer->escapeDataPublic($data, 'utf-8', array(), array('html_attr'));
+        $renderer->escapeDataPublic($data, 'utf-8', [], ['html_attr']);
         $this->assertStringContainsString($original_data['html'], $data['html']);
         $this->assertStringContainsString($expected_escaped_html_attr, $data['html_attr']);
         $this->assertStringContainsString($original_data['css'], $data['css']);
@@ -636,7 +770,7 @@ INPUT;
         
         ///////////////////////
         $data = $original_data;
-        $renderer->escapeDataPublic($data, 'utf-8', array(), array(), array('css'));
+        $renderer->escapeDataPublic($data, 'utf-8', [], [], ['css']);
         $this->assertStringContainsString($original_data['html'], $data['html']);
         $this->assertStringContainsString($original_data['html_attr'], $data['html_attr']);
         $this->assertStringContainsString($expected_escaped_css, $data['css']);
@@ -645,7 +779,7 @@ INPUT;
         
         /////////////////////// only js escape should be applied
         $data = $original_data;
-        $renderer->escapeDataPublic($data, 'utf-8', array(), array(), array(), array('js'));
+        $renderer->escapeDataPublic($data, 'utf-8', [], [], [], ['js']);
         $this->assertStringContainsString($original_data['html'], $data['html']);
         $this->assertStringContainsString($original_data['html_attr'], $data['html_attr']);
         $this->assertStringContainsString($original_data['css'], $data['css']);
@@ -654,7 +788,7 @@ INPUT;
         
         /////////////////////// only html escape should be applied
         $data = $original_data;
-        $renderer->escapeDataPublic($data, 'utf-8', array('html'), array('html'), array('html'), array('html'));
+        $renderer->escapeDataPublic($data, 'utf-8', ['html'], ['html'], ['html'], ['html']);
         $this->assertStringContainsString($expected_escaped_html_4_escapes, $data['html']);
         $this->assertStringContainsString($original_data['html_attr'], $data['html_attr']);
         $this->assertStringContainsString($original_data['css'], $data['css']);
@@ -663,7 +797,7 @@ INPUT;
         
         /////////////////////// only html attr escape should be applied
         $data = $original_data;
-        $renderer->escapeDataPublic($data, 'utf-8', array(), array('html_attr'), array('html_attr'), array('html_attr'));
+        $renderer->escapeDataPublic($data, 'utf-8', [], ['html_attr'], ['html_attr'], ['html_attr']);
         $this->assertStringContainsString($original_data['html'], $data['html']);
         $this->assertStringContainsString($expected_escaped_html_attr_3_escapes, $data['html_attr']);
         $this->assertStringContainsString($original_data['css'], $data['css']);
@@ -672,7 +806,7 @@ INPUT;
         
         /////////////////////// only css escape should be applied
         $data = $original_data;
-        $renderer->escapeDataPublic($data, 'utf-8', array(), array(), array('css'), array('css'));
+        $renderer->escapeDataPublic($data, 'utf-8', [], [], ['css'], ['css']);
         $this->assertStringContainsString($original_data['html'], $data['html']);
         $this->assertStringContainsString($original_data['html_attr'], $data['html_attr']);
         $this->assertStringContainsString($expected_escaped_css_2_escapes, $data['css']);
@@ -682,7 +816,7 @@ INPUT;
         /////////////////////// add sub-array
         $data = $original_data;
         $data['sub_array'] = $data;
-        $renderer->escapeDataPublic($data, 'utf-8', array('html'), array('html_attr'), array('css'), array('js'));
+        $renderer->escapeDataPublic($data, 'utf-8', ['html'], ['html_attr'], ['css'], ['js']);
         
         $this->assertStringContainsString($expected_escaped_html, $data['html']);
         $this->assertStringContainsString($expected_escaped_html_attr, $data['html_attr']);
@@ -698,7 +832,7 @@ INPUT;
         
         //test that calling escapeData the second time with the same data array and escape parameters 
         //does not lead to double escaping
-        $renderer->escapeDataPublic($data, 'utf-8', array('html'), array('html_attr'), array('css'), array('js'));
+        $renderer->escapeDataPublic($data, 'utf-8', ['html'], ['html_attr'], ['css'], ['js']);
         
         $this->assertStringContainsString($expected_escaped_html, $data['html']);
         $this->assertStringContainsString($expected_escaped_html_attr, $data['html_attr']);
@@ -715,7 +849,7 @@ INPUT;
         /////////////////////// Test wild card
         //html escape all data fields
         $data = $original_data;
-        $renderer->escapeDataPublic($data, 'utf-8', array('*'));
+        $renderer->escapeDataPublic($data, 'utf-8', ['*']);
         
         $expected_escaped_html = '&lt;script&gt;alert(&quot;zf2&quot;)&lt;/script&gt;';
         $expected_escaped_html_attr = 'faketitle onmouseover=alert(/ZF2!/);';
@@ -735,7 +869,7 @@ INPUT;
       
         //html attr escape all data fields
         $data = $original_data;
-        $renderer->escapeDataPublic($data, 'utf-8', array(), array('*'));
+        $renderer->escapeDataPublic($data, 'utf-8', [], ['*']);
         
         $expected_escaped_html = '&lt;script&gt;alert&#x28;&quot;zf2&quot;&#x29;&lt;&#x2F;script&gt;';
         $expected_escaped_html_attr = 'faketitle&#x20;onmouseover&#x3D;alert&#x28;&#x2F;ZF2&#x21;&#x2F;&#x29;&#x3B;';
@@ -753,7 +887,7 @@ INPUT;
         
         //css escape all data fields
         $data = $original_data;
-        $renderer->escapeDataPublic($data, 'utf-8', array(), array(), array('*'));
+        $renderer->escapeDataPublic($data, 'utf-8', [], [], ['*']);
         
         $expected_escaped_html = '\3C script\3E alert\28 \22 zf2\22 \29 \3C \2F script\3E ';
         $expected_escaped_html_attr = 'faketitle\20 onmouseover\3D alert\28 \2F ZF2\21 \2F \29 \3B ';
@@ -769,7 +903,7 @@ INPUT;
        
         //js escape all data fields
         $data = $original_data;
-        $renderer->escapeDataPublic($data, 'utf-8', array(), array(), array(), array('*'));
+        $renderer->escapeDataPublic($data, 'utf-8', [], [], [], ['*']);
         
         $expected_escaped_html = '\x3Cscript\x3Ealert\x28\x22zf2\x22\x29\x3C\x2Fscript\x3E';
         $expected_escaped_html_attr = 'faketitle\x20onmouseover\x3Dalert\x28\x2FZF2\x21\x2F\x29\x3B';
@@ -790,7 +924,7 @@ INPUT;
         $html_2_escape = '<script>alert("zf2")</script>';
         $expected_escaped_html = '&lt;script&gt;alert(&quot;zf2&quot;)&lt;/script&gt;';
 
-        $renderer = new FileRendererWrapper($file_name, array(), array(), 'utf-8');
+        $renderer = new FileRendererWrapper($file_name, [], [], 'utf-8');
         $this->assertStringContainsString($expected_escaped_html, $renderer->escapeHtml($html_2_escape));
     }
     
@@ -802,7 +936,7 @@ faketitle onmouseover=alert(/ZF2!/);
 INPUT;
         $expected_escaped_html_attr = 'faketitle&#x20;onmouseover&#x3D;alert&#x28;&#x2F;ZF2&#x21;&#x2F;&#x29;&#x3B;';
 
-        $renderer = new FileRendererWrapper($file_name, array(), array(), 'utf-8');
+        $renderer = new FileRendererWrapper($file_name, [], [], 'utf-8');
         $this->assertStringContainsString($expected_escaped_html_attr, $renderer->escapeHtmlAttr($html_attr_2_escape));
     }
     
@@ -816,7 +950,7 @@ body {
 INPUT;
         $expected_escaped_css = 'body\20 \7B \A \20 \20 \20 \20 background\2D image\3A \20 url\28 \27 http\3A \2F \2F example\2E com\2F foo\2E jpg\3F \3C \2F style\3E \3C script\3E alert\28 1\29 \3C \2F script\3E \27 \29 \3B \A \7D';
 
-        $renderer = new FileRendererWrapper($file_name, array(), array(), 'utf-8');
+        $renderer = new FileRendererWrapper($file_name, [], [], 'utf-8');
         $this->assertStringContainsString($expected_escaped_css, $renderer->escapeCss($css_2_escape));
     }
     
@@ -828,7 +962,7 @@ bar&quot;; alert(&quot;Meow!&quot;); var xss=&quot;true
 INPUT;
         $expected_escaped_js = 'bar\x26quot\x3B\x3B\x20alert\x28\x26quot\x3BMeow\x21\x26quot\x3B\x29\x3B\x20var\x20xss\x3D\x26quot\x3Btrue';
 
-        $renderer = new FileRendererWrapper($file_name, array(), array(), 'utf-8');
+        $renderer = new FileRendererWrapper($file_name, [], [], 'utf-8');
         $this->assertStringContainsString($expected_escaped_js, $renderer->escapeJs($js_2_escape));
     }
     
@@ -840,7 +974,7 @@ INPUT;
 INPUT;
         $expected_escaped_url = '%22%20onmouseover%3D%22alert%28%27zf2%27%29';
 
-        $renderer = new FileRendererWrapper($file_name, array(), array(), 'utf-8');
+        $renderer = new FileRendererWrapper($file_name, [], [], 'utf-8');
         $this->assertEquals($expected_escaped_url, $renderer->escapeUrl($url_2_escape));
     }
 }

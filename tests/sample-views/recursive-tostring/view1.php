@@ -1,0 +1,1 @@
+Hello There <?php //echo $view; ?>

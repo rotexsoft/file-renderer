@@ -19,7 +19,8 @@ use function func_get_arg;
 use function gettype;
 use function get_class;
 use function hash;
-use function hash_algos;
+//use function hash_algos; // Do this so that \Rotexsoft\FileRenderer\hash_algos() 
+                           // in ./tests/bootstrap.php gets called while testing
 use function implode;
 use function in_array;
 use function is_array;
@@ -34,7 +35,6 @@ use function ob_get_clean;
 use function ob_start;
 use function rtrim;
 use function serialize;
-use function spl_object_hash;
 use function sprintf;
 use function strlen;
 use function ucfirst;
