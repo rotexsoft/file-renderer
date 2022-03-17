@@ -1,10 +1,5 @@
 # PHP File Renderer
 
-<style type="text/css">
-    a {display: inline;}
-</style>
-
-
 [![PHP Tests and Code Quality Tools](https://github.com/rotexsoft/file-renderer/workflows/Run%20PHP%20Tests%20and%20Code%20Quality%20Tools/badge.svg)](https://github.com/rotexsoft/file-renderer/actions?query=workflow%3A%22Run+PHP+Tests+and+Code+Quality+Tools%22) &nbsp;
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/rotexsoft/file-renderer) &nbsp; 
 ![GitHub](https://img.shields.io/github/license/rotexsoft/file-renderer) &nbsp; 
