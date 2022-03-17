@@ -215,15 +215,6 @@ class Renderer
      *
      */
     protected array $multi_escape_prevention_guard = [];
-    
-    /**
-     * 
-     * If true, when __toString() is called on an instance of this class,  
-     * __toString() will also be invoked on every instance of this class
-     * in $this->data
-     * 
-     */
-    protected bool $auto_render_all_renderers_in_data_on_to_string = true;
 
 
     /**
@@ -297,9 +288,8 @@ class Renderer
      * @param string $key key for a data value to be added to the $this->data array.
      * @param  mixed $value a data value to be added to the $this->data array.
      * 
-     * @return void
      */
-    public function __set($key, $value) {
+    public function __set($key, $value): void {
         
         $this->data[$key] = $value;
     }
@@ -337,7 +327,7 @@ class Renderer
      * 
      * @return bool true if item with given key is set in $this->data, else false.
      */
-    public function __isset($key) {
+    public function __isset($key): bool {
         
         return isset($this->data[$key]);
     }
@@ -348,9 +338,8 @@ class Renderer
      * 
      * @param string $key potential key for an item in the $this->data array.
      * 
-     * @return void
      */
-    public function __unset($key) {
+    public function __unset($key): void {
         
         if( isset($this->data[$key]) ) {
             
@@ -365,9 +354,11 @@ class Renderer
      * @param string $key key for a data value to be added to the $this->data array.
      * @param  mixed $value a data value to be added to the $this->data array.
      */
-    public function setVar(string $key, $value): void {
+    public function setVar(string $key, $value): self {
         
         $this->__set($key, $value);
+        
+        return $this;
     }
     
     /**
@@ -378,7 +369,7 @@ class Renderer
      *
      *
      * @throws \OutOfBoundsException if item with specified key is not in the $this->data array.
-     * @return mixed|void
+     * @return mixed
      */
     public function getVar(string $key) {
         
@@ -418,9 +409,11 @@ class Renderer
      *
      * @param string $path a path to the end of the $this->file_paths array.
      */
-    public function appendPath( string $path ): void {
+    public function appendPath( string $path ): self {
         
         $this->file_paths[] = $path;
+        
+        return $this;
     }
 
     /**
@@ -430,9 +423,11 @@ class Renderer
      *
      * @param string $path a path to the beginning of the $this->file_paths array.
      */
-    public function prependPath( string $path ): void {
+    public function prependPath( string $path ): self {
         
         array_unshift($this->file_paths, $path);
+        
+        return $this;
     }
     
     /**
@@ -507,7 +502,7 @@ class Renderer
     
     /**
      * 
-	 * Captures and returns the output that is generated when a php file is included. 
+     * Captures and returns the output that is generated when a php file is included. 
      * 
      * @param string $file_name Name of php file to be included (with/without
      *                          the directory path). If the directory path is 
@@ -572,7 +567,7 @@ class Renderer
         
         $located_file = $this->locateFile($file_name);
         
-        if( $located_file === false ) {
+        if( $located_file === '' ) {
             
             //File name supplied to this method was not found. 
             //Try to see if the file name supplied when this 
@@ -580,7 +575,7 @@ class Renderer
             $located_file = $this->locateFile($this->file_name);
         }
         
-        if( $located_file === false ) {
+        if( $located_file === '' ) {
             
             //The file does not exist in any of the registered possible paths
             $msg = sprintf('ERROR: Could not load the file named `%s` ', $file_name)
@@ -604,7 +599,7 @@ class Renderer
                     array_merge($this->data_vars_2_js_escape, $data_vars_2_js_escape)
                 );
         
-        $output = $this->doRender($located_file.'', $merged_data);
+        $output = $this->doRender($located_file, $merged_data);
         
         return is_string($output) ? $output : '';
     }
@@ -678,56 +673,9 @@ class Renderer
      * @psalm-suppress MixedFunctionCall
      * 
      */
-    public function __toString() {
+    public function __toString(): string {
         
-        $traverseArray = function(iterable $array, string &$result) use (&$traverseArray):void{
-
-            foreach($array as $value){
-                //If $value is an iterable.
-                if(\is_iterable($value)){
-                    //We need to loop through it.
-                    $traverseArray($value, $result);
-                } else {
-                    //It is not an iterable, so stringify if it's another Renderer.
-                    if($value instanceof \Rotexsoft\FileRenderer\Renderer) {
-
-                        $resultPreException = $result;
-
-                        try {
-
-                            $result .= $value->__toString();
-                        } catch (\Throwable $ex) {
-
-                            // restore pre exception value
-                            $result = $resultPreException;
-                        } // try..catch (\Throwable $ex)
-                    } // if($value instanceof \Rotexsoft\FileRenderer\Renderer)
-                } // if(\is_iterable($value))..else
-            } // foreach($array as $value){
-        };//$traverseArray = function(iterable $array, string &$result) use ($traverseArray)
-        
-        $output = $this->renderToString();
-        
-        if($this->auto_render_all_renderers_in_data_on_to_string){
-            
-            $traverseArray($this->data, $output);
-        }
-        
-        return $output;
-    }
-    
-    public function enableAutoRenderAllRenderersInDataOnToString(): self {
-        
-        $this->auto_render_all_renderers_in_data_on_to_string = true;
-        
-        return $this;
-    }
-    
-    public function disableAutoRenderAllRenderersInDataOnToString(): self {
-        
-        $this->auto_render_all_renderers_in_data_on_to_string = false;
-        
-        return $this;
+        return $this->renderToString();
     }
     
     /**
@@ -910,22 +858,22 @@ class Renderer
         
         $hashArray = function(array &$data): string {
         
-            $hash_of_data_array_as_str = '';
+            $_hash_of_data_array_as_str = '';
 
             $serialized_data = serialize($data);
             $available_hash_algos = hash_algos();
 
             if (in_array('sha512', $available_hash_algos)) {
-                $hash_of_data_array_as_str = hash('sha512', $serialized_data);
+                $_hash_of_data_array_as_str = hash('sha512', $serialized_data);
             } elseif (in_array('sha384', $available_hash_algos)) {
-                $hash_of_data_array_as_str = hash('sha384', $serialized_data);
+                $_hash_of_data_array_as_str = hash('sha384', $serialized_data);
             } elseif (in_array('sha256', $available_hash_algos)) {
-                $hash_of_data_array_as_str = hash('sha256', $serialized_data);
+                $_hash_of_data_array_as_str = hash('sha256', $serialized_data);
             } else {
-                $hash_of_data_array_as_str = hash('sha1', $serialized_data);
+                $_hash_of_data_array_as_str = hash('sha1', $serialized_data);
             }
             
-            return $hash_of_data_array_as_str;
+            return $_hash_of_data_array_as_str;
         };
             
         $hash_of_data_array = $hashArray($data);
@@ -1012,38 +960,38 @@ class Renderer
     
     /**
      *    
-     * This method locates a file to be rendered and returns the full path to the file or returns false if the file can't be located.
+     * This method locates a file to be rendered and returns the full path to the file or returns an empty string if the file can't be located.
      *    
      * @param string $file_name Name of file (with / without the directory path)
      *                          to be located in the registered possible paths 
      *                          ($this->file_paths).
      * 
-     * @return boolean|string If the directory path is included in $file_name 
-     *                        & the file exists, this method returns $file_name.
+     * @return string If the directory path is included in $file_name 
+     *                & the file exists, this method returns $file_name.
      * 
-     *                        Else it searches for $file_name within the 
-     *                        directories registered in $this->file_paths and 
-     *                        returns $file_name prepended with the first directory 
-     *                        name in $this->file_paths in which $file_name exists.
+     *                Else it searches for $file_name within the 
+     *                directories registered in $this->file_paths and 
+     *                returns $file_name prepended with the first directory 
+     *                name in $this->file_paths in which $file_name exists.
      * 
-     *                        Finally, if $file_name cannot be found in any of 
-     *                        the registered paths, false is returned.
+     *                Finally, if $file_name cannot be found in any of 
+     *                the registered paths, an empty string is returned.
      */
-    public function locateFile(string $file_name) {
+    public function locateFile(string $file_name): string {
         
         $ds = DIRECTORY_SEPARATOR;
         
         //Check to see if a path was prepended to the file name
-        $file_name_contains_path = strlen( basename($file_name) ) < strlen($file_name);
+        $file_name_contains_path = strlen(basename($file_name)) < strlen($file_name);
 
         //Check if file actually exists as is (if a path was prepended to it).
         $located_file = 
             ( 
                 !empty($file_name) && file_exists($file_name) 
                 && is_file($file_name) && $file_name_contains_path 
-            ) ? $file_name : false;
+            ) ? $file_name : '';
         
-        if(  $located_file === false && !empty($file_name) ) {
+        if(  $located_file === '' && !empty($file_name) ) {
             
             //$file_name is not an existent file on its own. 
             //Search for it in the list of paths registered in $this->file_paths.

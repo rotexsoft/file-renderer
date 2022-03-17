@@ -206,8 +206,8 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     public function testThatSetVarWorksAsExpected() {
         
         $renderer = new FileRendererWrapper('file.txt');
-        $renderer->setVar('key1', 'val1'); //set via explicit call
-        $renderer->setVar('key2', 'val2'); //set via explicit call
+        static::assertSame($renderer, $renderer->setVar('key1', 'val1')); //set via explicit call
+        static::assertSame($renderer, $renderer->setVar('key2', 'val2')); //set via explicit call
         
         //make protected `data` property accessible via reflection
         $reflection_class = new ReflectionClass($renderer);        
@@ -324,7 +324,7 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         $expected_file_paths = ['/a', '/b'];
         
         $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $original_file_paths);
-        $renderer->appendPath('/b');
+        static::assertSame($renderer, $renderer->appendPath('/b'));
         $this->assertEquals($expected_file_paths, $renderer->getFilePaths());        
     }
     
@@ -336,7 +336,7 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         $expected_file_paths = ['/a', '/b'];
         
         $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $original_file_paths);
-        $renderer->prependPath('/a');
+        static::assertSame($renderer, $renderer->prependPath('/a'));
         $this->assertEquals($expected_file_paths, $renderer->getFilePaths());        
     }
     
@@ -347,8 +347,8 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         $original_file_paths = ['/b'];
         
         $renderer = new FileRendererWrapper($expected_file_name, $expected_data, $original_file_paths);
-        $renderer->prependPath('/a');
-        $renderer->appendPath('/c');
+        static::assertSame($renderer, $renderer->prependPath('/a'));
+        static::assertSame($renderer, $renderer->appendPath('/c'));
         $this->assertEquals( $renderer->hasPath('/a'), true);
         $this->assertEquals( $renderer->hasPath('/b'), true);
         $this->assertEquals( $renderer->hasPath('/c'), true);
@@ -451,7 +451,7 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(__DIR__.'/sample-views/sub1/view1.php', $renderer->locateFile('view1.php'));
         $this->assertEquals(__DIR__.'/sample-views/view0.php', $renderer->locateFile('view0.php'));
         $this->assertEquals(__DIR__.'/sample-views/view.php', $renderer->locateFile('view.php'));
-        $this->assertEquals(false, $renderer->locateFile('non_existent.php'));    
+        $this->assertEquals('', $renderer->locateFile('non_existent.php'));    
     }
     
     public function testThatRenderToStringWorksAsExpected() {
@@ -479,9 +479,7 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         $data = [ 'var1'=>'var1 at construct' ];
         $ds = DIRECTORY_SEPARATOR;
         $renderer = new FileRendererWrapper();
-        
-        //make sure $renderer->file_name is used when renderToString()
-        //is called with no args.
+
         $this->assertEquals(
             $data['var1'], 
             $renderer->doRenderPublic(__DIR__."{$ds}sample-views{$ds}view.php", $data)
@@ -503,70 +501,44 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         $file_paths = [__DIR__.'/sample-views', __DIR__.'/sample-views/sub1', __DIR__.'/sample-views/sub1/sub2'];
         $renderer = new FileRendererWrapper($file_name, $data, $file_paths);
         
-        $this->assertEquals($data['var1'], $renderer->__toString());
+        static::assertEquals($data['var1'], $renderer->__toString());
         
         
         // Test the rendering of other renderers associated with the current renderer
         $recursive_path = __DIR__.DIRECTORY_SEPARATOR.'sample-views'.DIRECTORY_SEPARATOR.'recursive-tostring';
-        $renderer1 = new FileRendererWrapper('view1.php', [], [$recursive_path]);
-        $renderer2 = new FileRendererWrapper('view2.php', [], [$recursive_path]);
-        $renderer3 = new FileRendererWrapper('view3.php', [], [$recursive_path]);
-        $renderer4 = new FileRendererWrapper('view4.php', [], [$recursive_path]);
-        $renderer5 = new FileRendererWrapper('view3.php', [], [$recursive_path]);
-        $renderer6 = new FileRendererWrapper('view1.php', [], [$recursive_path]);
-        $renderer7 = new FileRendererWrapper('view-with-exception.php', [], [$recursive_path]);
+        $layout_renderer = new FileRendererWrapper('layout.php', [], [$recursive_path]);
+        $page_renderer = new FileRendererWrapper('layout_content.php', [], [$recursive_path]);
+        $page_renderer2 = new FileRendererWrapper('layout_content_1.php', [], [$recursive_path]);
+        $page_renderer3 = new FileRendererWrapper('layout_content_2.php', [], [$recursive_path]);
         
 
-        $renderer1->view = $renderer2;
-        $renderer2->view = $renderer3;
-        $renderer2->view2 = $renderer5;
-        $renderer3->view = $renderer4;
-        $renderer4->view = $renderer7;
-        $renderer6->view = [$renderer2, $renderer3, $renderer5, $renderer4];
+        $layout_renderer->layout_content= $page_renderer;
+        $page_renderer->layout_content_1= $page_renderer2;
+        $page_renderer2->layout_content_2= $page_renderer3;
         
-        $this->assertEquals(
-            'Hello There from View 2 from view 3 from view 4 from view 3 ', 
-            $renderer1->__toString()
+        $expected_output = <<<INPUT
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Two Step View Example</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <div>
+                        <p>This is a sample page to be injected into <strong>layout.php</strong>.</p>
+                        <p>This is a sample page to be injected into <strong>layout_content.php</strong>.</p>
+                        <p>This is a sample page to be injected into <strong>layout_content_1.php</strong>.</p>
+        </div>
+    </body>
+</html>
+
+INPUT;
+        
+        static::assertEquals(
+            $expected_output, 
+            $layout_renderer->__toString()
         );
         
-        $this->assertEquals(
-            'from View 2 from view 3 from view 4 from view 3 ', 
-            $renderer2->__toString()
-        );
-        
-        $this->assertEquals(
-            'from view 3 from view 4 ', 
-            $renderer3->__toString()
-        );
-        
-        $this->assertEquals(
-            'from view 4 ', 
-            $renderer4->__toString()
-        );
-        
-        $this->assertEquals(
-            'from view 3 ', 
-            $renderer5->__toString()
-        );
-        
-        $this->assertEquals(
-            'Hello There from View 2 from view 3 from view 4 from view 3 from view 3 from view 4 from view 3 from view 4 ', 
-            $renderer6->__toString()
-        );
-        
-        $renderer1->disableAutoRenderAllRenderersInDataOnToString();
-        
-        $this->assertEquals(
-            'Hello There ', 
-            $renderer1->__toString()
-        );
-        
-        $renderer1->enableAutoRenderAllRenderersInDataOnToString();
-        
-        $this->assertEquals(
-            'Hello There from View 2 from view 3 from view 4 from view 3 ', 
-            $renderer1->__toString()
-        );
     }
     
     public function testThatRenderToScreenWorksAsExpected() {
