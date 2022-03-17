@@ -11,7 +11,7 @@
 ![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/rotexsoft/file-renderer/latest) &nbsp; 
 ![GitHub last commit](https://img.shields.io/github/last-commit/rotexsoft/file-renderer) &nbsp; 
 ![GitHub Release Date](https://img.shields.io/github/release-date/rotexsoft/file-renderer) &nbsp; 
-<a style="display: inline;" target="_blank" href="https://libraries.io/github/rotexsoft/file-renderer">
+<a href="https://libraries.io/github/rotexsoft/file-renderer">
     <img alt="Libraries.io dependency status for GitHub repo" src="https://img.shields.io/librariesio/github/rotexsoft/file-renderer">
 </a>
 
