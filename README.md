@@ -1,13 +1,19 @@
 # PHP File Renderer
 [![PHP Tests and Code Quality Tools](https://github.com/rotexsoft/file-renderer/workflows/Run%20PHP%20Tests%20and%20Code%20Quality%20Tools/badge.svg)](https://github.com/rotexsoft/file-renderer/actions?query=workflow%3A%22Run+PHP+Tests+and+Code+Quality+Tools%22) &nbsp;
 [![Build Status](https://img.shields.io/travis/rotexsoft/file-renderer/master.png?style=flat-square)](https://travis-ci.org/rotexsoft/file-renderer) &nbsp; 
-[![Release](https://img.shields.io/github/release/rotexsoft/file-renderer.png?style=flat-square)](https://github.com/rotexsoft/file-renderer/releases/latest) &nbsp; 
-[![License](https://img.shields.io/badge/license-BSD-brightgreen.png?style=flat-square)](https://github.com/rotexsoft/file-renderer/blob/master/LICENSE) &nbsp; 
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/rotexsoft/file-renderer) &nbsp; 
+![GitHub](https://img.shields.io/github/license/rotexsoft/file-renderer) &nbsp; 
 [![Coverage Status](https://coveralls.io/repos/github/rotexsoft/file-renderer/badge.svg?branch=master)](https://coveralls.io/github/rotexsoft/file-renderer?branch=master) &nbsp; 
-![Packagist Downloads](https://img.shields.io/packagist/dt/rotexsoft/file-renderer) &nbsp;
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/rotexsoft/file-renderer) &nbsp;
-![GitHub top language](https://img.shields.io/github/languages/top/rotexsoft/file-renderer) &nbsp;
-[![Dependency Status](https://www.versioneye.com/user/projects/573ce6f8ce8d0e004505e92b/badge.svg?style=flat)](https://www.versioneye.com/user/projects/573ce6f8ce8d0e004505e92b)
+![Packagist Downloads](https://img.shields.io/packagist/dt/rotexsoft/file-renderer) &nbsp;
+![GitHub top language](https://img.shields.io/github/languages/top/rotexsoft/file-renderer) &nbsp; 
+![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/rotexsoft/file-renderer) &nbsp; 
+![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/rotexsoft/file-renderer/latest) &nbsp; 
+![GitHub last commit](https://img.shields.io/github/last-commit/rotexsoft/file-renderer)
+![GitHub Release Date](https://img.shields.io/github/release-date/rotexsoft/file-renderer)
+<a href="https://libraries.io/github/rotexsoft/file-renderer">
+    <img alt="Libraries.io dependency status for GitHub repo" src="https://img.shields.io/librariesio/github/rotexsoft/file-renderer">
+</a>
 
 - [PHP File Renderer](#php-file-renderer)
 	- [Introduction](#introduction)
