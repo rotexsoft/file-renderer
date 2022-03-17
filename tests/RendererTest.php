@@ -495,15 +495,7 @@ class RendererTest extends \PHPUnit\Framework\TestCase
     }
     
     public function testThat__ToStringWorksAsExpected() {
-    
-        $file_name = 'view.php';
-        $data = ['var1'=>'var1 at construct'];
-        $file_paths = [__DIR__.'/sample-views', __DIR__.'/sample-views/sub1', __DIR__.'/sample-views/sub1/sub2'];
-        $renderer = new FileRendererWrapper($file_name, $data, $file_paths);
-        
-        static::assertEquals($data['var1'], $renderer->__toString());
-        
-        
+
         // Test the rendering of other renderers associated with the current renderer
         $recursive_path = __DIR__.DIRECTORY_SEPARATOR.'sample-views'.DIRECTORY_SEPARATOR.'recursive-tostring';
         $layout_renderer = new FileRendererWrapper('layout.php', [], [$recursive_path]);
@@ -534,11 +526,34 @@ class RendererTest extends \PHPUnit\Framework\TestCase
 
 INPUT;
         
+        $expected_output2 = <<<INPUT
+            <p>This is a sample page to be injected into <strong>layout.php</strong>.</p>
+                        <p>This is a sample page to be injected into <strong>layout_content.php</strong>.</p>
+                        <p>This is a sample page to be injected into <strong>layout_content_1.php</strong>.</p>
+
+INPUT;
+        
+        $expected_output3 = <<<INPUT
+            <p>This is a sample page to be injected into <strong>layout_content.php</strong>.</p>
+                        <p>This is a sample page to be injected into <strong>layout_content_1.php</strong>.</p>
+
+INPUT;
+        
         static::assertEquals(
             $expected_output, 
             $layout_renderer->__toString()
         );
         
+        
+        static::assertEquals(
+            $expected_output2, 
+            $page_renderer->__toString()
+        );
+        
+        static::assertEquals(
+            $expected_output3, 
+            $page_renderer2->__toString()
+        );
     }
     
     public function testThatRenderToScreenWorksAsExpected() {
