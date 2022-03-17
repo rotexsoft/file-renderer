@@ -1,8 +1,7 @@
 # PHP File Renderer
 
-<style
-  type="text/css">
-a {display: inline;}
+<style type="text/css">
+    a {display: inline;}
 </style>
 
 
