@@ -28,8 +28,6 @@ use function is_file;
 use function is_null;
 use function is_object;
 use function is_string;
-use function json_decode;
-use function json_encode;
 use function ob_end_clean;
 use function ob_get_clean;
 use function ob_start;
