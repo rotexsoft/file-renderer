@@ -3,7 +3,7 @@
 [![Build Status](https://img.shields.io/travis/rotexsoft/file-renderer/master.png?style=flat-square)](https://travis-ci.org/rotexsoft/file-renderer) &nbsp; 
 [![Release](https://img.shields.io/github/release/rotexsoft/file-renderer.png?style=flat-square)](https://github.com/rotexsoft/file-renderer/releases/latest) &nbsp; 
 [![License](https://img.shields.io/badge/license-BSD-brightgreen.png?style=flat-square)](https://github.com/rotexsoft/file-renderer/blob/master/LICENSE) &nbsp; 
-[![Coverage Status](https://img.shields.io/coveralls/rotexsoft/file-renderer/master.svg?style=flat-square)](https://coveralls.io/github/rotexsoft/file-renderer?branch=master) &nbsp;
+[![Coverage Status](https://coveralls.io/repos/github/rotexsoft/file-renderer/badge.svg?branch=master)](https://coveralls.io/github/rotexsoft/file-renderer?branch=master) &nbsp; 
 ![Packagist Downloads](https://img.shields.io/packagist/dt/rotexsoft/file-renderer) &nbsp;
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/rotexsoft/file-renderer) &nbsp;
 ![GitHub top language](https://img.shields.io/github/languages/top/rotexsoft/file-renderer) &nbsp;
