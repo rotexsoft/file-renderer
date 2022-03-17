@@ -71,7 +71,7 @@ jobs:
       env: 
         COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        php-coveralls --coverage_clover=build/logs/clover.xml -v
+        vendor/bin/php-coveralls --coverage_clover=build/logs/clover.xml -v
 
     - name: Run Rector
       # Run rector for PHP 7.X but not 8.0, rector is currently blowing up with PHP 8.0
