@@ -48,7 +48,7 @@ jobs:
       with:
           php-version: ${{ matrix.php }}
           ini-values: pcre.jit=0, pcre.backtrack_limit=9999999, pcre.recursion_limit=9999999
-          coverage: none
+          coverage: xdebug
 
     - name: PHP version
       run: php -v
