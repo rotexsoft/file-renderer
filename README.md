@@ -36,6 +36,7 @@
 		- [Advanced Usage](#advanced-usage)
 			- [Implementing a Two-Step View Templating System](#implementing-a-two-step-view-templating-system)
 				- [Sharing Data between Layout and Page Content Views](#sharing-data-between-layout-and-page-content-views)
+                        - [Nesting Renderers](#nesting-renderers)
 
 ## Introduction
 
