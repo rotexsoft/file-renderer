@@ -951,7 +951,7 @@ Assume you have the four php files below in your application:
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Two Step View Example</title>
+        <title>Nesting Renderers Example</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
@@ -1007,7 +1007,7 @@ Which results in the output below:
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Two Step View Example</title>
+        <title>Nesting Renderers Example</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
@@ -1105,7 +1105,7 @@ This all leads to
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Two Step View Example</title>
+        <title>Nesting Renderers Example</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
