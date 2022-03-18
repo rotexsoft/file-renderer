@@ -924,3 +924,200 @@ will lead to the output below:
 ```
 
 The example above can be extended for use-cases where more than one renderer is being used.
+
+
+#### Nesting Renderers
+
+You can actually pass instances of **\Rotexsoft\FileRenderer\Renderer** to php functions and statements that accept string arguments like **echo**, **sprintf** & the likes. 
+
+The instance of **\Rotexsoft\FileRenderer\Renderer** passed to such a function or statement will be automatically converted to a string by php automatically calling the **\Rotexsoft\FileRenderer\Renderer::__toString()** method of the instance. 
+
+**\Rotexsoft\FileRenderer\Renderer::__toString()** tries to render the file associated with the instance and passes the string result returned from rendering the file back to the function or statement that expects a string argument. 
+
+This behavior can be taken advantage of when a renderer has one or more renderers added to it as data via any of the following methods:
+
+- an array containing one or more renderers is passed as the second argument passed to **\Rotexsoft\FileRenderer\Renderer::__construct(...)**
+- calling **\Rotexsoft\FileRenderer\Renderer::setVar($key, $value)** with a second argument that is a renderer or an array of renderers
+- object property assignment via the magic setter **\Rotexsoft\FileRenderer\Renderer::__set($key, $value)** builtin php mechanism
+
+Now let's see how we can leverage this automatic conversion of renderer objects to strings in an application.
+
+Assume you have the four php files below in your application:
+
+`layout.php`
+
+```php
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Two Step View Example</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <div>
+            <?php echo $layout_content; ?>
+        </div>
+    </body>
+</html>
+```
+
+`layout_content.php`
+
+```php
+            <p>This is a sample page to be injected into <strong>layout.php</strong>.</p>
+            <?= $layout_content_1; ?>
+```
+
+`layout_content_1.php`
+
+```php
+            <p>This is a sample page to be injected into <strong>layout_content.php</strong>.</p>
+            <?= $layout_content_2; ?>
+```
+
+`layout_content_2.php`
+
+```php
+            <p>This is a sample page to be injected into <strong>layout_content_1.php</strong>.</p>
+```
+
+We can render them via nesting like so in a file that is in the same folder with the four php files above 
+(they could be in any folder, just make sure the correct path is prepended to the file name passed as 
+the first argument to the constructor of the renderer class):
+
+`nesting_tester.php`
+
+```php
+$layout_renderer = new \Rotexsoft\FileRenderer\Renderer('./layout.php');
+$page_renderer = new \Rotexsoft\FileRenderer\Renderer('./layout_content.php');
+$page_renderer2 = new \Rotexsoft\FileRenderer\Renderer('./layout_content_1.php');
+$page_renderer3 = new \Rotexsoft\FileRenderer\Renderer('./layout_content_2.php');
+
+$layout_renderer->layout_content= $page_renderer;
+$page_renderer->layout_content_1= $page_renderer2;
+$page_renderer2->layout_content_2= $page_renderer3;
+
+echo $layout_renderer; 
+```
+
+Which results in the output below:
+
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Two Step View Example</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <div>
+                        <p>This is a sample page to be injected into <strong>layout.php</strong>.</p>
+                        <p>This is a sample page to be injected into <strong>layout_content.php</strong>.</p>
+                        <p>This is a sample page to be injected into <strong>layout_content_1.php</strong>.</p>
+        </div>
+    </body>
+</html>
+```
+
+Now let's walk through what just happened.
+
+We created four renderer objects assigned to **$layout_renderer**, **$page_renderer**,
+**$page_renderer2** and **$page_renderer3** to render **layout.php**, **layout_content.php**, 
+**layout_content_1.php** and **layout_content_2.php** respectively.
+
+```php
+$layout_renderer = new \Rotexsoft\FileRenderer\Renderer('./layout.php');
+$page_renderer = new \Rotexsoft\FileRenderer\Renderer('./layout_content.php');
+$page_renderer2 = new \Rotexsoft\FileRenderer\Renderer('./layout_content_1.php');
+$page_renderer3 = new \Rotexsoft\FileRenderer\Renderer('./layout_content_2.php');
+```
+
+We then did the following assignments:
+
+* The renderer **$page_renderer** is assigned to the renderer **$layout_renderer** as a property named **layout_content** which will be accessible via the variable **$layout_content** inside the **layout.php** file to be rendered by **$layout_renderer**
+
+```php
+$layout_renderer->layout_content= $page_renderer;
+```
+
+* The renderer **$page_renderer2** is assigned to the renderer **$page_renderer** as a property named **layout_content_1** which will be accessible via the variable **$layout_content_1** inside the **layout_content.php** file to be rendered by **$page_renderer**
+
+```php
+$page_renderer->layout_content_1= $page_renderer2;
+```
+
+* The renderer **$page_renderer3** is assigned to the renderer **$page_renderer2** as a property named **layout_content_2** which will be accessible via the variable **$layout_content_2** inside the **layout_content_1.php** file to be rendered by **$page_renderer2**
+
+```php
+$page_renderer2->layout_content_2= $page_renderer3;
+```
+
+We finally execute the **echo** statement with **$layout_renderer** as its argument:
+
+```php
+echo $layout_renderer; 
+```
+
+This leads to php automatically executing **$layout_renderer->__toString()**, which leads to the 
+rendering of **layout.php** which has the echo statement below inside it
+
+```php
+<?php echo $layout_content; ?> 
+```
+
+**$layout_content** in **layout.php** shown in the echo statement snippet above is actually referencing the renderer assigned to 
+**$page_renderer** in **nesting_tester.php** earlier above. 
+
+This echo statement in **layout.php** leads to php automatically executing **$layout_content->__toString()**, 
+which leads to the rendering of **layout_content.php** which has the echo statement below inside it
+
+```php
+<?= $layout_content_1; ?>
+```
+
+**$layout_content_1** in **layout_content.php** shown in the echo statement snippet above is actually referencing the renderer assigned to 
+**$page_renderer2** in **nesting_tester.php** earlier above. 
+
+This echo statement in **layout_content.php** leads to php automatically executing **$layout_content_1->__toString()**, 
+which leads to the rendering of **layout_content_1.php** which has the echo statement below inside it
+
+```php
+<?= $layout_content_2; ?>
+```
+**$layout_content_2** in **layout_content_1.php** shown in the echo statement snippet above is actually referencing the renderer assigned to 
+**$page_renderer3** in **nesting_tester.php** earlier above. 
+
+This echo statement in **layout_content_1.php** leads to php automatically executing **$layout_content_2->__toString()**, 
+which leads to the rendering of **layout_content_2.php** which has just html and no php in it and is the last file rendered in this chain of renderers. Below is the content of **layout_content_2.php** again.
+
+```php
+            <p>This is a sample page to be injected into <strong>layout_content_1.php</strong>.</p>
+```
+
+This all leads to 
+1. the output of rendering **layout_content_2.php** being returned back to the echo statement in **layout_content_1.php**,
+2. the output of rendering **layout_content_1.php** is in turn returned back to the echo statement in **layout_content.php**, 
+3. the output of rendering **layout_content.php** is in turn returned back to the echo statement in **layout.php** 
+4. and finally all these outputs  get combined inside in **layout.php** and  printed out to the screen as the output below (earlier shown above):
+
+```php
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Two Step View Example</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <div>
+                        <p>This is a sample page to be injected into <strong>layout.php</strong>.</p>
+                        <p>This is a sample page to be injected into <strong>layout_content.php</strong>.</p>
+                        <p>This is a sample page to be injected into <strong>layout_content_1.php</strong>.</p>
+        </div>
+    </body>
+</html>
+```
+That's how you nest renderers and render their combined output. 
+
+> Note: with nesting, you have to supply all the information needed to render each file to the constructor of the 
+renderer class when creating each renderer object. See **\Rotexsoft\FileRenderer\Renderer::__construct(...)** for
+more details.
