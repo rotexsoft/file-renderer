@@ -827,7 +827,7 @@ class Renderer
      * @param array $data_vars_2_js_escape An array of keys in $data whose values (only strings) will be 
      *                                     individually escaped using Laminas\Escaper\Escaper::escapeJs($string).
      *
-     * @param \Laminas\Escaper\Escaper $escaper An optional escaper object that will be used for escaping. 
+     * @param \Laminas\Escaper\Escaper|null $escaper An optional escaper object that will be used for escaping. 
      *
      * 
      * @throws \Rotexsoft\FileRenderer\FileNotFoundException
