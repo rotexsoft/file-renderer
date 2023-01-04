@@ -262,7 +262,7 @@ class Renderer
             string $file_name='', 
             array $data = [], 
             array $file_paths = [], 
-            $escape_encoding = 'utf-8',
+            string $escape_encoding = 'utf-8',
             array $data_vars_2_html_escape = [],
             array $data_vars_2_html_attr_escape = [],
             array $data_vars_2_css_escape = [],
@@ -458,12 +458,7 @@ class Renderer
             && $this->file_paths !== [] 
         ) {
             $removed_path = array_shift($this->file_paths);
-
-            if( !is_null($removed_path) ) {
-
-                $removed_paths[] = $removed_path;
-            }
-
+            $removed_paths[] = $removed_path;
             $number_of_paths_2_remove--;
         }
         
@@ -488,12 +483,7 @@ class Renderer
            && $this->file_paths !== [] 
         ) {
             $removed_path = array_pop($this->file_paths);
-
-            if( !is_null($removed_path) ) {
-
-                $removed_paths[] = $removed_path;
-            }
-
+            $removed_paths[] = $removed_path;
             $number_of_paths_2_remove--;
         }
         
@@ -845,7 +835,7 @@ class Renderer
         array $data_vars_2_js_escape = [],
         Escaper $escaper = null
     ): void {
-        if (count($data) <= 0) {
+        if ($data === []) {
             //no data supplied; nothing to do
             return;
         } elseif (count($data_vars_2_html_escape) <= 0
@@ -920,10 +910,8 @@ class Renderer
 
             if(in_array($key, $data_vars_2_js_escape) || in_array('*', $data_vars_2_js_escape)) { $methods[] = 'escapeJs'; }
 
-            /** @noRector \Rector\Php71\Rector\FuncCall\CountOnNullRector */
-            if( 
-                count($methods) > 0  || is_array($data[$key])
-            ) {
+            if($methods !== []  || is_array($data[$key])) {
+
                 if (is_array($data[$key])) {
                     // recursively escape sub-array
                     $this->escapeData(

@@ -1,13 +1,11 @@
 <?php
 declare(strict_types=1);
 
-use Rector\Core\Configuration\Option;
-use Rector\Php74\Rector\Property\TypedPropertyRector;
 use Rector\Set\ValueObject\SetList;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Rector\Config\RectorConfig;
 
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (RectorConfig $containerConfigurator): void {
 
     // Define what rule sets will be applied
     $containerConfigurator->import(SetList::PHP_52);
@@ -27,7 +25,10 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $containerConfigurator->import(SetList::DEAD_CODE);
     $containerConfigurator->import(SetList::CODE_QUALITY);
     $containerConfigurator->import(SetList::TYPE_DECLARATION);
-    $containerConfigurator->import(SetList::TYPE_DECLARATION_STRICT);
+    
+    $containerConfigurator->skip([
+        \Rector\Php71\Rector\FuncCall\CountOnNullRector::class,
+    ]);
     
     // get parameters
     //$parameters = $containerConfigurator->parameters();
