@@ -21,7 +21,7 @@ return static function (RectorConfig $containerConfigurator): void {
     //$containerConfigurator->import(SetList::PHP_80);
     //$containerConfigurator->import(SetList::PHP_81);
     
-    $containerConfigurator->import(SetList::PSR_4);
+    //$containerConfigurator->import(SetList::PSR_4);
     $containerConfigurator->import(SetList::DEAD_CODE);
     $containerConfigurator->import(SetList::CODE_QUALITY);
     $containerConfigurator->import(SetList::TYPE_DECLARATION);

@@ -27,8 +27,6 @@ class FileRendererWrapper extends \Rotexsoft\FileRenderer\Renderer
     
     public function normalizeFolderPathPublic($f_path) { return parent::normalizeFolderPath($f_path); }
     
-    public function getVarTypePublic($var, $cap_1st=false) { return parent::getVarType($var, $cap_1st); }
-    
     public function doRenderPublic(string $file_to_include, array $data) {
         return parent::doRender($file_to_include, $data);
     }

@@ -277,7 +277,7 @@ class Renderer
         $this->data_vars_2_html_escape = $data_vars_2_html_escape;
         $this->data_vars_2_html_attr_escape = $data_vars_2_html_attr_escape;
         
-        $encoding = empty($escape_encoding)? 'utf-8' : $escape_encoding;
+        $encoding = $escape_encoding === ''? 'utf-8' : $escape_encoding;
         $this->escaper = new Escaper($encoding);
     }
     
@@ -880,8 +880,8 @@ class Renderer
             return;
         }
         
-        $final_encoding = (empty($escape_encoding)) 
-                            ? ((empty($this->escape_encoding))? 'utf-8' : $this->escape_encoding) 
+        $final_encoding = ($escape_encoding === '') 
+                            ? ( ($this->escape_encoding === '') ? 'utf-8' : $this->escape_encoding) 
                             : $escape_encoding;
         
         if( is_null($escaper) ) {
@@ -975,11 +975,11 @@ class Renderer
         //Check if file actually exists as is (if a path was prepended to it).
         $located_file = 
             ( 
-                !empty($file_name) && file_exists($file_name) 
+                $file_name !== '' && file_exists($file_name) 
                 && is_file($file_name) && $file_name_contains_path 
             ) ? $file_name : '';
         
-        if(  $located_file === '' && !empty($file_name) ) {
+        if(  $located_file === '' && $file_name !== '' ) {
             
             //$file_name is not an existent file on its own. 
             //Search for it in the list of paths registered in $this->file_paths.
@@ -1005,7 +1005,6 @@ class Renderer
      * Trims off the right-most character at the end of the string `$file_path` 
      * if it is a directory separator charater (ie. '\' or '/').
      *
-     *
      * @return string `$file_path` as is if right-most character at the end of the 
      *                string is not a directory separator charater (ie. '\' or '/').
      *                If the right-most character at the end of the string `$file_path`
@@ -1026,21 +1025,5 @@ class Renderer
         }
 
         return $trimed_path;
-    }
-    
-    /**
-     * 
-     * An enhancement to PHP's gettype function that displays the class name of a variable if the variable is an object.
-     * 
-     * @param mixed $var a variable whose type is to be determined.
-     * @param bool $cap_first flag to indicate if the variable's type should be returned with the first letter in uppercase.
-     * 
-     * @return string the variable's type.
-     */
-    protected function getVarType($var, bool $cap_first=false): string {
-
-        if( is_object($var) ) { return $cap_first ? ucfirst(get_class($var)) : get_class($var); }
-
-        return $cap_first ? ucfirst(gettype($var)) : gettype($var);
     }
 }
