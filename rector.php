@@ -38,8 +38,8 @@ return static function (RectorConfig $containerConfigurator): void {
     //$services->set(TypedPropertyRector::class);
     
     // get services (needed for register a single rule)
-    $services = $containerConfigurator->services();
+    //$services = $containerConfigurator->services();
     
     //TODO:PHP8 comment once PHP 8 becomes minimum version
-    $services->remove(Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector::class);
+    //$services->remove(Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector::class);
 };
