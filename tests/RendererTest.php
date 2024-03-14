@@ -404,6 +404,41 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("/var/www/html", $renderer->normalizeFolderPathPublic('/var/www/html/'));        
     }
     
+    public function testThatGetVarTypeWorksAsExpected() {
+        
+        $renderer = new FileRendererWrapper('file.txt');
+        
+        //object
+        $this->assertEquals("Rotexsoft\\FileRenderer\\Tests\\FileRendererWrapper", $renderer->getVarTypePublic($renderer));        
+        $this->assertEquals("Rotexsoft\\FileRenderer\\Tests\\FileRendererWrapper", $renderer->getVarTypePublic($renderer, true));        
+
+        //string
+        $this->assertEquals("string", $renderer->getVarTypePublic('sfff')); 
+        $this->assertEquals("String", $renderer->getVarTypePublic('sfff', true)); 
+
+        //array
+        $this->assertEquals("array", $renderer->getVarTypePublic([])); 
+        $this->assertEquals("Array", $renderer->getVarTypePublic([], true)); 
+
+        //boolean
+        $this->assertEquals("boolean", $renderer->getVarTypePublic(false)); 
+        $this->assertEquals("Boolean", $renderer->getVarTypePublic(false, true)); 
+
+        //int
+        $this->assertEquals("integer", $renderer->getVarTypePublic(123)); 
+        $this->assertEquals("Integer", $renderer->getVarTypePublic(123, true)); 
+
+        //float a.k.a double
+        $this->assertEquals("double", $renderer->getVarTypePublic(123.456)); 
+        $this->assertEquals("Double", $renderer->getVarTypePublic(123.456, true));
+
+        //resource
+        $temp = tmpfile();
+        $this->assertEquals("resource", $renderer->getVarTypePublic($temp)); 
+        $this->assertEquals("Resource", $renderer->getVarTypePublic($temp, true));
+        fclose($temp); // this removes the file
+    }
+    
     public function testThatLocateFileWorksAsExpected() {
     
         $file_name = 'fizaile';
