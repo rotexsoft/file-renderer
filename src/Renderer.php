@@ -51,159 +51,13 @@ use function var_export;
  * @psalm-suppress RedundantCondition
  * 
  */
-class Renderer
+class Renderer implements \Stringable
 {
     /**
-     *
-     * Path(s) to directorie(s) containing (*.php) files to be rendered via this 
-     * class. 
-     *
-     * These paths will be searched when rendering a file with an instance of this class.
-     * The order of the search is from the first to the last element of this array.
-     *
-     * @var string[]
-     */
-    protected array $file_paths = [];
-
-    /**
-     *
-     * Name of php a file to be rendered. 
-     *
-     * If path is not prepended to the name of the file, the file will be 
-     * searched for in the list of paths registered in $this->file_paths.
-     *
-     * It could be left blank (which means that a file name must supplied when
-     * calling any of the render* methods).
-     *
-     *
-     */
-    protected string $file_name;
-    
-    /**
-     *
-     * An array of data to be extracted into variables for use in the php file 
-     * to be rendered via an instance of this class.
-     *
-     *            
-     */
-    protected array $data = [];
-    
-    /**
-     *
-     * An array of keys in $this->data whose values (only strings) will be individually escaped using 
-     * Laminas\Escaper\Escaper::escapeHtml($string).
-     *
-     * Set this for keys in $this->data with values (only strings) like html tags and the likes (anything
-     * you would normally escape via htmlspecialchars).
-     *
-     *
-     */
-    protected array $data_vars_2_html_escape = [];
-    
-    /**
-     *
-     * An array of keys in $this->data whose values (only strings) will be individually escaped using 
-     * Laminas\Escaper\Escaper::escapeHtmlAttr($string).
-     *
-     * Set this for keys in $this->data with values (only strings) that will be rendered as attributes
-     * within html elements.
-     *
-     *
-     */
-    protected array $data_vars_2_html_attr_escape = [];
-    
-    /**
-     *
-     * An array of keys in $this->data whose values (only strings) will be individually escaped using 
-     * Laminas\Escaper\Escaper::escapeCss($string).
-     *
-     * Set this for keys in $this->data with values (only strings) that will be rendered inside css style 
-     * tags or inside the style attribute of any html element. 
-     *
-     * CSS escaping via Laminas\Escaper\Escaper::escapeCss($string) excludes only basic 
-     * alphanumeric characters and escapes all other characters into valid CSS 
-     * hexadecimal escapes.
-     *
-     *
-     */
-    protected array $data_vars_2_css_escape = [];
-    
-    /**
-     *
-     * An array of keys in $this->data whose values (only strings) will be individually escaped using 
-     * Laminas\Escaper\Escaper::escapeJs($string).
-     *
-     * Set this for keys in $this->data with values (only strings) that will be rendered as Javascript 
-     * data values (eg. Javascript string literals).
-     *
-     * Javascript escaping via Laminas\Escaper\Escaper::escapeJs($string) applies to all 
-     * literal strings & digits. It is not possible to safely escape other Javascript 
-     * markup.
-     *
-     *
-     */
-    protected array $data_vars_2_js_escape = [];
-    
-    /**
-     *
-     * Encoding to be used for escaping data values in $this->data. 
-     * It is used in conjunction with $this->data_vars_2_html_escape, 
-     * $this->data_vars_2_html_attr_escape, $this->data_vars_2_css_escape 
-     * and $this->data_vars_2_js_escape. 
-     *
-     * The default value is 'utf-8'.
-     *     
-     * Below is a list of supported encodings:
-     *     
-     *      'iso-8859-1',
-     *      'iso8859-1',
-     *      'iso-8859-5',
-     *      'iso8859-5',
-     *      'iso-8859-15',
-     *      'iso8859-15',
-     *      'utf-8',
-     *      'cp866',
-     *      'ibm866',
-     *      '866',
-     *      'cp1251',
-     *      'windows-1251',
-     *      'win-1251',
-     *      '1251',
-     *      'cp1252',
-     *      'windows-1252',
-     *      '1252',
-     *      'koi8-r',
-     *      'koi8-ru',
-     *      'koi8r',
-     *      'big5',
-     *      '950',
-     *      'gb2312',
-     *      '936',
-     *      'big5-hkscs',
-     *      'shift_jis',
-     *      'sjis',
-     *      'sjis-win',
-     *      'cp932',
-     *      '932',
-     *      'euc-jp',
-     *      'eucjp',
-     *      'eucjp-win',
-     *      'macroman'
-     *
-     *
-     */
-    protected string $escape_encoding = 'utf-8';
-    
-    /**
-     *
      * An instance of \Laminas\Escaper\Escaper that would be used by the public escape*($string) methods.
-     *
-     *
-     *
      */
     protected \Laminas\Escaper\Escaper $escaper;
-
-
+    
     /**
      *
      * This array keeps track of the hashes of the data arrays that have been escaped via 
@@ -215,10 +69,8 @@ class Renderer
      *
      */
     protected array $multi_escape_prevention_guard = [];
-
-
+    
     /**
-     * 
      * @param string $file_name name of a php file to be rendered. If path is not 
      *                          prepended to the name of the file, the file will 
      *                          be searched for in the list of paths registered 
@@ -259,43 +111,133 @@ class Renderer
      *                                     and digits. It is not possible to safely escape other Javascript markup.
      */
     public function __construct(
-            string $file_name='', 
-            array $data = [], 
-            array $file_paths = [], 
-            string $escape_encoding = 'utf-8',
-            array $data_vars_2_html_escape = [],
-            array $data_vars_2_html_attr_escape = [],
-            array $data_vars_2_css_escape = [],
-            array $data_vars_2_js_escape = []
+            /**
+             * Name of php a file to be rendered. 
+             *
+             * If path is not prepended to the name of the file, the file will be 
+             * searched for in the list of paths registered in $this->file_paths.
+             *
+             * It could be left blank (which means that a file name must supplied when
+             * calling any of the render* methods).
+             */
+            protected string $file_name='', 
+            /**
+             * An array of data to be extracted into variables for use in the php file 
+             * to be rendered via an instance of this class.     
+             */
+            protected array $data = [], 
+            /**
+             * Path(s) to directorie(s) containing (*.php) files to be rendered via this 
+             * class. 
+             *
+             * These paths will be searched when rendering a file with an instance of this class.
+             * The order of the search is from the first to the last element of this array.
+             */
+            protected array $file_paths = [], 
+            /**
+             * Encoding to be used for escaping data values in $this->data. 
+             * It is used in conjunction with $this->data_vars_2_html_escape, 
+             * $this->data_vars_2_html_attr_escape, $this->data_vars_2_css_escape 
+             * and $this->data_vars_2_js_escape. 
+             *
+             * The default value is 'utf-8'.
+             *     
+             * Below is a list of supported encodings:
+             *     
+             *      'iso-8859-1',
+             *      'iso8859-1',
+             *      'iso-8859-5',
+             *      'iso8859-5',
+             *      'iso-8859-15',
+             *      'iso8859-15',
+             *      'utf-8',
+             *      'cp866',
+             *      'ibm866',
+             *      '866',
+             *      'cp1251',
+             *      'windows-1251',
+             *      'win-1251',
+             *      '1251',
+             *      'cp1252',
+             *      'windows-1252',
+             *      '1252',
+             *      'koi8-r',
+             *      'koi8-ru',
+             *      'koi8r',
+             *      'big5',
+             *      '950',
+             *      'gb2312',
+             *      '936',
+             *      'big5-hkscs',
+             *      'shift_jis',
+             *      'sjis',
+             *      'sjis-win',
+             *      'cp932',
+             *      '932',
+             *      'euc-jp',
+             *      'eucjp',
+             *      'eucjp-win',
+             *      'macroman'
+             */
+            protected string $escape_encoding = 'utf-8',
+            /**
+             * An array of keys in $this->data whose values (only strings) will be individually escaped using 
+             * Laminas\Escaper\Escaper::escapeHtml($string).
+             *
+             * Set this for keys in $this->data with values (only strings) like html tags and the likes (anything
+             * you would normally escape via htmlspecialchars).
+             */
+            protected array $data_vars_2_html_escape = [],
+            /**
+             * An array of keys in $this->data whose values (only strings) will be individually escaped using 
+             * Laminas\Escaper\Escaper::escapeHtmlAttr($string).
+             *
+             * Set this for keys in $this->data with values (only strings) that will be rendered as attributes
+             * within html elements.
+             */
+            protected array $data_vars_2_html_attr_escape = [],
+            /**
+             * An array of keys in $this->data whose values (only strings) will be individually escaped using 
+             * Laminas\Escaper\Escaper::escapeCss($string).
+             *
+             * Set this for keys in $this->data with values (only strings) that will be rendered inside css style 
+             * tags or inside the style attribute of any html element. 
+             *
+             * CSS escaping via Laminas\Escaper\Escaper::escapeCss($string) excludes only basic 
+             * alphanumeric characters and escapes all other characters into valid CSS 
+             * hexadecimal escapes.
+             */
+            protected array $data_vars_2_css_escape = [],
+            /**
+             * An array of keys in $this->data whose values (only strings) will be individually escaped using 
+             * Laminas\Escaper\Escaper::escapeJs($string).
+             *
+             * Set this for keys in $this->data with values (only strings) that will be rendered as Javascript 
+             * data values (eg. Javascript string literals).
+             *
+             * Javascript escaping via Laminas\Escaper\Escaper::escapeJs($string) applies to all 
+             * literal strings & digits. It is not possible to safely escape other Javascript 
+             * markup.
+             */
+            protected array $data_vars_2_js_escape = []
     ) {
-        $this->data = $data;
-        $this->file_name = $file_name;
-        $this->file_paths = $file_paths;
-        $this->escape_encoding = $escape_encoding;
-        $this->data_vars_2_js_escape = $data_vars_2_js_escape;
-        $this->data_vars_2_css_escape = $data_vars_2_css_escape;
-        $this->data_vars_2_html_escape = $data_vars_2_html_escape;
-        $this->data_vars_2_html_attr_escape = $data_vars_2_html_attr_escape;
-        
-        $encoding = $escape_encoding === ''? 'utf-8' : $escape_encoding;
+        $encoding = ($escape_encoding === '') ? 'utf-8' : $escape_encoding;
         $this->escaper = new Escaper($encoding);
     }
     
     /**
-     * 
      * Adds a new item to the $this->data array.
      * 
      * @param string $key key for a data value to be added to the $this->data array.
      * @param  mixed $value a data value to be added to the $this->data array.
      * 
      */
-    public function __set($key, $value): void {
+    public function __set($key, mixed $value): void {
         
         $this->data[$key] = $value;
     }
 
     /**
-     * 
      * Retrieves a data value associated with the given key in the $this->data array.
      * 
      * @param string $key key for a data value to be retrieved from the $this->data array.
@@ -313,14 +255,13 @@ class Renderer
         } else {
 
             $msg = sprintf('ERROR: Item with key \'%s\' does not exist in ', $key) 
-                   . get_class($this) .'::getData().'. PHP_EOL . var_export($this->data, true);
+                   . static::class .'::getData().'. PHP_EOL . var_export($this->data, true);
             
             throw new OutOfBoundsException($msg);
         }
     }
     
     /**
-     * 
      * Checks if the given key is set in the $this->data array.
      * 
      * @param string $key potential key for an item in the $this->data array.
@@ -333,7 +274,6 @@ class Renderer
     }
     
     /**
-     * 
      * Unset the item with the given key in the $this->data array.
      * 
      * @param string $key potential key for an item in the $this->data array.
@@ -348,13 +288,12 @@ class Renderer
     }
     
     /**
-     *
      * Adds a new item to the $this->data array.
      *
      * @param string $key key for a data value to be added to the $this->data array.
      * @param  mixed $value a data value to be added to the $this->data array.
      */
-    public function setVar(string $key, $value): self {
+    public function setVar(string $key, mixed $value): self {
         
         $this->__set($key, $value);
         
@@ -362,8 +301,7 @@ class Renderer
     }
     
     /**
-     *
-     * Retreives a data value associated with the given key in the $this->data array.
+     * Retrieves a data value associated with the given key in the $this->data array.
      *
      * @param string $key key for a data value to be retreived from the $this->data array.
      *
@@ -377,7 +315,6 @@ class Renderer
     }
 
     /**
-     * 
      * Returns the value of the `file_paths` property of an instance of this class.
      * 
      * @return array the array of path(s) to directorie(s) containing (*.php) 
@@ -390,7 +327,6 @@ class Renderer
     }
 
     /**
-     * 
      * Returns the value of the `data` property of an instance of this class.
      * 
      * @return array An array of data to be extracted into variables for use in the php file
@@ -403,7 +339,6 @@ class Renderer
     }
     
     /**
-     *
      * Add a path to the end of the array of path(s) to directorie(s) containing 
      * (*.php) files to be rendered via this class.
      *
@@ -417,7 +352,6 @@ class Renderer
     }
 
     /**
-     *
      * Add a path to the beginning of the array of path(s) to directorie(s) 
      * containing (*.php) files to be rendered via this class.
      *
@@ -431,7 +365,6 @@ class Renderer
     }
     
     /**
-     *
      * Checks if a path has been registered for an instance of this class
      */
     public function hasPath(string $path): bool {
@@ -441,7 +374,6 @@ class Renderer
 
 
     /**
-     * 
      * Removes the first `n` elements in the array of path(s) to directorie(s) 
      * containing (*.php) files to be rendered via this class.
      * 
@@ -466,7 +398,6 @@ class Renderer
     }
     
     /**
-     * 
      * Removes the last `n` elements in the array of path(s) to directorie(s) 
      * containing (*.php) files to be rendered via this class.
      * 
@@ -491,7 +422,6 @@ class Renderer
     }
     
     /**
-     * 
      * Captures and returns the output that is generated when a php file is included. 
      * 
      * @param string $file_name Name of php file to be included (with/without
@@ -571,7 +501,7 @@ class Renderer
             $msg = sprintf('ERROR: Could not load the file named `%s` ', $file_name)
                 . "from any of the paths below:"
                 . PHP_EOL . implode(PHP_EOL, $this->file_paths) . PHP_EOL
-                . PHP_EOL . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                . PHP_EOL . static::class . '::' . __FUNCTION__ . '(...).' 
                 . PHP_EOL;
             
             throw new FileNotFoundException($msg);
@@ -595,7 +525,6 @@ class Renderer
     }
     
     /**
-     * 
      * @param string $file_to_include file to be rendered, including path & name
      * @param array $data array whose keys are variables & values are values for the variables to be injected into the file to be rendered
      * 
@@ -653,7 +582,6 @@ class Renderer
     }
 
     /**
-     * 
      * Alias to $this->renderToString(..)
      * 
      * @return string the output that is generated when $this->file_name is rendered.
@@ -669,7 +597,6 @@ class Renderer
     }
     
     /**
-     *
      * Captures and prints out the output that is generated when a renderable php file is executed. 
      *
      * @param string $file_name Name of php file to be included (with/without
@@ -795,7 +722,6 @@ class Renderer
     }
     
     /**
-     *
      * Escapes values in an array and all its sub-arrays. 
      *                         
      * @param array $data Array of data to be escaped. This array will be modifed during the escape operation.
@@ -881,7 +807,7 @@ class Renderer
         }
         
         $final_encoding = ($escape_encoding === '') 
-                            ? ( ($this->escape_encoding === '') ? 'utf-8' : $this->escape_encoding) 
+                            ? (($this->escape_encoding === '')? 'utf-8' : $this->escape_encoding) 
                             : $escape_encoding;
         
         if( is_null($escaper) ) {
@@ -947,7 +873,6 @@ class Renderer
     }
     
     /**
-     *    
      * This method locates a file to be rendered and returns the full path to the file or returns an empty string if the file can't be located.
      *    
      * @param string $file_name Name of file (with / without the directory path)
@@ -1001,9 +926,9 @@ class Renderer
     }
     
     /**
-     *
      * Trims off the right-most character at the end of the string `$file_path` 
      * if it is a directory separator charater (ie. '\' or '/').
+     *
      *
      * @return string `$file_path` as is if right-most character at the end of the 
      *                string is not a directory separator charater (ie. '\' or '/').
@@ -1025,5 +950,20 @@ class Renderer
         }
 
         return $trimed_path;
+    }
+    
+    /**
+     * An enhancement to PHP's gettype function that displays the class name of a variable if the variable is an object.
+     * 
+     * @param mixed $var a variable whose type is to be determined.
+     * @param bool $cap_first flag to indicate if the variable's type should be returned with the first letter in uppercase.
+     * 
+     * @return string the variable's type.
+     */
+    protected function getVarType(mixed $var, bool $cap_first=false): string {
+
+        if( is_object($var) ) { return $cap_first ? ucfirst($var::class) : $var::class; }
+
+        return $cap_first ? ucfirst(gettype($var)) : gettype($var);
     }
 }

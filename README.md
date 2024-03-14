@@ -11,8 +11,6 @@
 ![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/rotexsoft/file-renderer/latest) &nbsp; 
 ![GitHub last commit](https://img.shields.io/github/last-commit/rotexsoft/file-renderer) &nbsp; 
 ![GitHub Release Date](https://img.shields.io/github/release-date/rotexsoft/file-renderer) &nbsp; 
-[![kandi X-Ray](https://kandi.openweaver.com/badges/xray.svg)](https://kandi.openweaver.com/php/rotexsoft/file-renderer) &nbsp;
-
 <a href="https://libraries.io/github/rotexsoft/file-renderer">
     <img alt="Libraries.io dependency status for GitHub repo" src="https://img.shields.io/librariesio/github/rotexsoft/file-renderer">
 </a>
@@ -1119,7 +1117,6 @@ This all leads to
     </body>
 </html>
 ```
-
 That's how you nest renderers and render their combined output. 
 
 > Note: with nesting, you have to supply all the information needed to render each file to the constructor of the 
