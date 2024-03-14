@@ -27,7 +27,7 @@ return static function (RectorConfig $containerConfigurator): void {
     $containerConfigurator->import(SetList::TYPE_DECLARATION);
     
     $containerConfigurator->skip([
-        \Rector\Php71\Rector\FuncCall\CountOnNullRector::class,
+        //\Rector\Php71\Rector\FuncCall\CountOnNullRector::class,
     ]);
     
     // get parameters
