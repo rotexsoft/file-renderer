@@ -17,7 +17,6 @@ use function extract;
 use function file_exists;
 use function func_get_arg;
 use function gettype;
-use function get_class;
 use function hash;
 //use function hash_algos; // Do this so that \Rotexsoft\FileRenderer\hash_algos() 
                            // in ./tests/bootstrap.php gets called while testing
