@@ -16,8 +16,8 @@
 </a>
 
 - [PHP File Renderer](#php-file-renderer)
-	- [Introduction](#introduction)
-		- [Main Features](#main-features)
+    - [Introduction](#introduction)
+        - [Main Features](#main-features)
 	- [Acknowledgement](#acknowledgement)
     - [Changelog](#changelog)
 	- [Contribution](#contribution)
@@ -82,9 +82,18 @@ related pull requests are greatly welcomed.
 
   ` ./vendor/bin/phpunit --coverage-text`
 
+### Branching
+
+These are the branches in this repository:
+
+- **master:** contains code for the latest major version of this package
+- **1.X:** contains code for the **1.x** version of this package
+- **2.X:** contains code for the **2.x** version of this package
+- **5.X:** contains code for the **5.x** version of this package
+
 ## Requirements
 
-* PHP 7.4+
+* PHP 8.1+
 * Not currently certified for use with HHVM (unit tests failing when run in an HHVM environment).
 
 ## Installation
