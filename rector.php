@@ -28,6 +28,8 @@ return static function (RectorConfig $containerConfigurator): void {
     
     $containerConfigurator->skip([
         //\Rector\Php71\Rector\FuncCall\CountOnNullRector::class,
+        \Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector::class,
+        \Rector\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector::class,
     ]);
     
     // get parameters
