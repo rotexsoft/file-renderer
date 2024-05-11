@@ -42,6 +42,7 @@
     },
     "config": {
         "allow-plugins": {
+            "rector/extension-installer": true,
             "rector/rector-installer": true
         }
     }
