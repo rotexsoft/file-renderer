@@ -89,7 +89,7 @@ These are the branches in this repository:
 - **master:** contains code for the latest major version of this package
 - **1.X:** contains code for the **1.x** version of this package
 - **2.X:** contains code for the **2.x** version of this package
-- **5.X:** contains code for the **5.x** version of this package
+- **5.x:** contains code for the **5.x** version of this package
 
 ## Requirements
 
