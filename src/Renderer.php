@@ -526,10 +526,8 @@ class Renderer implements \Stringable
      * @param string $file_to_include file to be rendered, including path & name
      * @param array $data array whose keys are variables & values are values for the variables to be injected into the file to be rendered
      * 
-     * @return string|bool|void
-     * 
      */
-    protected function doRender(string $file_to_include, array $data) {
+    protected function doRender(string $file_to_include, array $data): string|false {
 
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
