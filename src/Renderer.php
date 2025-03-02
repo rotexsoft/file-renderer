@@ -24,7 +24,6 @@ use function implode;
 use function in_array;
 use function is_array;
 use function is_file;
-use function is_null;
 use function is_object;
 use function is_string;
 use function ob_end_clean;
@@ -758,7 +757,7 @@ class Renderer implements \Stringable
         array $data_vars_2_html_attr_escape = [],
         array $data_vars_2_css_escape = [],
         array $data_vars_2_js_escape = [],
-        Escaper $escaper = null
+        ?Escaper $escaper = null
     ): void {
         if ($data === []) {
             //no data supplied; nothing to do
@@ -809,7 +808,7 @@ class Renderer implements \Stringable
                             ? (($this->escape_encoding === '')? 'utf-8' : $this->escape_encoding) 
                             : $escape_encoding;
         
-        if( is_null($escaper) ) {
+        if( ! $escaper instanceof Escaper ) {
             
             if(
                 $this->escaper instanceof Escaper 
