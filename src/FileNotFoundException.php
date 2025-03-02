@@ -10,7 +10,7 @@ namespace Rotexsoft\FileRenderer;
  * @license   BSD-2-Clause https://github.com/rotexsoft/file-renderer/blob/master/LICENSE
  * 
  * @author Rotimi Adegbamigbe (http://blog.rotimis-corner.com/)
- * 
+ * @psalm-suppress ClassMustBeFinal
  */
 class FileNotFoundException extends \Exception 
 {

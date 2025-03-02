@@ -47,7 +47,7 @@ use function var_export;
  * @author Rotimi Adegbamigbe (http://blog.rotimis-corner.com/)
  * 
  * @psalm-suppress RedundantCondition
- * 
+ * @psalm-suppress ClassMustBeFinal
  */
 class Renderer implements \Stringable
 {
@@ -572,6 +572,7 @@ class Renderer implements \Stringable
      * @psalm-suppress UnresolvableInclude
      * @psalm-suppress MixedAssignment
      * @psalm-suppress MixedArgument
+     * @psalm-suppress PossiblyFalseArgument
      */
     protected function includeFile (string $file_to_include, array $data): void {
         $funcGetArg = func_get_arg(1);
@@ -589,6 +590,7 @@ class Renderer implements \Stringable
      * @psalm-suppress MixedFunctionCall
      * 
      */
+    #[\Override]
     public function __toString(): string {
         
         return $this->renderToString();

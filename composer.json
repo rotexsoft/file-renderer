@@ -21,7 +21,7 @@
         "phpunit/phpunit": "^10.0",
         "php-coveralls/php-coveralls": "^2.0",
         "rector/rector": "^1.0.0",
-        "vimeo/psalm": "^5.4"
+        "vimeo/psalm": "^6.0"
     },
     "autoload": {
         "classmap": ["src/"],
