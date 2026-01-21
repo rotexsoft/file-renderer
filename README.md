@@ -91,6 +91,7 @@ These are the branches in this repository:
 - **2.X:** contains code for the **2.x** version of this package
 - **5.x:** contains code for the **5.x** version of this package
 - **6.x:** contains code for the **6.x** version of this package
+- **7.x:** contains code for the **7.x** version of this package
 
 ## Requirements
 
