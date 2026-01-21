@@ -230,7 +230,7 @@ class Renderer implements \Stringable
      * @param  mixed $value a data value to be added to the $this->data array.
      * 
      */
-    public function __set($key, mixed $value): void {
+    public function __set(string $key, mixed $value): void {
         
         $this->data[$key] = $value;
     }
@@ -244,7 +244,7 @@ class Renderer implements \Stringable
      * 
      * @throws \OutOfBoundsException if item with specified key is not in the $this->data array.
      */
-    public function __get($key) {
+    public function __get(string $key): mixed {
         
         if ( isset($this->data[$key]) ) {
 
@@ -266,7 +266,7 @@ class Renderer implements \Stringable
      * 
      * @return bool true if item with given key is set in $this->data, else false.
      */
-    public function __isset($key): bool {
+    public function __isset(string $key): bool {
         
         return isset($this->data[$key]);
     }
@@ -277,7 +277,7 @@ class Renderer implements \Stringable
      * @param string $key potential key for an item in the $this->data array.
      * 
      */
-    public function __unset($key): void {
+    public function __unset(string $key): void {
         
         if( isset($this->data[$key]) ) {
             
