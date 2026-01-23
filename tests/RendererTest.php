@@ -55,28 +55,20 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         
         //make protected properties accessible via reflection
         $file_name_in_obj = $reflection_class->getProperty('file_name');
-        $file_name_in_obj->setAccessible(true);
         
         $data_in_obj = $reflection_class->getProperty('data');
-        $data_in_obj->setAccessible(true);
         
-        $file_paths_in_obj = $reflection_class->getProperty('file_paths'); 
-        $file_paths_in_obj->setAccessible(true); 
+        $file_paths_in_obj = $reflection_class->getProperty('file_paths');
         
-        $escape_encoding_in_obj = $reflection_class->getProperty('escape_encoding'); 
-        $escape_encoding_in_obj->setAccessible(true); 
+        $escape_encoding_in_obj = $reflection_class->getProperty('escape_encoding');
         
         $html_escaper_keys_in_obj = $reflection_class->getProperty('data_vars_2_html_escape');
-        $html_escaper_keys_in_obj->setAccessible(true);
         
         $html_attr_escaper_keys_in_obj = $reflection_class->getProperty('data_vars_2_html_attr_escape');
-        $html_attr_escaper_keys_in_obj->setAccessible(true);
         
         $css_escaper_keys_in_obj = $reflection_class->getProperty('data_vars_2_css_escape');
-        $css_escaper_keys_in_obj->setAccessible(true);
         
         $js_escaper_keys_in_obj = $reflection_class->getProperty('data_vars_2_js_escape');
-        $js_escaper_keys_in_obj->setAccessible(true);
         
         // test with all params supplied; no default vals
         $this->assertEquals($expected_file_name, $file_name_in_obj->getValue($renderer));
@@ -196,7 +188,6 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         //make protected `data` property accessible via reflection
         $reflection_class = new ReflectionClass($renderer);        
         $data_in_obj = $reflection_class->getProperty('data');
-        $data_in_obj->setAccessible(true);
         $data_array_in_obj = $data_in_obj->getValue($renderer);
         
         $this->assertEquals('val1', $data_array_in_obj['key1']);
@@ -212,7 +203,6 @@ class RendererTest extends \PHPUnit\Framework\TestCase
         //make protected `data` property accessible via reflection
         $reflection_class = new ReflectionClass($renderer);        
         $data_in_obj = $reflection_class->getProperty('data');
-        $data_in_obj->setAccessible(true);
         $data_array_in_obj = $data_in_obj->getValue($renderer);
         
         $this->assertEquals('val1', $data_array_in_obj['key1']);
